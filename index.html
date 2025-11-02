@@ -569,7 +569,6 @@
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative; /* Ajouté pour positionner le bouton fermer */
         }
 
         .modal-header {
@@ -775,18 +774,7 @@
             <!-- Profile Page -->
             <div id="profilePage" class="page-section">
                 <div class="profile-header">
-                    
-                    <!-- MODIFICATION: Avatar 3D intégré -->
-                    <div class="profile-avatar-large" id="profileAvatar" style="background: none; border: none; padding: 0; overflow: hidden; border-radius: 50%;">
-                        <!-- 
-                            Modèle 3D gratuit de Sketchfab comme exemple.
-                            Tu peux trouver d'autres modèles et obtenir ton propre code "embed".
-                        -->
-                        <iframe title="Robot Avatar" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/0198811025214efc8a8167f81b1686d0/embed?autostart=1&transparent=1&ui_controls=0&ui_infos=0&ui_inspector=0&ui_watermark=0" style="width: 100%; height: 100%;">
-                        </iframe>
-                    </div>
-                    <!-- FIN MODIFICATION -->
-
+                    <div class="profile-avatar-large" id="profileAvatar">👤</div>
                     <div class="profile-username" id="profileUsername">User</div>
                     <div class="profile-stats">
                         <div class="stat-item">
@@ -824,26 +812,17 @@
     <!-- Payment Modal -->
     <div id="paymentModal" class="modal">
         <div class="modal-content">
-            <button onclick="closePaymentModal()" class="close-modal">&times;</button>
             <h2 class="modal-title">💳 Paiement Sécurisé</h2>
             <div class="form-group">
                 <label class="form-label">Numéro de carte</label>
                 <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
             </div>
-            
-            <!-- MODIFICATION: Formulaire de paiement corrigé -->
             <div style="display: flex; gap: 16px;">
-                <div class="form-group" style="flex: 2;">
-                    <label class="form-label">Expiration (MM/AA)</label>
-                    <input type="text" class="form-input" placeholder="MM/AA" maxlength="5">
-                </div>
                 <div class="form-group" style="flex: 1;">
-                    <label class="form-label">CVC</label>
+                    <label class="form-label">Expiration</label>
                     <input type="text" class="form-input" placeholder="123" maxlength="3">
                 </div>
             </div>
-            <!-- FIN MODIFICATION -->
-
             <div class="form-group">
                 <label class="form-label">Nom sur la carte</label>
                 <input type="text" class="form-input" placeholder="JEAN DUPONT">
@@ -853,16 +832,6 @@
             <button onclick="closePaymentModal()" class="btn btn-secondary">Annuler</button>
         </div>
     </div>
-
-    <!-- MODIFICATION: Ajout du Modal pour le Jeu -->
-    <div id="gameModal" class="modal" style="padding: 10px;">
-        <div class="modal-content" style="width: 95%; max-width: 1200px; height: 90vh; padding: 10px; background: var(--darker);">
-            <button onclick="closeGameModal()" class="close-modal" style="z-index: 10; top: 20px; right: 25px;">&times;</button>
-            <iframe id="gameFrame" style="width: 100%; height: 100%; border: none; border-radius: 16px; background: #fff;"></iframe>
-        </div>
-    </div>
-    <!-- FIN MODIFICATION -->
-
 
     <script>
         // État global de l'application
@@ -912,17 +881,12 @@
         // Jeux disponibles
         const games = [
             { id: 1, name: 'Steal a Brainrot', icon: '🧠', players: 15420, likes: 98 },
-            // MODIFICATION: Jeu 2 mis à jour
-            { id: 2, name: 'Super Platformer', icon: '🏃', players: 28934, likes: 95 },
+            { id: 2, name: 'Mega Obby Adventure', icon: '🏃', players: 28934, likes: 95 },
             { id: 3, name: 'Tower Defense Ultimate', icon: '🗼', players: 12389, likes: 92 },
             { id: 4, name: 'Racing Legends', icon: '🏎️', players: 45231, likes: 97 },
-            // MODIFICATION: Jeu 5 mis à jour
-            { id: 5, name: 'Tunnel Go 3D', icon: '🌀', players: 32145, likes: 93 },
-            // MODIFICATION: Jeu 6 mis à jour
-            { id: 6, name: 'Slope 3D', icon: '🏂', players: 19823, likes: 91 },
-            // MODIFICATION: Jeu 7 mis à jour
-            { id: 7, name: '3D Racing', icon: '🏎️', players: 52341, likes: 99 },
-            // FIN MODIFICATION
+            { id: 5, name: 'Build Battle Royale', icon: '🏗️', players: 32145, likes: 93 },
+            { id: 6, name: 'Zombie Survival', icon: '🧟', players: 19823, likes: 91 },
+            { id: 7, name: 'Pet Simulator X', icon: '🐾', players: 52341, likes: 99 },
             { id: 8, name: 'Tycoon Empire', icon: '💰', players: 23456, likes: 89 },
             { id: 9, name: 'Parkour Masters', icon: '🤸', players: 18765, likes: 94 },
             { id: 10, name: 'Murder Mystery', icon: '🔪', players: 34567, likes: 96 },
@@ -937,25 +901,10 @@
             { id: 19, name: 'Magic School', icon: '🧙', players: 36789, likes: 96 },
             { id: 20, name: 'Dance Battle', icon: '💃', players: 28765, likes: 89 }
         ];
-        
-        // MODIFICATION: Ajout des liens pour les jeux
-        const gameLinks = {
-            1: 'https://patorjk.com/games/snake/', // Jeu 1: Snake
-            // MODIFICATION: Liens des jeux 2, 5, 6, 7 mis à jour
-            2: 'https://cdn.htmlgames.com/SuperPlatformer/', // Jeu 2: Super Platformer
-            3: 'https://solitaire-web.web.app/', // Jeu 3: Solitaire
-            4: 'https://98.js.org/programs/minesweeper/', // Jeu 4: Démineur
-            5: 'https://cdn.htmlgames.com/TunnelGo/', // Jeu 5: Tunnel Go 3D
-            6: 'https://cdn.htmlgames.com/Slope/', // Jeu 6: Slope 3D
-            7: 'https://cdn.htmlgames.com/3dRacing/', // Jeu 7: 3D Racing
-            // FIN MODIFICATION
-            // Ajoute les autres ID de jeux ici avec un lien vers un jeu HTML5
-        };
-        // FIN MODIFICATION
 
         // Skins disponibles
         const skins = [];
-        const skinEmojis = ['👨', '👩', '🧑', '👦', '👧', '👴', '👵', '🧔', '👨‍🦰', '👨‍🦱', '👨‍🦳', '👨‍🦲', '👩‍🦰', '👩‍🦱', '👩‍🦳', '👩‍🦲', '🧑‍🦰', '🧑‍🦱', '🧑‍🦳', '🧑‍🦲', '👱‍♀️', '👱‍♂️', '🧓', '👲', '👳‍♀️', '👳‍♂️', '🧕', '👮‍♀️', '👮‍♂️', '👷‍♀️', '👷‍♂️', '💂‍♀️', '💂‍♂️', '🕵️‍♀️', '🕵️‍♂️', '👩‍⚕️', '👨‍⚕️', '👩‍🌾', '👨‍🌾', '👩‍🍳', '👨‍🍳', '👩‍🎓', '👨‍🎓', '👩‍🎤', '👨‍🎤', '👩‍🏫', '👨‍🏫', '👩‍🏭', '👨‍🏭', '👩‍💻', '👨‍💻', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👩‍✈️', '👨‍✈️', '👩‍🚀', '👨‍🚀', '👩‍⚖️', '👨‍⚖️', '👰', '🤵', '👸', '🤴', '🦸‍♀️', '🦸‍♂️', '🦹‍♀️', '🦹‍♂️', '🧙‍♀️', '🧙‍♂️', '🧚‍♀️', '🧚‍♂️', '🧛‍♀️', '🧛‍♂️', '🧜‍♀️', '🧜‍♂️', '🧝‍♀️', '_TOKEN_404_'];
+        const skinEmojis = ['👨', '👩', '🧑', '👦', '👧', '👴', '👵', '🧔', '👨‍🦰', '👨‍🦱', '👨‍🦳', '👨‍🦲', '👩‍🦰', '👩‍🦱', '👩‍🦳', '👩‍🦲', '🧑‍🦰', '🧑‍🦱', '🧑‍🦳', '🧑‍🦲', '👱‍♀️', '👱‍♂️', '🧓', '👲', '👳‍♀️', '👳‍♂️', '🧕', '👮‍♀️', '👮‍♂️', '👷‍♀️', '👷‍♂️', '💂‍♀️', '💂‍♂️', '🕵️‍♀️', '🕵️‍♂️', '👩‍⚕️', '👨‍⚕️', '👩‍🌾', '👨‍🌾', '👩‍🍳', '👨‍🍳', '👩‍🎓', '👨‍🎓', '👩‍🎤', '👨‍🎤', '👩‍🏫', '👨‍🏫', '👩‍🏭', '👨‍🏭', '👩‍💻', '👨‍💻', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👩‍✈️', '👨‍✈️', '👩‍🚀', '👨‍🚀', '👩‍⚖️', '👨‍⚖️', '👰', '🤵', '👸', '🤴', '🦸‍♀️', '🦸‍♂️', '🦹‍♀️', '🦹‍♂️', '🧙‍♀️', '🧙‍♂️', '🧚‍♀️', '🧚‍♂️', '🧛‍♀️', '🧛‍♂️', '🧜‍♀️', '🧜‍♂️', '🧝‍♀️', '🧝‍♂️', '🧞‍♀️', '🧞‍♂️', '🧟‍♀️', '🧟‍♂️', '🤶', '🎅', '🧑‍🎄', '🦌', '🐯', '🦁', '🐻', '🐼', '🐨', '🐸', '🐵', '🦊', '🦝', '🐱', '🐶', '🐺', '🦄', '🐴'];
         const skin3dEmojis = ['🤖', '👾', '🎃', '👻', '💀', '☠️', '👽', '👹', '👺', '🤡', '💩', '🦖', '🦕', '🐉', '🐲', '🧟‍♂️', '🧟‍♀️', '🧙‍♂️', '🧙‍♀️', '🧛‍♂️', '🧛‍♀️'];
         const legendarySkinEmojis = ['🦄', '🐉', '🐲', '🦖', '🦕', '🧞‍♂️', '🧞‍♀️', '🧝‍♂️', '🧝‍♀️', '🧜‍♂️', '🧜‍♀️', '🧚‍♂️', '🧚‍♀️', '🤴', '👸'];
         const epicSkinEmojis = ['🧙‍♂️', '🧙‍♀️', '🧛‍♂️', '🧛‍♀️', '🤖', '👾', '🎃', '👻', '💀', '☠️', '👽', '👹', '👺', '🤡', '💩'];
@@ -1095,19 +1044,7 @@
             document.getElementById('navAvatar').textContent = currentUser.avatar;
             document.getElementById('userXubor').textContent = currentUser.xubor.toLocaleString();
             document.getElementById('profileUsername').textContent = currentUser.username;
-            
-            // Ne pas écraser l'avatar 3D si c'est la page de profil
-            if (currentPage !== 'profile') {
-                // Si l'avatar 3D est visible (sur la page profil), ne le remplace pas par l'emoji
-                // Cette logique est un peu inversée, corrigeons-la.
-                // L'avatar 3D est DANS la page profil, donc il ne sera pas affecté.
-                // On met à jour le petit avatar de la nav bar
-                document.getElementById('navAvatar').textContent = currentUser.avatar;
-            }
-             // Mettre à jour le petit avatar de la nav bar
-             document.getElementById('navAvatar').textContent = currentUser.avatar;
-
-
+            document.getElementById('profileAvatar').textContent = currentUser.avatar;
             document.getElementById('profileXubor').textContent = currentUser.xubor.toLocaleString();
             document.getElementById('profileSkins').textContent = currentUser.skins.length;
             document.getElementById('profileFriends').textContent = currentUser.friends.length;
@@ -1119,8 +1056,6 @@
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.getElementById(page + 'Page').classList.add('active');
             currentPage = page;
-            // Assurer que l'UI est à jour, surtout pour l'avatar
-            updateUI();
         }
 
         // Rendu des jeux
@@ -1146,26 +1081,10 @@
             renderGames(query);
         }
 
-        // MODIFICATION: Fonction playGame mise à jour
         function playGame(id) {
             const game = games.find(g => g.id === id);
-            const gameUrl = gameLinks[id]; // Récupère le lien du jeu
-
-            if (gameUrl) {
-                document.getElementById('gameFrame').src = gameUrl;
-                document.getElementById('gameModal').classList.add('active');
-            } else {
-                // Utilise une boîte de dialogue personnalisée au lieu de alert()
-                showCustomAlert(`🎮 Le jeu "${game.name}" n'est pas encore disponible !`);
-            }
+            alert(`🎮 Lancement de ${game.name}...\n\Installer Xolbor pour profiter de cette experience !`);
         }
-
-        // MODIFICATION: Fonction pour fermer le modal du jeu
-        function closeGameModal() {
-            document.getElementById('gameModal').classList.remove('active');
-            document.getElementById('gameFrame').src = 'about:blank'; // Arrête le jeu pour libérer la mémoire
-        }
-        // FIN MODIFICATION
 
         // Rendu des skins
         function renderSkins(filter = '') {
@@ -1223,24 +1142,23 @@
             if (!skin) return;
 
             if (currentUser.xubor < skin.price) {
-                showCustomAlert('❌ Tu n\'as pas assez de Xubor !\n\nVisite la section "Acheter des Xubor" dans le Marketplace.');
+                alert('❌ Tu n\'as pas assez de Xubor !\n\nVisite la section "Acheter des Xubor" dans le Marketplace.');
                 return;
             }
 
             if (currentUser.skins.includes(skinId)) {
-                showCustomAlert('✓ Tu possèdes déjà ce skin !');
+                alert('✓ Tu possèdes déjà ce skin !');
                 return;
             }
 
-            // Utilise une boîte de dialogue personnalisée au lieu de confirm()
-            showCustomConfirm(`Acheter ${skin.name} pour ${skin.price} 💎 ?`, () => {
+            if (confirm(`Acheter ${skin.name} pour ${skin.price} 💎 ?`)) {
                 currentUser.xubor -= skin.price;
                 currentUser.skins.push(skinId);
                 DB.updateUser(currentUser.username, currentUser);
                 updateUI();
                 renderSkins();
-                showCustomAlert(`✓ ${skin.name} acheté avec succès !`);
-            });
+                alert(`✓ ${skin.name} acheté avec succès !`);
+            }
         }
 
         function equipSkin(skinId) {
@@ -1250,7 +1168,7 @@
             currentUser.avatar = skin.emoji;
             DB.updateUser(currentUser.username, currentUser);
             updateUI();
-            showCustomAlert(`✓ ${skin.name} équipé !`);
+            alert(`✓ ${skin.name} équipé !`);
         }
 
         // Système de Xubor
@@ -1264,7 +1182,7 @@
             if (!pendingPurchase) return;
 
             // En production, ici vous intégreriez Stripe, PayPal, etc.
-            showCustomAlert(`✓ Paiement de ${pendingPurchase.price}€ simulé avec succès !\n\n+${pendingPurchase.amount} 💎 Xubor ajoutés !`);
+            alert(`✓ Paiement de ${pendingPurchase.price}€ simulé avec succès !\n\n+${pendingPurchase.amount} 💎 Xubor ajoutés !`);
             
             currentUser.xubor += pendingPurchase.amount;
             DB.updateUser(currentUser.username, currentUser);
@@ -1309,7 +1227,7 @@
 
         function addFriend(username, avatar, status) {
             if (currentUser.friends.some(f => f.username === username)) {
-                showCustomAlert('Déjà dans tes amis !');
+                alert('Déjà dans tes amis !');
                 return;
             }
 
@@ -1317,109 +1235,8 @@
             DB.updateUser(currentUser.username, currentUser);
             updateUI();
             renderFriends();
-            showCustomAlert(`✓ ${username} ajouté à tes amis !`);
+            alert(`✓ ${username} ajouté à tes amis !`);
         }
-        
-        // --- Fonctions utilitaires pour remplacer alert() et confirm() ---
-
-        // Fonction pour afficher une alerte personnalisée
-        function showCustomAlert(message) {
-            // Crée les éléments du DOM pour l'alerte
-            const modalOverlay = document.createElement('div');
-            modalOverlay.className = 'modal active';
-            modalOverlay.style.zIndex = '2000'; // S'assurer qu'elle est au-dessus de tout
-
-            const modalContent = document.createElement('div');
-            modalContent.className = 'modal-content';
-            modalContent.style.maxWidth = '400px';
-            modalContent.style.textAlign = 'center';
-
-            const messageText = document.createElement('p');
-            messageText.textContent = message;
-            messageText.style.marginBottom = '20px';
-            messageText.style.fontSize = '16px';
-            messageText.style.whiteSpace = 'pre-wrap'; // Pour respecter les sauts de ligne \n
-
-            const okButton = document.createElement('button');
-            okButton.textContent = 'OK';
-            okButton.className = 'btn btn-primary';
-            
-            // Fonction pour fermer l'alerte
-            const closeModal = () => {
-                if (document.body.contains(modalOverlay)) {
-                    document.body.removeChild(modalOverlay);
-                }
-            };
-
-            okButton.onclick = closeModal;
-
-            modalContent.appendChild(messageText);
-            modalContent.appendChild(okButton);
-            modalOverlay.appendChild(modalContent);
-            document.body.appendChild(modalOverlay);
-        }
-
-        // Fonction pour afficher une confirmation personnalisée
-        function showCustomConfirm(message, onConfirm) {
-            const modalOverlay = document.createElement('div');
-            modalOverlay.className = 'modal active';
-            modalOverlay.style.zIndex = '2000';
-
-            const modalContent = document.createElement('div');
-            modalContent.className = 'modal-content';
-            modalContent.style.maxWidth = '400px';
-            modalContent.style.textAlign = 'center';
-
-            const messageText = document.createElement('p');
-            messageText.textContent = message;
-            messageText.style.marginBottom = '24px';
-            messageText.style.fontSize = '16px';
-
-            const confirmButton = document.createElement('button');
-            confirmButton.textContent = 'Confirmer';
-            confirmButton.className = 'btn btn-primary';
-            confirmButton.style.marginRight = '10px';
-
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Annuler';
-            cancelButton.className = 'btn btn-secondary';
-            cancelButton.style.marginTop = '0'; // Annuler le margin-top par défaut
-
-            const closeModal = () => {
-                if (document.body.contains(modalOverlay)) {
-                    document.body.removeChild(modalOverlay);
-                }
-            };
-
-            confirmButton.onclick = () => {
-                onConfirm(); // Exécute la fonction de callback
-                closeModal();
-            };
-            
-            cancelButton.onclick = closeModal;
-
-            modalContent.appendChild(messageText);
-            modalContent.appendChild(confirmButton);
-            modalContent.appendChild(cancelButton);
-            modalOverlay.appendChild(modalContent);
-            document.body.appendChild(modalOverlay);
-        }
-        
-        // Remplacer les alert() et confirm() restantes
-        const originalAlert = window.alert;
-        window.alert = showCustomAlert;
-        const originalConfirm = window.confirm;
-        window.confirm = (message) => {
-            // confirm() retourne un booléen, mais notre fonction personnalisée est asynchrone.
-            // Pour ce cas d'utilisation, nous allons le rediriger vers showCustomConfirm
-            // mais cela ne fonctionnera pas pour les `if (confirm(...))` synchrones.
-            // Heureusement, nous les avons déjà remplacés manuellement.
-            console.warn("Utilisation de window.confirm() interceptée. Remplacez par showCustomConfirm(message, callback).");
-            // Pour l'instant, on affiche juste une alerte.
-            showCustomAlert(message);
-            return false; // Simule un "Annuler" pour éviter les actions non désirées
-        };
-
 
         // Vérifier si l'utilisateur est déjà connecté
         window.onload = function() {
@@ -1433,7 +1250,9 @@
             }
         };
     </script>
-   <h6>Créer par Imrane❤️​</h6>
 </body>
 </html>
-
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label class="form-label">Créer par Imrane​❤️​</label>
+                    <input type="text" class="form-input" placeholder="
