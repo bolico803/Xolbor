@@ -3,9 +3,8 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xolbor - Plateforme de Jeux 3D</title>
-  <link rel="icon" type="image/x-icon" href="Xolbor-logo.png.jpg">
-  <script src="/_sdk/data_sdk.js"></script>
+  <title>Xolbor - Plateforme de Jeux</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236366f1;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a855f7;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='50' font-weight='bold' fill='white' text-anchor='middle'%3EX%3C/text%3E%3C/svg%3E">
   <script src="/_sdk/element_sdk.js"></script>
   <style>
         body {
@@ -16,6 +15,10 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100%;
             overflow-x: hidden;
+        }
+        
+        html, body {
+            height: 100%;
         }
 
         * {
@@ -41,23 +44,22 @@
 
         .auth-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 450px;
-            animation: slideUp 0.5s ease-out;
-            transform-style: preserve-3d;
+            animation: slideIn 0.5s ease-out;
         }
 
-        @keyframes slideUp {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(30px) rotateX(10deg);
+                transform: translateY(-30px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) rotateX(0deg);
+                transform: translateY(0);
             }
         }
 
@@ -70,22 +72,15 @@
             width: 80px;
             height: 80px;
             margin: 0 auto 15px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotateY(0deg); }
-            50% { transform: translateY(-10px) rotateY(180deg); }
         }
 
         .logo h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 2.5em;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .form-group {
@@ -97,84 +92,61 @@
             margin-bottom: 8px;
             color: #333;
             font-weight: 600;
-            font-size: 14px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 15px;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 16px;
             transition: all 0.3s;
-            background: rgba(255,255,255,0.9);
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
         }
 
         .btn {
             width: 100%;
             padding: 14px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 10px;
-            transform-style: preserve-3d;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px) rotateX(5deg);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
-            background: #f5f5f5;
+            background: #f0f0f0;
             color: #333;
         }
 
         .btn-secondary:hover {
             background: #e0e0e0;
-            transform: translateY(-2px);
-        }
-
-        .error-message, .success-message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            display: none;
-            animation: slideIn 0.3s ease-out;
         }
 
         .error-message {
             background: #fee;
             color: #c33;
-            border-left: 4px solid #c33;
-        }
-
-        .success-message {
-            background: #efe;
-            color: #3c3;
-            border-left: 4px solid #3c3;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
         }
 
         /* Page principale */
@@ -183,18 +155,16 @@
         }
 
         .header {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            background: white;
+            border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             flex-wrap: wrap;
             gap: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
         .header-left {
@@ -206,19 +176,11 @@
         .header-logo {
             width: 50px;
             height: 50px;
-            animation: spin 10s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
         }
 
         .header h2 {
             margin: 0;
             color: #333;
-            font-size: 24px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .header-right {
@@ -229,45 +191,28 @@
 
         .xubor-display {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            padding: 12px 20px;
-            border-radius: 20px;
-            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
             color: #333;
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
 
         .profile-btn {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 3px solid #667eea;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.3s;
             overflow: hidden;
             background: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transform-style: preserve-3d;
         }
 
         .profile-btn:hover {
-            transform: scale(1.1) rotateY(180deg);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .profile-avatar {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
+            transform: scale(1.1);
         }
 
         .nav-tabs {
@@ -279,28 +224,33 @@
 
         .nav-tab {
             padding: 12px 24px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
+            background: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            color: #666;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transform-style: preserve-3d;
+            color: #333;
         }
 
         .nav-tab.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            transform: translateY(-3px) rotateX(5deg);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .nav-tab:hover:not(.active) {
+        .nav-tab:hover {
             transform: translateY(-2px);
-            background: rgba(255,255,255,1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .content-section {
@@ -309,353 +259,111 @@
 
         .content-section.active {
             display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 16px 24px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
-            font-size: 15px;
-            margin-bottom: 20px;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .search-bar:focus {
-            outline: none;
-            background: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
         }
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
 
         .game-card {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: all 0.4s;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .game-card:hover::before {
-            opacity: 1;
+            transition: all 0.3s;
         }
 
         .game-card:hover {
-            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .game-icon {
             width: 100%;
             height: 150px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 60px;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .game-icon::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s ease-in-out infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        }
-
-        .game-card h3 {
-            margin: 0 0 8px 0;
+        .game-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
             color: #333;
-            font-size: 20px;
-            position: relative;
-            z-index: 1;
         }
 
-        .game-card p {
-            margin: 0 0 15px 0;
+        .game-description {
             color: #666;
             font-size: 14px;
-            position: relative;
-            z-index: 1;
         }
 
-        .play-badge {
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            display: inline-block;
-            animation: bounce 2s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
-        }
-
-        .coming-soon-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            display: inline-block;
-            position: relative;
-            z-index: 1;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        /* Modal de jeu */
-        .game-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .game-modal.active {
-            display: flex;
-            animation: modalFadeIn 0.3s ease-out;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .game-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            transform-style: preserve-3d;
-            animation: gameSlideIn 0.5s ease-out;
-        }
-
-        @keyframes gameSlideIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(50px) rotateX(10deg); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0) rotateX(0deg); 
-            }
-        }
-
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .close-game {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-
-        .close-game:hover {
-            background: #ff5252;
-            transform: rotate(90deg);
-        }
-
-        .game-canvas {
-            border: 3px solid #667eea;
-            border-radius: 12px;
-            display: block;
-            margin: 0 auto;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .game-controls {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .game-score {
-            font-size: 24px;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .game-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: all 0.3s;
-        }
-
-        .game-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        /* Marketplace amélioré */
+        /* Marketplace */
         .skins-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
         }
 
         .skin-card {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            transition: all 0.4s;
-            border: 1px solid rgba(255,255,255,0.2);
-            transform-style: preserve-3d;
+            transition: all 0.3s;
         }
 
         .skin-card:hover {
-            transform: translateY(-8px) rotateX(5deg);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .skin-preview {
             width: 100%;
-            height: 140px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            height: 150px;
+            border-radius: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .skin-preview::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            animation: skinShine 4s ease-in-out infinite;
-        }
-
-        @keyframes skinShine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            25% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            font-size: 50px;
         }
 
         .skin-name {
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-weight: 600;
+            margin-bottom: 8px;
             color: #333;
-            font-size: 16px;
         }
 
         .skin-price {
             color: #ffd700;
-            font-weight: 700;
-            margin-bottom: 15px;
-            font-size: 18px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .btn-buy {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
-            font-size: 14px;
         }
 
-        .btn-buy:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-buy:disabled {
@@ -664,152 +372,338 @@
             transform: none;
         }
 
-        /* Profil amélioré */
+        /* Profil */
         .profile-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .profile-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .profile-avatar-large {
-            width: 180px;
-            height: 180px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             border: 5px solid #667eea;
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
             overflow: hidden;
             background: white;
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s;
-            transform-style: preserve-3d;
-        }
-
-        .profile-avatar-large:hover {
-            transform: rotateY(180deg) scale(1.05);
-        }
-
-        .profile-avatar-large img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
         }
 
         .profile-username {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: bold;
             color: #333;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .profile-level {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            display: inline-block;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .profile-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s;
-            transform-style: preserve-3d;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px) rotateX(5deg);
-            box-shadow: 0 15px 45px rgba(102, 126, 234, 0.4);
         }
 
         .stat-value {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
         .stat-label {
             font-size: 14px;
             opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        /* Système d'amis amélioré */
-        .friends-section {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
+        /* Xubor Store */
+        .xubor-packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+
+        .package-card.premium {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+
+        .package-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .package-price {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .demo-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .game-room {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .fullscreen-game {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-header {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            color: white;
+        }
+
+        .close-game-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-game-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .wifi-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .wifi-indicator:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .wifi-connected { color: #4ecdc4; }
+        .wifi-disconnected { color: #ff6b6b; }
+        .wifi-connecting { color: #f7b731; }
+
+        .notifications-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 400px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 9999;
+            overflow: hidden;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .notifications-panel.open {
+            transform: translateX(0);
+        }
+
+        .notifications-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.3s;
+        }
+
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .notification-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-btn.accept {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        .notification-btn.decline {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .friends-section {
+            margin-top: 30px;
         }
 
         .friends-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 15px;
+            margin-top: 15px;
         }
 
         .friend-card {
-            background: rgba(248,250,252,0.8);
-            padding: 20px;
-            border-radius: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
             transition: all 0.3s;
-            border: 2px solid transparent;
-            transform-style: preserve-3d;
-            position: relative;
         }
 
         .friend-card:hover {
-            background: rgba(255,255,255,0.9);
-            border-color: #667eea;
-            transform: translateY(-3px) rotateX(2deg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: #e9ecef;
+            transform: translateY(-2px);
         }
 
         .friend-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-size: 24px;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s;
-        }
-
-        .friend-card:hover .friend-avatar {
-            transform: rotateY(180deg);
+            border: 3px solid #ddd;
         }
 
         .friend-info {
@@ -817,406 +711,173 @@
         }
 
         .friend-name {
-            font-weight: 700;
+            font-weight: 600;
             color: #333;
-            font-size: 18px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .friend-status {
-            color: #666;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-online { background: #4ecdc4; }
+        .status-offline { background: #ccc; }
+
+        .friend-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .friend-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .friend-btn.invite {
+            background: #667eea;
+            color: white;
+        }
+
+        .friend-btn.remove {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .add-friend-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .add-friend-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 14px;
         }
 
-        .friend-level {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .online-indicator {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #4ade80;
-            box-shadow: 0 0 0 2px white, 0 0 10px rgba(74, 222, 128, 0.5);
-            animation: pulse-online 2s ease-in-out infinite;
-        }
-
-        .offline-indicator {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #9ca3af;
-            box-shadow: 0 0 0 2px white;
-        }
-
-        @keyframes pulse-online {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        /* Boutique Xubor améliorée */
-        .xubor-shop {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .xubor-pack {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+        .matchmaking-status {
+            background: white;
+            border-radius: 15px;
             padding: 30px;
             text-align: center;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
-            transition: all 0.4s;
-            border: 3px solid transparent;
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .xubor-pack::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 237, 78, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
+        .searching-animation {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
 
-        .xubor-pack:hover::before {
-            opacity: 1;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .xubor-pack:hover {
-            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
-            border-color: #667eea;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.2);
+        .game-board {
+            display: grid;
+            gap: 5px;
+            margin: 20px auto;
+            justify-content: center;
         }
 
-        .xubor-pack.featured {
-            border-color: #ffd700;
-            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.2);
+        .tic-tac-toe-board {
+            grid-template-columns: repeat(3, 80px);
+            grid-template-rows: repeat(3, 80px);
         }
 
-        .xubor-amount {
-            font-size: 56px;
-            font-weight: 700;
-            color: #ffd700;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 1;
+        .game-cell {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .xubor-price {
-            font-size: 36px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
+        .game-cell:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
         }
 
-        .btn-purchase {
-            width: 100%;
-            padding: 16px;
+        .game-cell.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .player-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .player-card.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 1;
         }
 
-        .btn-purchase:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .demo-badge {
-            background: #ff6b6b;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 700;
-            display: inline-block;
-            margin-top: 15px;
-            animation: wiggle 2s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
-        }
-
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-3deg); }
-            75% { transform: rotate(3deg); }
-        }
-
-        .logout-btn {
-            padding: 12px 20px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        .logout-btn:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-        }
-
-        /* Responsive amélioré */
         @media (max-width: 768px) {
             .auth-card {
                 padding: 30px 20px;
-                margin: 10px;
             }
 
             .header {
                 flex-direction: column;
-                align-items: stretch;
-            }
-
-            .header-right {
-                justify-content: space-between;
+                text-align: center;
             }
 
             .games-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
             }
 
             .skins-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
 
-            .profile-avatar-large {
-                width: 140px;
-                height: 140px;
-            }
-
-            .game-container {
-                padding: 20px;
-                margin: 10px;
-            }
-
-            .nav-tabs {
-                overflow-x: auto;
-                padding-bottom: 10px;
-            }
-
-            .nav-tab {
-                white-space: nowrap;
-                min-width: fit-content;
-            }
-        }
-
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        /* Animations de particules */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 50%;
-            animation: float-particle 6s ease-in-out infinite;
-        }
-
-        @keyframes float-particle {
-            0%, 100% { 
-                transform: translateY(100vh) translateX(0px) rotate(0deg);
-                opacity: 0;
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { 
-                transform: translateY(-10px) translateX(100px) rotate(360deg);
-                opacity: 0;
+            .xubor-packages {
+                grid-template-columns: 1fr;
             }
         }
     </style>
   <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body><!-- Particules d'arrière-plan -->
-  <div class="particles" id="particles"></div>
-  <div id="authPage" class="auth-page">
-   <div class="auth-card">
-    <div class="logo">
-     <svg class="logo-icon" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs>
-       <lineargradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
-       </lineargradient>
-      </defs> <circle cx="50" cy="50" r="45" fill="url(#logoGrad)" /> <text x="50" y="65" font-family="Arial" font-size="50" font-weight="bold" fill="white" text-anchor="middle">
-       X
-      </text>
-     </svg>
-     <h1 id="appTitle">Xolbor</h1>
-    </div>
-    <div id="errorMessage" class="error-message"></div>
-    <div id="successMessage" class="success-message"></div>
-    <form id="loginForm">
-     <div class="form-group"><label for="loginUsername">Nom d'utilisateur</label> <input type="text" id="loginUsername" required>
-     </div>
-     <div class="form-group"><label for="loginPassword">Mot de passe</label> <input type="password" id="loginPassword" required>
-     </div><button type="submit" class="btn btn-primary">Se connecter</button> <button type="button" class="btn btn-secondary" id="showRegisterBtn">Créer un compte</button>
-    </form>
-    <form id="registerForm" style="display: none;">
-     <div class="form-group"><label for="registerUsername">Nom d'utilisateur</label> <input type="text" id="registerUsername" required minlength="3">
-     </div>
-     <div class="form-group"><label for="registerPassword">Mot de passe</label> <input type="password" id="registerPassword" required minlength="6">
-     </div>
-     <div class="form-group"><label for="registerPasswordConfirm">Confirmer le mot de passe</label> <input type="password" id="registerPasswordConfirm" required minlength="6">
-     </div><button type="submit" class="btn btn-primary">S'inscrire</button> <button type="button" class="btn btn-secondary" id="showLoginBtn">Retour à la connexion</button>
-    </form>
-   </div>
-  </div>
-  <div id="mainPage" class="main-page">
-   <div class="container">
-    <div class="header">
-     <div class="header-left">
-      <svg class="header-logo" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs>
-        <lineargradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-         <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-         <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
-        </lineargradient>
-       </defs> <circle cx="50" cy="50" r="45" fill="url(#headerGrad)" /> <text x="50" y="65" font-family="Arial" font-size="50" font-weight="bold" fill="white" text-anchor="middle">
-        X
-       </text>
-      </svg>
-      <h2 id="welcomeMessage">Bienvenue sur Xolbor</h2>
-     </div>
-     <div class="header-right">
-      <div class="xubor-display"><span>💰</span> <span id="xuborAmount">0</span> <span>Xubor</span>
-      </div>
-      <div class="profile-btn" id="profileBtn"><img id="headerAvatar" class="profile-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23667eea'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3E👤%3C/text%3E%3C/svg%3E" alt="Profil">
-      </div><button class="logout-btn" id="logoutBtn">Déconnexion</button>
-     </div>
-    </div>
-    <div class="nav-tabs"><button class="nav-tab active" data-tab="home">🎮 Jeux</button> <button class="nav-tab" data-tab="marketplace">🛒 Marketplace</button> <button class="nav-tab" data-tab="xubor">💰 Acheter Xubor</button> <button class="nav-tab" data-tab="profile">👤 Profil</button> <button class="nav-tab" data-tab="friends">👥 Amis</button>
-    </div>
-    <div id="homeSection" class="content-section active"><input type="text" class="search-bar" id="gameSearch" placeholder="🔍 Rechercher un jeu...">
-     <div class="games-grid" id="gamesGrid"></div>
-    </div>
-    <div id="marketplaceSection" class="content-section"><input type="text" class="search-bar" id="skinSearch" placeholder="🔍 Rechercher un skin...">
-     <div class="skins-grid" id="skinsGrid"></div>
-    </div>
-    <div id="xuborSection" class="content-section">
-     <h2 style="color: white; text-align: center; margin-bottom: 30px; font-size: 32px; text-shadow: 0 4px 8px rgba(0,0,0,0.3);">💰 Acheter des Xubor</h2>
-     <div class="xubor-shop" id="xuborShop"></div>
-     <p style="color: rgba(255,255,255,0.8); text-align: center; margin-top: 30px; font-size: 14px; backdrop-filter: blur(10px); background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">⚠️ Les paiements réels nécessitent un processeur de paiement externe sécurisé (Stripe, PayPal, etc.)</p>
-    </div>
-    <div id="profileSection" class="content-section">
-     <div class="profile-section">
-      <div class="profile-header">
-       <div class="profile-avatar-large"><img id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23667eea'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3E👤%3C/text%3E%3C/svg%3E" alt="Avatar">
-       </div>
-       <div class="profile-username" id="profileUsername">
-        Utilisateur
-       </div>
-       <div class="profile-level" id="profileLevel">
-        Niveau 1
-       </div>
-      </div>
-      <div class="profile-stats">
-       <div class="stat-card">
-        <div class="stat-value" id="statXubor">
-         0
-        </div>
-        <div class="stat-label">
-         Xubor
-        </div>
-       </div>
-       <div class="stat-card">
-        <div class="stat-value" id="statSkins">
-         0
-        </div>
-        <div class="stat-label">
-         Skins possédés
-        </div>
-       </div>
-       <div class="stat-card">
-        <div class="stat-value" id="statFriends">
-         0
-        </div>
-        <div class="stat-label">
-         Amis
-        </div>
-       </div>
-       <div class="stat-card">
-        <div class="stat-value" id="statLevel">
-         1
-        </div>
-        <div class="stat-label">
-         Niveau
-        </div>
-       </div>
-      </div>
-      <h3 style="margin-bottom: 20px; color: #333; font-size: 24px;">🎨 Mes Skins</h3>
-      <div class="skins-grid" id="ownedSkinsGrid"></div>
-     </div>
-    </div>
-    <div id="friendsSection" class="content-section">
-     <div class="friends-section">
-      <h2 style="margin-bottom: 25px; color: #333; font-size: 28px;">👥 Communauté Xolbor</h2><input type="text" class="search-bar" id="friendSearch" placeholder="🔍 Rechercher des joueurs...">
-      <div class="friends-list" id="friendsList"></div>
-     </div>
-    </div>
-   </div>
-  </div><!-- Modal de jeu -->
-  <div id="gameModal" class="game-modal">
-   <div class="game-container">
-    <div class="game-header">
-     <h2 id="gameTitle">Jeu</h2><button class="close-game" id="closeGame">×</button>
-    </div>
-    <canvas id="gameCanvas" class="game-canvas" width="400" height="400"></canvas>
-    <div class="game-controls">
-     <div class="game-score" id="gameScore">
-      Score: 0
-     </div><button class="game-btn" id="startGame">Commencer</button> <button class="game-btn" id="pauseGame" style="display: none;">Pause</button> <button class="game-btn" id="restartGame" style="display: none;">Recommencer</button>
-    </div>
-    <div id="gameInstructions" style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 12px; font-size: 14px; color: #666;"></div>
-   </div>
+ <body>
+  <div id="app"><!-- La page s'affichera ici -->
   </div>
   <script>
         const defaultConfig = {
@@ -1224,881 +885,1248 @@
             welcome_message: "Bienvenue sur Xolbor"
         };
 
+        let config = { ...defaultConfig };
         let currentUser = null;
-        let allUsers = [];
-        let allSkins = [];
-        let allGames = [];
-        let currentGame = null;
-        let gameState = {};
+        let localUsers = []; // Stockage local sans backend
+        let currentPage = 'home';
 
-        // Initialisation des jeux avec vrais jeux jouables
+        // Initialiser immédiatement
+        document.addEventListener('DOMContentLoaded', init);
+
         const games = [
-            { id: 1, name: "Snake 3D", icon: "🐍", description: "Le classique Snake avec effets 3D", playable: true },
-            { id: 2, name: "Tetris Cube", icon: "🧊", description: "Tetris avec effets visuels 3D", playable: true },
-            { id: 3, name: "Memory Cards", icon: "🃏", description: "Jeu de mémoire interactif", playable: true },
-            { id: 4, name: "Space Shooter", icon: "🚀", description: "Détruisez les astéroïdes spatiaux", playable: true },
-            { id: 5, name: "Puzzle Slider", icon: "🧩", description: "Puzzle coulissant 3x3", playable: true },
-            { id: 6, name: "Color Match", icon: "🎨", description: "Associez les couleurs rapidement", playable: true },
-            { id: 7, name: "Breakout 3D", icon: "🏓", description: "Casse-briques avec effets 3D", playable: true },
-            { id: 8, name: "Racing Circuit", icon: "🏎️", description: "Course sur circuit (Bientôt)", playable: false },
-            { id: 9, name: "RPG Quest", icon: "🗡️", description: "Aventure RPG (Bientôt)", playable: false },
-            { id: 10, name: "City Builder", icon: "🏙️", description: "Construisez votre ville (Bientôt)", playable: false }
+            { id: 1, name: "Tic-Tac-Toe Online", icon: "⭕", description: "Morpion multijoueur en temps réel", color: "#ff6b6b", playable: true },
+            { id: 2, name: "Pierre-Papier-Ciseaux", icon: "✂️", description: "Bataille classique en ligne", color: "#4ecdc4", playable: true },
+            { id: 3, name: "Quiz Battle", icon: "🧠", description: "Défi de connaissances", color: "#45b7d1", playable: true },
+            { id: 4, name: "Memory Match", icon: "🃏", description: "Jeu de mémoire multijoueur", color: "#f7b731", playable: true },
+            { id: 5, name: "Word Race", icon: "📝", description: "Course de mots en temps réel", color: "#5f27cd", playable: true },
+            { id: 6, name: "Number Guess", icon: "🔢", description: "Devinez le nombre", color: "#00d2d3", playable: true },
+            { id: 7, name: "Color Match", icon: "🎨", description: "Associez les couleurs", color: "#ff6348", playable: true },
+            { id: 8, name: "Snake Battle", icon: "🐍", description: "Snake multijoueur", color: "#ff9ff3", playable: true }
         ];
 
-        // Génération de skins avec plus de variété
-        const skinEmojis = ["😀", "😎", "🤖", "👽", "🦸", "🧙", "🦹", "🧛", "🧜", "🧚", "🦄", "🐉", "🦁", "🐯", "🐻", "🐼", "🐨", "🐸", "🦊", "🐺", "🦝", "🐱", "🐶", "🐷", "🐮", "🐔", "🐧", "🦆", "🦅", "🦉", "🦇", "🐝", "🦋", "🐌", "🐞", "🦗", "🕷️", "🦂", "🦀", "🦞", "🦐", "🐙", "🦑", "🐠", "🐟", "🐡", "🦈", "🐳", "🐋", "🐬", "🦭", "🦦", "🦥", "🦘", "🦙", "🦒", "🦏", "🦛", "🐘", "🦣", "🐪", "🐫", "🦌", "🐎", "🦓", "🦍", "🦧", "🐒", "🦜", "🦚", "🦩", "🦢", "🦤", "🦆", "🐓", "🦃", "🦅", "🦉", "🦇", "🐺", "🦊", "🦝", "🐱", "🐈", "🦁", "🐯", "🐅", "🐆", "🐴", "🐎", "🦄", "🦓", "🦌", "🦬", "🐮", "🐂", "🐃", "🐄", "🐷", "🐖", "🐗", "🐽", "🐏", "🐑", "🐐", "🐪", "🐫", "🦙", "🦒", "🐘"];
+        const skins = [];
+        const skinEmojis = ["😀", "😎", "🤖", "👽", "🦸", "🧙", "🦹", "👨‍🚀", "🧛", "🧚", "🦄", "🐉", "🦁", "🐯", "🐼", "🐨", "🦊", "🐺", "🐸", "🐙"];
+        const skinColors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#f7b731", "#5f27cd", "#00d2d3", "#ff6348", "#ff9ff3", "#a29bfe", "#fd79a8"];
         
-        const skinNames = ["Guerrier", "Mage", "Archer", "Paladin", "Voleur", "Berserker", "Druide", "Nécromancien", "Barde", "Moine", "Ranger", "Sorcier", "Chevalier", "Assassin", "Prêtre", "Barbare", "Chaman", "Démoniste", "Chasseur", "Ninja"];
-        
-        for (let i = 1; i <= 120; i++) {
-            const rarity = i <= 20 ? "Légendaire" : i <= 50 ? "Épique" : i <= 80 ? "Rare" : "Commun";
-            const multiplier = rarity === "Légendaire" ? 5 : rarity === "Épique" ? 3 : rarity === "Rare" ? 2 : 1;
-            
-            allSkins.push({
-                id: i,
-                name: `${skinNames[i % skinNames.length]} ${rarity}`,
+        for (let i = 0; i < 50; i++) {
+            skins.push({
+                id: `skin_${i}`,
+                name: `Skin ${i + 1}`,
                 emoji: skinEmojis[i % skinEmojis.length],
-                price: Math.floor((Math.random() * 300 + 100) * multiplier),
-                rarity: rarity,
-                gradient: `linear-gradient(${Math.random() * 360}deg, hsl(${Math.random() * 360}, 70%, 60%), hsl(${Math.random() * 360}, 70%, 40%))`
+                color: skinColors[i % skinColors.length],
+                price: Math.floor(Math.random() * 500) + 50
             });
         }
 
-        allGames = games;
+        // Système d'amis et notifications
+        let onlineUsers = [];
+        let notifications = [];
+        let isOnline = false;
+        let wifiStatus = 'disconnected'; // 'connected', 'disconnected', 'connecting'
+        let matchmakingQueue = [];
+        let currentGameSession = null;
 
-        // Création des particules d'arrière-plan
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                particlesContainer.appendChild(particle);
+        function init() {
+            // Charger les utilisateurs depuis localStorage
+            const savedUsers = localStorage.getItem('xolbor_users');
+            if (savedUsers) {
+                localUsers = JSON.parse(savedUsers);
             }
-        }
 
-        // Gestion des données avec système en ligne
-        const dataHandler = {
-            onDataChanged(data) {
-                allUsers = data.filter(d => d.type === 'user');
-                if (currentUser) {
-                    const updatedUser = allUsers.find(u => u.id === currentUser.id);
-                    if (updatedUser) {
-                        currentUser = updatedUser;
+            // Initialiser Element SDK si disponible
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (newConfig) => {
+                        config = { ...newConfig };
                         updateUI();
-                    }
-                }
-                // Mettre à jour l'affichage des amis avec statut en ligne
-                renderFriends();
+                    },
+                    mapToCapabilities: (cfg) => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (cfg) => new Map([
+                        ["app_title", cfg.app_title || defaultConfig.app_title],
+                        ["welcome_message", cfg.welcome_message || defaultConfig.welcome_message]
+                    ])
+                });
             }
-        };
 
-        // Système de statut en ligne amélioré
-        async function updateOnlineStatus() {
-            if (!currentUser) return;
-            
-            const updatedUser = {
-                ...currentUser,
-                lastOnline: new Date().toISOString(),
-                isOnline: true
-            };
-            
-            await window.dataSdk.update(updatedUser);
+            renderAuthPage();
         }
 
-        // Mettre à jour le statut toutes les 30 secondes
-        setInterval(() => {
-            if (currentUser) {
-                updateOnlineStatus();
-            }
-        }, 30000);
+        function renderAuthPage() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="auth-page">
+                    <div class="auth-card">
+                        <div class="logo">
+                            <svg class="logo-icon" viewBox="0 0 100 100">
+                                <defs>
+                                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="50" cy="50" r="45" fill="url(#logoGrad)"/>
+                                <text x="50" y="65" font-family="Arial" font-size="50" font-weight="bold" fill="white" text-anchor="middle">X</text>
+                            </svg>
+                            <h1>${config.app_title || defaultConfig.app_title}</h1>
+                        </div>
+                        <div id="error-message" class="error-message"></div>
+                        <form id="auth-form">
+                            <div class="form-group">
+                                <label for="username">Pseudo</label>
+                                <input type="text" id="username" required minlength="3" maxlength="20">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Mot de passe</label>
+                                <input type="password" id="password" required minlength="4">
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="login-btn">Connexion</button>
+                            <button type="button" class="btn btn-secondary" id="register-btn">Inscription</button>
+                        </form>
+                    </div>
+                </div>
+            `;
 
-        // Marquer comme hors ligne à la fermeture
-        window.addEventListener('beforeunload', async () => {
-            if (currentUser) {
-                const updatedUser = {
-                    ...currentUser,
-                    isOnline: false,
-                    lastOnline: new Date().toISOString()
-                };
-                await window.dataSdk.update(updatedUser);
-            }
-        });
-
-        async function initApp() {
-            if (allUsers.length >= 999) {
-                showError("Limite maximale de 999 utilisateurs atteinte. Impossible de créer de nouveaux comptes.");
-                return;
-            }
-
-            const initResult = await window.dataSdk.init(dataHandler);
-            if (!initResult.isOk) {
-                console.error("Erreur d'initialisation");
-                return;
-            }
-            
-            createParticles();
-            renderGames();
-            renderSkins();
-            renderXuborShop();
+            document.getElementById('auth-form').addEventListener('submit', handleLogin);
+            document.getElementById('register-btn').addEventListener('click', handleRegister);
         }
 
-        // Authentification avec 500 Xubor de départ CORRIGÉ
-        document.getElementById('showRegisterBtn').addEventListener('click', () => {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-            clearMessages();
-        });
-
-        document.getElementById('showLoginBtn').addEventListener('click', () => {
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
-            clearMessages();
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        function handleLogin(e) {
             e.preventDefault();
-            
-            if (allUsers.length >= 999) {
-                showError("Limite maximale de 999 utilisateurs atteinte. Impossible de créer de nouveaux comptes.");
-                return;
-            }
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
 
-            const username = document.getElementById('registerUsername').value.trim();
-            const password = document.getElementById('registerPassword').value;
-            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-
-            if (password !== passwordConfirm) {
-                showError("Les mots de passe ne correspondent pas");
-                return;
-            }
-
-            const existingUser = allUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
-            if (existingUser) {
-                showError("Ce nom d'utilisateur existe déjà");
-                return;
-            }
-
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.classList.add('loading');
-            btn.textContent = 'Inscription...';
-
-            const newUser = {
-                id: Date.now().toString(),
-                type: 'user',
-                username: username,
-                password: password,
-                xubor: 500, // 500 Xubor de départ GARANTI
-                ownedSkins: JSON.stringify([1]),
-                currentSkin: '1',
-                friends: JSON.stringify([]),
-                gameScores: JSON.stringify({}),
-                level: 1,
-                experience: 0,
-                lastOnline: new Date().toISOString(),
-                isOnline: true,
-                createdAt: new Date().toISOString()
-            };
-
-            const result = await window.dataSdk.create(newUser);
-            
-            btn.classList.remove('loading');
-            btn.textContent = "S'inscrire";
-
-            if (result.isOk) {
-                showSuccess("Compte créé avec succès ! Vous avez reçu 500 Xubor de bienvenue ! 🎉");
-                setTimeout(() => {
-                    document.getElementById('showLoginBtn').click();
-                    document.getElementById('loginUsername').value = username;
-                }, 2000);
-            } else {
-                showError("Erreur lors de la création du compte");
-            }
-        });
-
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            const user = allUsers.find(u => u.username === username && u.password === password);
+            const user = localUsers.find(u => u.username === username && u.password === password);
             
             if (user) {
                 currentUser = user;
-                // Marquer comme en ligne immédiatement
-                await updateOnlineStatus();
-                
-                document.getElementById('authPage').style.display = 'none';
-                document.getElementById('mainPage').style.display = 'block';
-                updateUI();
-                showSuccess(`Bienvenue ${user.username} ! 🎮`);
+                renderMainPage();
             } else {
-                showError("Nom d'utilisateur ou mot de passe incorrect");
+                showError("Pseudo ou mot de passe incorrect");
             }
-        });
+        }
 
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            if (currentUser) {
-                // Marquer comme hors ligne avant de se déconnecter
-                const updatedUser = {
-                    ...currentUser,
-                    isOnline: false,
-                    lastOnline: new Date().toISOString()
-                };
-                await window.dataSdk.update(updatedUser);
+        function handleRegister() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (username.length < 3) {
+                showError("Le pseudo doit contenir au moins 3 caractères");
+                return;
             }
+
+            if (password.length < 4) {
+                showError("Le mot de passe doit contenir au moins 4 caractères");
+                return;
+            }
+
+            const existingUser = localUsers.find(u => u.username === username);
+            if (existingUser) {
+                showError("Ce pseudo existe déjà");
+                return;
+            }
+
+            const newUser = {
+                id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                username: username,
+                password: password,
+                xubor: 1000,
+                ownedSkins: ['skin_0'],
+                currentSkin: 'skin_0',
+                friends: [],
+                createdAt: new Date().toISOString()
+            };
+
+            localUsers.push(newUser);
+            localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
             
-            currentUser = null;
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('authPage').style.display = 'flex';
-            document.getElementById('loginForm').reset();
-            clearMessages();
-        });
+            currentUser = newUser;
+            showError("Inscription réussie ! Connexion...");
+            setTimeout(() => {
+                renderMainPage();
+            }, 1000);
+        }
 
         function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
+            const errorDiv = document.getElementById('error-message');
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
             setTimeout(() => {
                 errorDiv.style.display = 'none';
-            }, 5000);
+            }, 3000);
         }
 
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 5000);
-        }
+        function renderMainPage() {
+            const app = document.getElementById('app');
+            const currentSkin = skins.find(s => s.id === currentUser.currentSkin) || skins[0];
 
-        function clearMessages() {
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        // Navigation améliorée
-        document.querySelectorAll('.nav-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-                document.getElementById(tab.dataset.tab + 'Section').classList.add('active');
-            });
-        });
-
-        document.getElementById('profileBtn').addEventListener('click', () => {
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('[data-tab="profile"]').classList.add('active');
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('profileSection').classList.add('active');
-        });
-
-        // Rendu des jeux amélioré
-        function renderGames() {
-            const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = allGames.map(game => `
-                <div class="game-card" onclick="${game.playable ? `playGame(${game.id})` : 'showComingSoon()'}">
-                    <div class="game-icon">${game.icon}</div>
-                    <h3>${game.name}</h3>
-                    <p>${game.description}</p>
-                    ${game.playable ? '<div class="play-badge">▶️ JOUER</div>' : '<div class="coming-soon-badge">🔜 BIENTÔT</div>'}
-                </div>
-            `).join('');
-        }
-
-        function showComingSoon() {
-            showSuccess("Ce jeu arrive bientôt ! Restez connecté ! 🚀");
-        }
-
-        // Système de jeux (code des jeux identique...)
-        function playGame(gameId) {
-            const game = allGames.find(g => g.id === gameId);
-            if (!game || !game.playable) return;
-
-            currentGame = game;
-            document.getElementById('gameTitle').textContent = game.name;
-            document.getElementById('gameModal').classList.add('active');
-            
-            // Réinitialiser l'état du jeu
-            gameState = { score: 0, running: false, paused: false };
-            document.getElementById('gameScore').textContent = 'Score: 0';
-            document.getElementById('startGame').style.display = 'inline-block';
-            document.getElementById('pauseGame').style.display = 'none';
-            document.getElementById('restartGame').style.display = 'none';
-
-            setupGame(gameId);
-        }
-
-        function setupGame(gameId) {
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const instructions = document.getElementById('gameInstructions');
-
-            // Nettoyer le canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            switch(gameId) {
-                case 1: // Snake 3D
-                    instructions.innerHTML = "🐍 <strong>Snake 3D</strong><br>Utilisez les flèches pour diriger le serpent. Mangez les pommes pour grandir !";
-                    setupSnakeGame(canvas, ctx);
-                    break;
-                case 2: // Tetris Cube
-                    instructions.innerHTML = "🧊 <strong>Tetris Cube</strong><br>Flèches ← → pour bouger, ↓ pour accélérer, ↑ pour tourner";
-                    setupTetrisGame(canvas, ctx);
-                    break;
-                case 3: // Memory Cards
-                    instructions.innerHTML = "🃏 <strong>Memory Cards</strong><br>Cliquez sur les cartes pour les retourner et trouvez les paires !";
-                    setupMemoryGame(canvas, ctx);
-                    break;
-                case 4: // Space Shooter
-                    instructions.innerHTML = "🚀 <strong>Space Shooter</strong><br>Flèches pour bouger, ESPACE pour tirer. Détruisez les astéroïdes !";
-                    setupSpaceShooterGame(canvas, ctx);
-                    break;
-                case 5: // Puzzle Slider
-                    instructions.innerHTML = "🧩 <strong>Puzzle Slider</strong><br>Cliquez sur les pièces adjacentes à l'espace vide pour les déplacer";
-                    setupPuzzleSliderGame(canvas, ctx);
-                    break;
-                case 6: // Color Match
-                    instructions.innerHTML = "🎨 <strong>Color Match</strong><br>Cliquez sur la couleur qui correspond au texte affiché !";
-                    setupColorMatchGame(canvas, ctx);
-                    break;
-                case 7: // Breakout 3D
-                    instructions.innerHTML = "🏓 <strong>Breakout 3D</strong><br>Bougez la souris pour contrôler la raquette. Cassez tous les blocs !";
-                    setupBreakoutGame(canvas, ctx);
-                    break;
-            }
-        }
-
-        // [Tous les jeux restent identiques - Snake, Tetris, Memory, etc...]
-        // Jeu Snake 3D
-        function setupSnakeGame(canvas, ctx) {
-            gameState.snake = [{x: 200, y: 200}];
-            gameState.direction = {x: 0, y: 0};
-            gameState.food = {x: 100, y: 100};
-            gameState.gridSize = 20;
-
-            function drawSnake() {
-                ctx.fillStyle = '#667eea';
-                gameState.snake.forEach((segment, index) => {
-                    ctx.fillRect(segment.x, segment.y, gameState.gridSize, gameState.gridSize);
-                    // Effet 3D
-                    ctx.fillStyle = index === 0 ? '#764ba2' : '#8b7ec8';
-                    ctx.fillRect(segment.x + 2, segment.y + 2, gameState.gridSize - 4, gameState.gridSize - 4);
-                });
-            }
-
-            function drawFood() {
-                ctx.fillStyle = '#ff6b6b';
-                ctx.fillRect(gameState.food.x, gameState.food.y, gameState.gridSize, gameState.gridSize);
-                ctx.fillStyle = '#ff5252';
-                ctx.fillRect(gameState.food.x + 4, gameState.food.y + 4, gameState.gridSize - 8, gameState.gridSize - 8);
-            }
-
-            function moveSnake() {
-                if (!gameState.running || gameState.paused) return;
-
-                const head = {
-                    x: gameState.snake[0].x + gameState.direction.x,
-                    y: gameState.snake[0].y + gameState.direction.y
-                };
-
-                // Vérifier les collisions avec les murs
-                if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
-                    gameOver();
-                    return;
-                }
-
-                // Vérifier les collisions avec le corps
-                if (gameState.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-                    gameOver();
-                    return;
-                }
-
-                gameState.snake.unshift(head);
-
-                // Vérifier si la nourriture est mangée
-                if (head.x === gameState.food.x && head.y === gameState.food.y) {
-                    gameState.score += 10;
-                    document.getElementById('gameScore').textContent = `Score: ${gameState.score}`;
-                    generateFood();
-                } else {
-                    gameState.snake.pop();
-                }
-            }
-
-            function generateFood() {
-                gameState.food = {
-                    x: Math.floor(Math.random() * (canvas.width / gameState.gridSize)) * gameState.gridSize,
-                    y: Math.floor(Math.random() * (canvas.height / gameState.gridSize)) * gameState.gridSize
-                };
-            }
-
-            function gameLoop() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawSnake();
-                drawFood();
-                moveSnake();
-                if (gameState.running) {
-                    setTimeout(gameLoop, 150);
-                }
-            }
-
-            function gameOver() {
-                gameState.running = false;
-                ctx.fillStyle = 'rgba(0,0,0,0.7)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'white';
-                ctx.font = '24px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Game Over!', canvas.width/2, canvas.height/2);
-                ctx.fillText(`Score: ${gameState.score}`, canvas.width/2, canvas.height/2 + 30);
-                
-                document.getElementById('restartGame').style.display = 'inline-block';
-                saveGameScore(gameState.score);
-            }
-
-            // Contrôles
-            document.addEventListener('keydown', (e) => {
-                if (!gameState.running) return;
-                
-                switch(e.key) {
-                    case 'ArrowUp':
-                        if (gameState.direction.y === 0) gameState.direction = {x: 0, y: -gameState.gridSize};
-                        break;
-                    case 'ArrowDown':
-                        if (gameState.direction.y === 0) gameState.direction = {x: 0, y: gameState.gridSize};
-                        break;
-                    case 'ArrowLeft':
-                        if (gameState.direction.x === 0) gameState.direction = {x: -gameState.gridSize, y: 0};
-                        break;
-                    case 'ArrowRight':
-                        if (gameState.direction.x === 0) gameState.direction = {x: gameState.gridSize, y: 0};
-                        break;
-                }
-            });
-
-            gameState.gameLoop = gameLoop;
-        }
-
-        // [Autres jeux identiques...]
-
-        // Contrôles de jeu
-        document.getElementById('startGame').addEventListener('click', () => {
-            gameState.running = true;
-            gameState.paused = false;
-            gameState.score = 0;
-            document.getElementById('gameScore').textContent = 'Score: 0';
-            document.getElementById('startGame').style.display = 'none';
-            document.getElementById('pauseGame').style.display = 'inline-block';
-            document.getElementById('restartGame').style.display = 'inline-block';
-
-            if (gameState.gameLoop) {
-                gameState.gameLoop();
-            }
-        });
-
-        document.getElementById('pauseGame').addEventListener('click', () => {
-            gameState.paused = !gameState.paused;
-            document.getElementById('pauseGame').textContent = gameState.paused ? 'Reprendre' : 'Pause';
-        });
-
-        document.getElementById('restartGame').addEventListener('click', () => {
-            gameState.running = false;
-            setTimeout(() => {
-                setupGame(currentGame.id);
-                document.getElementById('startGame').click();
-            }, 100);
-        });
-
-        document.getElementById('closeGame').addEventListener('click', () => {
-            gameState.running = false;
-            document.getElementById('gameModal').classList.remove('active');
-        });
-
-        // Sauvegarder le score avec XP
-        async function saveGameScore(score) {
-            if (!currentUser || !currentGame) return;
-
-            const gameScores = JSON.parse(currentUser.gameScores);
-            const gameKey = `game_${currentGame.id}`;
-            
-            if (!gameScores[gameKey] || score > gameScores[gameKey]) {
-                gameScores[gameKey] = score;
-                
-                const updatedUser = {
-                    ...currentUser,
-                    gameScores: JSON.stringify(gameScores),
-                    experience: currentUser.experience + Math.floor(score / 10),
-                    level: Math.floor((currentUser.experience + Math.floor(score / 10)) / 100) + 1,
-                    xubor: currentUser.xubor + Math.floor(score / 20) // Bonus Xubor pour les scores
-                };
-
-                await window.dataSdk.update(updatedUser);
-                showSuccess(`Nouveau record ! +${Math.floor(score / 10)} XP, +${Math.floor(score / 20)} Xubor`);
-            }
-        }
-
-        // Recherche de jeux
-        document.getElementById('gameSearch').addEventListener('input', (e) => {
-            const search = e.target.value.toLowerCase();
-            const filtered = allGames.filter(g => g.name.toLowerCase().includes(search) || g.description.toLowerCase().includes(search));
-            const grid = document.getElementById('gamesGrid');
-            grid.innerHTML = filtered.map(game => `
-                <div class="game-card" onclick="${game.playable ? `playGame(${game.id})` : 'showComingSoon()'}">
-                    <div class="game-icon">${game.icon}</div>
-                    <h3>${game.name}</h3>
-                    <p>${game.description}</p>
-                    ${game.playable ? '<div class="play-badge">▶️ JOUER</div>' : '<div class="coming-soon-badge">🔜 BIENTÔT</div>'}
-                </div>
-            `).join('');
-        });
-
-        // Rendu des skins amélioré
-        function renderSkins() {
-            const grid = document.getElementById('skinsGrid');
-            grid.innerHTML = allSkins.map(skin => {
-                const owned = currentUser && JSON.parse(currentUser.ownedSkins).includes(skin.id);
-                const rarityColor = skin.rarity === 'Légendaire' ? '#ffd700' : 
-                                  skin.rarity === 'Épique' ? '#a855f7' : 
-                                  skin.rarity === 'Rare' ? '#3b82f6' : '#6b7280';
-                
-                return `
-                    <div class="skin-card" style="border: 2px solid ${rarityColor}">
-                        <div class="skin-preview" style="background: ${skin.gradient}">
-                            <span style="font-size: 60px;">${skin.emoji}</span>
+            app.innerHTML = `
+                <div class="main-page" style="display: block;">
+                    <div class="container">
+                        <div class="header">
+                            <div class="header-left">
+                                <svg class="header-logo" viewBox="0 0 100 100">
+                                    <defs>
+                                        <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="45" fill="url(#headerGrad)"/>
+                                    <text x="50" y="65" font-family="Arial" font-size="50" font-weight="bold" fill="white" text-anchor="middle">X</text>
+                                </svg>
+                                <h2>${config.app_title || defaultConfig.app_title}</h2>
+                            </div>
+                            <div class="header-right">
+                                <div class="wifi-indicator" onclick="toggleWifi()" id="wifi-indicator">
+                                    <span id="wifi-icon">📶</span>
+                                    <span id="wifi-text">Hors ligne</span>
+                                </div>
+                                <div class="xubor-display">
+                                    💰 <span id="xubor-count">${currentUser.xubor}</span> Xubor
+                                </div>
+                                <div style="position: relative;">
+                                    <button onclick="toggleNotifications()" style="background: none; border: none; font-size: 24px; cursor: pointer; position: relative;">
+                                        🔔
+                                        <span id="notification-badge" style="position: absolute; top: -5px; right: -5px; background: #ff6b6b; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: none; align-items: center; justify-content: center;">0</span>
+                                    </button>
+                                </div>
+                                <div class="profile-btn" onclick="switchPage('profile')" style="background: ${currentSkin.color}; font-size: 30px; display: flex; align-items: center; justify-content: center;">
+                                    ${currentSkin.emoji}
+                                </div>
+                            </div>
                         </div>
-                        <div class="skin-name">${skin.name}</div>
-                        <div style="color: ${rarityColor}; font-size: 12px; font-weight: 700; margin-bottom: 8px;">${skin.rarity}</div>
-                        <div class="skin-price">${skin.price} Xubor</div>
-                        <button class="btn-buy" onclick="buySkin(${skin.id})" ${owned ? 'disabled' : ''}>
-                            ${owned ? '✓ Possédé' : 'Acheter'}
-                        </button>
-                    </div>
-                `;
-            }).join('');
-        }
 
-        // Recherche de skins
-        document.getElementById('skinSearch').addEventListener('input', (e) => {
-            const search = e.target.value.toLowerCase();
-            const filtered = allSkins.filter(s => s.name.toLowerCase().includes(search) || s.rarity.toLowerCase().includes(search));
-            const grid = document.getElementById('skinsGrid');
-            grid.innerHTML = filtered.map(skin => {
-                const owned = currentUser && JSON.parse(currentUser.ownedSkins).includes(skin.id);
-                const rarityColor = skin.rarity === 'Légendaire' ? '#ffd700' : 
-                                  skin.rarity === 'Épique' ? '#a855f7' : 
-                                  skin.rarity === 'Rare' ? '#3b82f6' : '#6b7280';
-                
-                return `
-                    <div class="skin-card" style="border: 2px solid ${rarityColor}">
-                        <div class="skin-preview" style="background: ${skin.gradient}">
-                            <span style="font-size: 60px;">${skin.emoji}</span>
+                        <div class="nav-tabs">
+                            <button class="nav-tab active" onclick="switchPage('home')">🏠 Accueil</button>
+                            <button class="nav-tab" onclick="switchPage('friends')">👥 Amis</button>
+                            <button class="nav-tab" onclick="switchPage('marketplace')">🛒 Marketplace</button>
+                            <button class="nav-tab" onclick="switchPage('xubor')">💰 Acheter Xubor</button>
+                            <button class="nav-tab" onclick="switchPage('profile')">👤 Profil</button>
                         </div>
-                        <div class="skin-name">${skin.name}</div>
-                        <div style="color: ${rarityColor}; font-size: 12px; font-weight: 700; margin-bottom: 8px;">${skin.rarity}</div>
-                        <div class="skin-price">${skin.price} Xubor</div>
-                        <button class="btn-buy" onclick="buySkin(${skin.id})" ${owned ? 'disabled' : ''}>
-                            ${owned ? '✓ Possédé' : 'Acheter'}
-                        </button>
+
+                        <div id="home-section" class="content-section active">
+                            <input type="text" class="search-bar" placeholder="🔍 Rechercher un jeu..." id="game-search">
+                            <div class="games-grid" id="games-grid"></div>
+                        </div>
+
+                        <div id="friends-section" class="content-section">
+                            <div style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                <h2 style="margin-bottom: 20px; color: #333;">👥 Mes Amis</h2>
+                                
+                                <div class="add-friend-form">
+                                    <input type="text" class="add-friend-input" placeholder="Pseudo de l'ami à ajouter..." id="friend-username">
+                                    <button class="btn btn-primary" onclick="addFriend()" style="padding: 10px 20px;">Ajouter</button>
+                                </div>
+
+                                <div class="friends-list" id="friends-list">
+                                    <!-- Les amis s'afficheront ici -->
+                                </div>
+
+                                <div class="friends-section">
+                                    <h3 style="color: #333; margin-bottom: 15px;">🌐 Utilisateurs en ligne</h3>
+                                    <div class="friends-list" id="online-users-list">
+                                        <!-- Les utilisateurs en ligne s'afficheront ici -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="marketplace-section" class="content-section">
+                            <input type="text" class="search-bar" placeholder="🔍 Rechercher un skin..." id="skin-search">
+                            <div class="skins-grid" id="skins-grid"></div>
+                        </div>
+
+                        <div id="xubor-section" class="content-section">
+                            <h2 style="color: white; text-align: center; margin-bottom: 30px;">Acheter des Xubor</h2>
+                            <div class="demo-badge" style="display: block; text-align: center; margin-bottom: 20px;">DEMO - Paiement simulé uniquement</div>
+                            <div class="xubor-packages">
+                                <div class="package-card">
+                                    <div class="package-amount">100 💰</div>
+                                    <div class="package-price">10 €</div>
+                                    <button class="btn btn-primary" onclick="buyXubor(100, 10)">Acheter</button>
+                                </div>
+                                <div class="package-card">
+                                    <div class="package-amount">800 💰</div>
+                                    <div class="package-price">20 €</div>
+                                    <button class="btn btn-primary" onclick="buyXubor(800, 20)">Acheter</button>
+                                </div>
+                                <div class="package-card">
+                                    <div class="package-amount">12,095 💰</div>
+                                    <div class="package-price">234 €</div>
+                                    <button class="btn btn-primary" onclick="buyXubor(12095, 234)">Acheter</button>
+                                </div>
+                                <div class="package-card premium">
+                                    <div class="package-amount">♾️ ILLIMITÉ</div>
+                                    <div class="package-price">456 €</div>
+                                    <button class="btn btn-primary" onclick="buyXubor(999999, 456)">Acheter</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="profile-section" class="content-section">
+                            <div class="profile-section">
+                                <div class="profile-header">
+                                    <div class="profile-avatar-large" style="background: ${currentSkin.color};">
+                                        ${currentSkin.emoji}
+                                    </div>
+                                    <div class="profile-username">${currentUser.username}</div>
+                                </div>
+                                <div class="profile-stats">
+                                    <div class="stat-card">
+                                        <div class="stat-value">${currentUser.xubor}</div>
+                                        <div class="stat-label">Xubor</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">${currentUser.ownedSkins.length}</div>
+                                        <div class="stat-label">Skins possédés</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">${currentUser.friends.length}</div>
+                                        <div class="stat-label">Amis</div>
+                                    </div>
+                                </div>
+                                <h3 style="margin-bottom: 15px;">Mes Skins</h3>
+                                <div class="skins-grid" id="owned-skins-grid"></div>
+                                <button class="logout-btn" onclick="logout()" style="margin-top: 30px; width: 100%;">Déconnexion</button>
+                            </div>
+                        </div>
                     </div>
-                `;
-            }).join('');
-        });
+                </div>
 
-        // Achat de skin avec confirmation
-        async function buySkin(skinId) {
-            if (!currentUser) return;
-            
-            const skin = allSkins.find(s => s.id === skinId);
-            const ownedSkins = JSON.parse(currentUser.ownedSkins);
-            
-            if (ownedSkins.includes(skinId)) {
-                return;
-            }
-            
-            if (currentUser.xubor < skin.price) {
-                showError(`Vous n'avez pas assez de Xubor ! Il vous faut ${skin.price - currentUser.xubor} Xubor de plus.`);
-                return;
-            }
+                <!-- Zone de jeu -->
+                <div id="game-area" style="display: none;"></div>
 
-            // Confirmation d'achat inline
-            const confirmDiv = document.createElement('div');
-            confirmDiv.style.cssText = `
-                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                background: white; padding: 30px; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                z-index: 2000; text-align: center; max-width: 400px;
-            `;
-            confirmDiv.innerHTML = `
-                <h3 style="margin: 0 0 15px 0; color: #333;">Confirmer l'achat</h3>
-                <div style="font-size: 48px; margin: 15px 0;">${skin.emoji}</div>
-                <p style="margin: 15px 0; color: #666;">${skin.name}<br><strong>${skin.price} Xubor</strong></p>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; padding: 12px; background: #f5f5f5; border: none; border-radius: 8px; cursor: pointer;">Annuler</button>
-                    <button onclick="confirmPurchase(${skinId}); this.parentElement.parentElement.remove();" style="flex: 1; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">Acheter</button>
+                <!-- Panneau de notifications -->
+                <div id="notifications-panel" class="notifications-panel">
+                    <div class="notifications-header">
+                        <h3 style="margin: 0;">🔔 Notifications</h3>
+                        <button onclick="toggleNotifications()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">✕</button>
+                    </div>
+                    <div id="notifications-list">
+                        <!-- Les notifications s'afficheront ici -->
+                    </div>
                 </div>
             `;
-            document.body.appendChild(confirmDiv);
-        }
 
-        async function confirmPurchase(skinId) {
-            const skin = allSkins.find(s => s.id === skinId);
-            const ownedSkins = JSON.parse(currentUser.ownedSkins);
-
-            const updatedUser = {
-                ...currentUser,
-                xubor: currentUser.xubor - skin.price,
-                ownedSkins: JSON.stringify([...ownedSkins, skinId]),
-                currentSkin: skinId.toString(),
-                experience: currentUser.experience + 25,
-                level: Math.floor((currentUser.experience + 25) / 100) + 1
-            };
-
-            const result = await window.dataSdk.update(updatedUser);
-            if (result.isOk) {
-                showSuccess(`Skin ${skin.name} acheté et équipé ! +25 XP 🎨`);
-            } else {
-                showError("Erreur lors de l'achat");
-            }
-        }
-
-        // Boutique Xubor améliorée
-        function renderXuborShop() {
-            const shop = document.getElementById('xuborShop');
-            const packs = [
-                { xubor: 500, price: 5, featured: false, bonus: '' },
-                { xubor: 1200, price: 10, featured: false, bonus: '+200 bonus!' },
-                { xubor: 2800, price: 20, featured: true, bonus: '+800 bonus!' },
-                { xubor: 6000, price: 40, featured: true, bonus: '+2000 bonus!' }
-            ];
-
-            shop.innerHTML = packs.map(pack => `
-                <div class="xubor-pack ${pack.featured ? 'featured' : ''}">
-                    <div class="xubor-amount">${pack.xubor}</div>
-                    <div style="color: #666; margin-bottom: 10px; font-weight: 600;">Xubor</div>
-                    ${pack.bonus ? `<div style="color: #4ade80; font-size: 14px; font-weight: 700; margin-bottom: 10px;">${pack.bonus}</div>` : ''}
-                    <div class="xubor-price">${pack.price}€</div>
-                    <button class="btn-purchase" onclick="purchaseXubor(${pack.xubor})">
-                        Acheter
-                    </button>
-                    <div class="demo-badge">DEMO</div>
-                </div>
-            `).join('');
-        }
-
-        async function purchaseXubor(amount) {
-            if (!currentUser) return;
-
-            showSuccess(`Achat de ${amount} Xubor effectué ! (Mode démo) 💰`);
-            
-            const updatedUser = {
-                ...currentUser,
-                xubor: currentUser.xubor + amount
-            };
-
-            await window.dataSdk.update(updatedUser);
-        }
-
-        // Mise à jour de l'interface améliorée
-        function updateUI() {
-            if (!currentUser) return;
-
-            document.getElementById('xuborAmount').textContent = currentUser.xubor.toLocaleString();
-            document.getElementById('profileUsername').textContent = currentUser.username;
-            document.getElementById('profileLevel').textContent = `Niveau ${currentUser.level}`;
-            document.getElementById('statXubor').textContent = currentUser.xubor.toLocaleString();
-            document.getElementById('statLevel').textContent = currentUser.level;
-            
-            const ownedSkins = JSON.parse(currentUser.ownedSkins);
-            document.getElementById('statSkins').textContent = ownedSkins.length;
-            
-            const friends = JSON.parse(currentUser.friends);
-            document.getElementById('statFriends').textContent = friends.length;
-
-            const currentSkin = allSkins.find(s => s.id === parseInt(currentUser.currentSkin));
-            if (currentSkin) {
-                const avatarSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad${currentSkin.id}' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='50' fill='url(%23grad${currentSkin.id})'/%3E%3Ctext x='50' y='65' font-family='Arial' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3E${currentSkin.emoji}%3C/text%3E%3C/svg%3E`;
-                document.getElementById('headerAvatar').src = avatarSvg;
-                document.getElementById('profileAvatar').src = avatarSvg;
-            }
-
-            renderOwnedSkins();
+            renderGames();
             renderSkins();
+            renderOwnedSkins();
             renderFriends();
+            renderOnlineUsers();
+            setupSearchListeners();
+            initializeOnlineSystem();
+        }
+
+        function renderGames(filter = '') {
+            const grid = document.getElementById('games-grid');
+            if (!grid) return;
+
+            const filteredGames = games.filter(game => 
+                game.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            grid.innerHTML = filteredGames.map(game => `
+                <div class="game-card" onclick="playGame('${game.name}', ${game.id})">
+                    <div class="game-icon" style="background: ${game.color};">
+                        ${game.icon}
+                    </div>
+                    <div class="game-title">${game.name}</div>
+                    <div class="game-description">${game.description}</div>
+                    ${game.playable ? '<div style="color: #4ecdc4; font-size: 12px; font-weight: bold; margin-top: 8px;">🟢 DISPONIBLE</div>' : '<div style="color: #ff6b6b; font-size: 12px; font-weight: bold; margin-top: 8px;">🔴 BIENTÔT</div>'}
+                </div>
+            `).join('');
+        }
+
+        function renderSkins(filter = '') {
+            const grid = document.getElementById('skins-grid');
+            if (!grid) return;
+
+            const filteredSkins = skins.filter(skin => 
+                skin.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            grid.innerHTML = filteredSkins.map(skin => {
+                const owned = currentUser.ownedSkins.includes(skin.id);
+                return `
+                    <div class="skin-card">
+                        <div class="skin-preview" style="background: ${skin.color};">
+                            ${skin.emoji}
+                        </div>
+                        <div class="skin-name">${skin.name}</div>
+                        <div class="skin-price">${skin.price} 💰</div>
+                        <button class="btn-buy" onclick="buySkin('${skin.id}')" ${owned ? 'disabled' : ''}>
+                            ${owned ? '✓ Possédé' : 'Acheter'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderOwnedSkins() {
-            const grid = document.getElementById('ownedSkinsGrid');
-            const ownedSkins = JSON.parse(currentUser.ownedSkins);
-            const skins = allSkins.filter(s => ownedSkins.includes(s.id));
-            
-            grid.innerHTML = skins.map(skin => {
-                const rarityColor = skin.rarity === 'Légendaire' ? '#ffd700' : 
-                                  skin.rarity === 'Épique' ? '#a855f7' : 
-                                  skin.rarity === 'Rare' ? '#3b82f6' : '#6b7280';
-                
+            const grid = document.getElementById('owned-skins-grid');
+            if (!grid) return;
+
+            const ownedSkinObjects = skins.filter(s => currentUser.ownedSkins.includes(s.id));
+
+            grid.innerHTML = ownedSkinObjects.map(skin => {
+                const isActive = skin.id === currentUser.currentSkin;
                 return `
-                    <div class="skin-card" style="border: 2px solid ${rarityColor}">
-                        <div class="skin-preview" style="background: ${skin.gradient}">
-                            <span style="font-size: 60px;">${skin.emoji}</span>
+                    <div class="skin-card" style="${isActive ? 'border: 3px solid #667eea;' : ''}">
+                        <div class="skin-preview" style="background: ${skin.color};">
+                            ${skin.emoji}
                         </div>
                         <div class="skin-name">${skin.name}</div>
-                        <div style="color: ${rarityColor}; font-size: 12px; font-weight: 700; margin-bottom: 8px;">${skin.rarity}</div>
-                        <button class="btn-buy" onclick="equipSkin(${skin.id})" ${currentUser.currentSkin === skin.id.toString() ? 'disabled' : ''}>
-                            ${currentUser.currentSkin === skin.id.toString() ? '✓ Équipé' : 'Équiper'}
+                        <button class="btn-buy" onclick="equipSkin('${skin.id}')" ${isActive ? 'disabled' : ''}>
+                            ${isActive ? '✓ Équipé' : 'Équiper'}
                         </button>
                     </div>
                 `;
             }).join('');
         }
 
-        async function equipSkin(skinId) {
-            if (!currentUser) return;
+        function setupSearchListeners() {
+            const gameSearch = document.getElementById('game-search');
+            if (gameSearch) {
+                gameSearch.addEventListener('input', (e) => renderGames(e.target.value));
+            }
 
-            const updatedUser = {
-                ...currentUser,
-                currentSkin: skinId.toString()
+            const skinSearch = document.getElementById('skin-search');
+            if (skinSearch) {
+                skinSearch.addEventListener('input', (e) => renderSkins(e.target.value));
+            }
+        }
+
+        function switchPage(page) {
+            currentPage = page;
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+
+            const tabs = document.querySelectorAll('.nav-tab');
+            const sections = ['home', 'friends', 'marketplace', 'xubor', 'profile'];
+            const index = sections.indexOf(page);
+            if (index !== -1 && tabs[index]) {
+                tabs[index].classList.add('active');
+            }
+
+            const section = document.getElementById(`${page}-section`);
+            if (section) {
+                section.classList.add('active');
+            }
+
+            if (page === 'friends') {
+                renderFriends();
+                renderOnlineUsers();
+            }
+        }
+
+        function buySkin(skinId) {
+            const skin = skins.find(s => s.id === skinId);
+            if (!skin) return;
+
+            if (currentUser.xubor < skin.price) {
+                showInlineMessage("Pas assez de Xubor !");
+                return;
+            }
+
+            if (currentUser.ownedSkins.includes(skinId)) {
+                showInlineMessage("Vous possédez déjà ce skin !");
+                return;
+            }
+
+            currentUser.ownedSkins.push(skinId);
+            currentUser.xubor -= skin.price;
+            
+            // Sauvegarder dans localStorage
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            showInlineMessage(`Skin ${skin.name} acheté !`);
+            updateUI();
+        }
+
+        function equipSkin(skinId) {
+            currentUser.currentSkin = skinId;
+            
+            // Sauvegarder dans localStorage
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            showInlineMessage("Skin équipé !");
+            updateUI();
+        }
+
+        function buyXubor(amount, price) {
+            showInlineMessage(`Achat de ${amount} Xubor pour ${price}€ (DEMO)`);
+            currentUser.xubor += amount;
+            
+            // Sauvegarder dans localStorage
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            showInlineMessage(`${amount} Xubor ajoutés !`);
+            updateUI();
+        }
+
+        function playGame(gameName, gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game || !game.playable) {
+                showInlineMessage(`${gameName} sera bientôt disponible !`);
+                return;
+            }
+
+            if (gameId === 1) { // Tic-Tac-Toe
+                startTicTacToe();
+            } else if (gameId === 2) { // Pierre-Papier-Ciseaux
+                startRockPaperScissors();
+            } else {
+                showInlineMessage(`${gameName} sera bientôt disponible !`);
+            }
+        }
+
+        function startTicTacToe() {
+            // Recherche d'adversaire d'abord
+            if (isOnline && wifiStatus === 'connected') {
+                startMatchmaking('Tic-Tac-Toe', 1);
+                return;
+            }
+
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = 'block';
+            gameArea.className = 'fullscreen-game';
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 style="margin: 0;">🎮 Tic-Tac-Toe</h2>
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 14px;">vs Ordinateur</span>
+                    </div>
+                    <button class="close-game-btn" onclick="cancelGame()">✕</button>
+                </div>
+                
+                <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+                    <div class="game-board tic-tac-toe-board" id="tic-tac-toe-board">
+                        ${Array(9).fill(0).map((_, i) => `
+                            <div class="game-cell" onclick="makeMove(${i})" data-index="${i}"></div>
+                        `).join('')}
+                    </div>
+                    <div id="game-status" style="margin-top: 20px; font-size: 18px; font-weight: bold; color: #333;">C'est votre tour ! (X)</div>
+                </div>
+            `;
+            
+            window.gameState = {
+                board: Array(9).fill(''),
+                currentPlayer: 'X',
+                winner: null,
+                isPlayerTurn: true
             };
-
-            const result = await window.dataSdk.update(updatedUser);
-            if (result.isOk) {
-                showSuccess("Skin équipé avec succès ! ✨");
-            }
         }
 
-        // Système d'amis avec statut en ligne RÉEL
-        function renderFriends() {
-            const friendsList = document.getElementById('friendsList');
-            const otherUsers = allUsers.filter(u => u.id !== currentUser.id);
-            
-            if (otherUsers.length === 0) {
-                friendsList.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
-                        <div style="font-size: 48px; margin-bottom: 15px;">👥</div>
-                        <h3>Aucun autre joueur pour le moment</h3>
-                        <p>Invitez vos amis à rejoindre Xolbor !</p>
-                    </div>
-                `;
+        function startRockPaperScissors() {
+            // Recherche d'adversaire d'abord
+            if (isOnline && wifiStatus === 'connected') {
+                startMatchmaking('Pierre-Papier-Ciseaux', 2);
                 return;
             }
-            
-            friendsList.innerHTML = otherUsers.map(user => {
-                const userSkin = allSkins.find(s => s.id === parseInt(user.currentSkin)) || allSkins[0];
-                const isOnline = user.isOnline && (new Date() - new Date(user.lastOnline)) < 60000; // En ligne si activité < 1 min
-                const lastSeen = isOnline ? 'En ligne' : `Vu ${getTimeAgo(user.lastOnline)}`;
+
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = 'block';
+            gameArea.className = 'fullscreen-game';
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 style="margin: 0;">✂️ Pierre-Papier-Ciseaux</h2>
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 14px;">vs Ordinateur</span>
+                    </div>
+                    <button class="close-game-btn" onclick="cancelGame()">✕</button>
+                </div>
                 
-                return `
-                    <div class="friend-card">
-                        <div class="friend-avatar" style="background: ${userSkin.gradient}">
-                            ${userSkin.emoji}
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">Niveau ${user.level} • ${user.xubor} Xubor</div>
-                            <div style="font-size: 12px; color: ${isOnline ? '#4ade80' : '#9ca3af'}; margin-top: 4px;">
-                                ${lastSeen}
-                            </div>
-                        </div>
-                        <div class="friend-level">Niv. ${user.level}</div>
-                        <div class="${isOnline ? 'online-indicator' : 'offline-indicator'}"></div>
+                <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+                    <h3 style="color: #333; margin-bottom: 30px;">Choisissez votre arme !</h3>
+                    <div style="display: flex; justify-content: center; gap: 30px; margin: 40px 0;">
+                        <button class="btn btn-primary" onclick="makeRPSChoice('rock')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">🪨</button>
+                        <button class="btn btn-primary" onclick="makeRPSChoice('paper')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">📄</button>
+                        <button class="btn btn-primary" onclick="makeRPSChoice('scissors')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">✂️</button>
                     </div>
-                `;
-            }).join('');
+                    <div id="rps-status" style="margin-top: 30px; font-size: 20px; color: #333;">Faites votre choix !</div>
+                </div>
+            `;
         }
 
-        function getTimeAgo(dateString) {
-            const now = new Date();
-            const past = new Date(dateString);
-            const diffMs = now - past;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
-
-            if (diffMins < 1) return 'à l\'instant';
-            if (diffMins < 60) return `il y a ${diffMins}min`;
-            if (diffHours < 24) return `il y a ${diffHours}h`;
-            return `il y a ${diffDays}j`;
-        }
-
-        // Recherche d'amis améliorée
-        document.getElementById('friendSearch').addEventListener('input', (e) => {
-            const search = e.target.value.toLowerCase();
-            const otherUsers = allUsers.filter(u => 
-                u.id !== currentUser.id && 
-                u.username.toLowerCase().includes(search)
-            );
-            
-            const friendsList = document.getElementById('friendsList');
-            
-            if (otherUsers.length === 0) {
-                friendsList.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
-                        <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
-                        <h3>Aucun joueur trouvé</h3>
-                        <p>Essayez un autre nom d'utilisateur</p>
-                    </div>
-                `;
+        function makeMove(index) {
+            if (!window.gameState || window.gameState.board[index] !== '' || !window.gameState.isPlayerTurn || window.gameState.winner) {
                 return;
             }
+
+            window.gameState.board[index] = 'X';
+            window.gameState.isPlayerTurn = false;
             
-            friendsList.innerHTML = otherUsers.map(user => {
-                const userSkin = allSkins.find(s => s.id === parseInt(user.currentSkin)) || allSkins[0];
-                const isOnline = user.isOnline && (new Date() - new Date(user.lastOnline)) < 60000;
-                const lastSeen = isOnline ? 'En ligne' : `Vu ${getTimeAgo(user.lastOnline)}`;
-                
-                return `
-                    <div class="friend-card">
-                        <div class="friend-avatar" style="background: ${userSkin.gradient}">
-                            ${userSkin.emoji}
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">Niveau ${user.level} • ${user.xubor} Xubor</div>
-                            <div style="font-size: 12px; color: ${isOnline ? '#4ade80' : '#9ca3af'}; margin-top: 4px;">
-                                ${lastSeen}
-                            </div>
-                        </div>
-                        <div class="friend-level">Niv. ${user.level}</div>
-                        <div class="${isOnline ? 'online-indicator' : 'offline-indicator'}"></div>
-                    </div>
-                `;
-            }).join('');
-        });
+            const cell = document.querySelector(`[data-index="${index}"]`);
+            cell.textContent = 'X';
+            cell.classList.add('disabled');
 
-        // Element SDK
-        async function onConfigChange(config) {
-            document.getElementById('appTitle').textContent = config.app_title || defaultConfig.app_title;
-            document.getElementById('welcomeMessage').textContent = config.welcome_message || defaultConfig.welcome_message;
+            if (checkWinner()) {
+                document.getElementById('game-status').textContent = "🎉 Vous avez gagné !";
+                window.gameState.winner = 'X';
+                return;
+            }
+
+            if (window.gameState.board.every(cell => cell !== '')) {
+                document.getElementById('game-status').textContent = "🤝 Match nul !";
+                return;
+            }
+
+            document.getElementById('game-status').textContent = "Tour de l'ordinateur...";
+            
+            setTimeout(() => {
+                makeComputerMove();
+            }, 1000);
         }
 
-        const capabilities = {
-            recolorables: [],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-        };
+        function makeComputerMove() {
+            const emptyCells = window.gameState.board.map((cell, index) => cell === '' ? index : null).filter(index => index !== null);
+            if (emptyCells.length === 0) return;
 
-        function mapToEditPanelValues(config) {
-            return new Map([
-                ["app_title", config.app_title || defaultConfig.app_title],
-                ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
-            ]);
+            const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            window.gameState.board[randomIndex] = 'O';
+            
+            const cell = document.querySelector(`[data-index="${randomIndex}"]`);
+            cell.textContent = 'O';
+            cell.classList.add('disabled');
+
+            if (checkWinner()) {
+                document.getElementById('game-status').textContent = "😞 L'ordinateur a gagné !";
+                window.gameState.winner = 'O';
+                return;
+            }
+
+            if (window.gameState.board.every(cell => cell !== '')) {
+                document.getElementById('game-status').textContent = "🤝 Match nul !";
+                return;
+            }
+
+            window.gameState.isPlayerTurn = true;
+            document.getElementById('game-status').textContent = "C'est votre tour ! (X)";
         }
 
-        if (window.elementSdk) {
-            window.elementSdk.init({
-                defaultConfig,
-                onConfigChange,
-                mapToCapabilities: () => capabilities,
-                mapToEditPanelValues
+        function makeRPSChoice(choice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+
+            const emojis = { rock: '🪨', paper: '📄', scissors: '✂️' };
+            const result = getRPSResult(choice, computerChoice);
+            
+            let statusText = `Vous: ${emojis[choice]} vs ${emojis[computerChoice]} :Ordinateur<br>`;
+            
+            if (result === 'win') {
+                statusText += "🎉 Vous gagnez !";
+            } else if (result === 'lose') {
+                statusText += "😞 L'ordinateur gagne !";
+            } else {
+                statusText += "🤝 Égalité !";
+            }
+
+            document.getElementById('rps-status').innerHTML = statusText;
+        }
+
+        function getRPSResult(player, computer) {
+            if (player === computer) return 'tie';
+            if (
+                (player === 'rock' && computer === 'scissors') ||
+                (player === 'paper' && computer === 'rock') ||
+                (player === 'scissors' && computer === 'paper')
+            ) {
+                return 'win';
+            }
+            return 'lose';
+        }
+
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Lignes
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colonnes
+                [0, 4, 8], [2, 4, 6] // Diagonales
+            ];
+
+            return winPatterns.some(pattern => {
+                const [a, b, c] = pattern;
+                return window.gameState.board[a] && 
+                       window.gameState.board[a] === window.gameState.board[b] && 
+                       window.gameState.board[a] === window.gameState.board[c];
             });
         }
 
-        initApp();
+        function cancelGame() {
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = 'none';
+            gameArea.className = '';
+            window.gameState = null;
+            currentGameSession = null;
+            
+            // Quitter la file d'attente si en cours
+            if (matchmakingQueue.length > 0) {
+                matchmakingQueue = [];
+                showInlineMessage("Recherche annulée");
+            }
+        }
+
+        function showInlineMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 2500);
+        }
+
+        function logout() {
+            currentUser = null;
+            renderAuthPage();
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                const xuborCount = document.getElementById('xubor-count');
+                if (xuborCount) {
+                    xuborCount.textContent = currentUser.xubor;
+                }
+                
+                if (currentPage === 'marketplace') {
+                    renderSkins();
+                } else if (currentPage === 'profile') {
+                    renderOwnedSkins();
+                }
+            }
+        }
+
+        // Nouvelles fonctions système
+        function initializeOnlineSystem() {
+            // Simuler des utilisateurs en ligne
+            const fakeUsers = [
+                { id: 'user_1', username: 'GamerPro', skin: skins[1], lastSeen: Date.now() },
+                { id: 'user_2', username: 'NoobMaster', skin: skins[2], lastSeen: Date.now() },
+                { id: 'user_3', username: 'PixelWarrior', skin: skins[3], lastSeen: Date.now() },
+                { id: 'user_4', username: 'CyberNinja', skin: skins[4], lastSeen: Date.now() },
+                { id: 'user_5', username: 'RetroGamer', skin: skins[5], lastSeen: Date.now() }
+            ];
+            
+            // Ajouter quelques utilisateurs aléatoirement
+            setInterval(() => {
+                if (isOnline && wifiStatus === 'connected') {
+                    const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                    const existingIndex = onlineUsers.findIndex(u => u.id === randomUser.id);
+                    
+                    if (Math.random() > 0.7) { // 30% chance d'ajouter/retirer
+                        if (existingIndex === -1) {
+                            onlineUsers.push({ ...randomUser, lastSeen: Date.now() });
+                        } else {
+                            onlineUsers.splice(existingIndex, 1);
+                        }
+                        renderOnlineUsers();
+                    }
+                }
+            }, 3000);
+
+            updateWifiStatus();
+        }
+
+        function toggleWifi() {
+            if (wifiStatus === 'disconnected') {
+                wifiStatus = 'connecting';
+                updateWifiStatus();
+                
+                setTimeout(() => {
+                    wifiStatus = 'connected';
+                    isOnline = true;
+                    updateWifiStatus();
+                    showInlineMessage("Connexion WiFi établie !");
+                    
+                    // Ajouter une notification de bienvenue
+                    addNotification({
+                        id: Date.now(),
+                        type: 'system',
+                        title: 'Connexion établie',
+                        text: 'Vous êtes maintenant en ligne !',
+                        icon: '🌐',
+                        color: '#4ecdc4'
+                    });
+                }, 2000);
+            } else {
+                wifiStatus = 'disconnected';
+                isOnline = false;
+                onlineUsers = [];
+                updateWifiStatus();
+                renderOnlineUsers();
+                showInlineMessage("Connexion WiFi fermée");
+            }
+        }
+
+        function updateWifiStatus() {
+            const indicator = document.getElementById('wifi-indicator');
+            const icon = document.getElementById('wifi-icon');
+            const text = document.getElementById('wifi-text');
+            
+            if (!indicator || !icon || !text) return;
+
+            indicator.className = 'wifi-indicator';
+            
+            switch (wifiStatus) {
+                case 'connected':
+                    indicator.classList.add('wifi-connected');
+                    icon.textContent = '📶';
+                    text.textContent = 'En ligne';
+                    break;
+                case 'connecting':
+                    indicator.classList.add('wifi-connecting');
+                    icon.textContent = '📡';
+                    text.textContent = 'Connexion...';
+                    break;
+                default:
+                    indicator.classList.add('wifi-disconnected');
+                    icon.textContent = '📵';
+                    text.textContent = 'Hors ligne';
+            }
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            panel.classList.toggle('open');
+        }
+
+        function addNotification(notification) {
+            notifications.unshift(notification);
+            if (notifications.length > 10) {
+                notifications = notifications.slice(0, 10);
+            }
+            renderNotifications();
+            updateNotificationBadge();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifications-list');
+            if (!list) return;
+
+            if (notifications.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">Aucune notification</div>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(notif => `
+                <div class="notification-item">
+                    <div class="notification-icon" style="background: ${notif.color};">
+                        ${notif.icon}
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-text">${notif.text}</div>
+                    </div>
+                    ${notif.actions ? `
+                        <div class="notification-actions">
+                            ${notif.actions.map(action => `
+                                <button class="notification-btn ${action.type}" onclick="${action.onclick}">
+                                    ${action.text}
+                                </button>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notification-badge');
+            if (!badge) return;
+
+            const unreadCount = notifications.length;
+            if (unreadCount > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function addFriend() {
+            const input = document.getElementById('friend-username');
+            const username = input.value.trim();
+            
+            if (!username) {
+                showInlineMessage("Veuillez entrer un pseudo");
+                return;
+            }
+
+            if (username === currentUser.username) {
+                showInlineMessage("Vous ne pouvez pas vous ajouter vous-même !");
+                return;
+            }
+
+            // Vérifier si l'utilisateur existe
+            const targetUser = localUsers.find(u => u.username === username);
+            if (!targetUser) {
+                showInlineMessage("Utilisateur introuvable");
+                return;
+            }
+
+            // Vérifier si déjà ami
+            if (currentUser.friends.includes(targetUser.id)) {
+                showInlineMessage("Cet utilisateur est déjà votre ami");
+                return;
+            }
+
+            // Ajouter l'ami
+            currentUser.friends.push(targetUser.id);
+            
+            // Sauvegarder
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            input.value = '';
+            showInlineMessage(`${username} ajouté à vos amis !`);
+            renderFriends();
+
+            // Notification pour l'autre utilisateur (simulation)
+            addNotification({
+                id: Date.now(),
+                type: 'friend_request',
+                title: 'Nouvel ami',
+                text: `${currentUser.username} vous a ajouté comme ami`,
+                icon: '👥',
+                color: '#667eea'
+            });
+        }
+
+        function renderFriends() {
+            const list = document.getElementById('friends-list');
+            if (!list) return;
+
+            const friendUsers = localUsers.filter(u => currentUser.friends.includes(u.id));
+
+            if (friendUsers.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Aucun ami pour le moment</div>';
+                return;
+            }
+
+            list.innerHTML = friendUsers.map(friend => {
+                const friendSkin = skins.find(s => s.id === friend.currentSkin) || skins[0];
+                const isOnline = onlineUsers.some(u => u.id === friend.id);
+                
+                return `
+                    <div class="friend-card">
+                        <div class="friend-avatar" style="background: ${friendSkin.color};">
+                            ${friendSkin.emoji}
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${friend.username}</div>
+                            <div class="friend-status">
+                                <div class="status-dot ${isOnline ? 'status-online' : 'status-offline'}"></div>
+                                ${isOnline ? 'En ligne' : 'Hors ligne'}
+                            </div>
+                        </div>
+                        <div class="friend-actions">
+                            ${isOnline ? `<button class="friend-btn invite" onclick="inviteToGame('${friend.id}')">Inviter</button>` : ''}
+                            <button class="friend-btn remove" onclick="removeFriend('${friend.id}')">Retirer</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderOnlineUsers() {
+            const list = document.getElementById('online-users-list');
+            if (!list) return;
+
+            if (!isOnline || onlineUsers.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">Aucun utilisateur en ligne</div>';
+                return;
+            }
+
+            list.innerHTML = onlineUsers.map(user => `
+                <div class="friend-card">
+                    <div class="friend-avatar" style="background: ${user.skin.color};">
+                        ${user.skin.emoji}
+                    </div>
+                    <div class="friend-info">
+                        <div class="friend-name">${user.username}</div>
+                        <div class="friend-status">
+                            <div class="status-dot status-online"></div>
+                            En ligne
+                        </div>
+                    </div>
+                    <div class="friend-actions">
+                        <button class="friend-btn invite" onclick="addFriendById('${user.id}', '${user.username}')">Ajouter</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeFriend(friendId) {
+            currentUser.friends = currentUser.friends.filter(id => id !== friendId);
+            
+            // Sauvegarder
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            showInlineMessage("Ami retiré");
+            renderFriends();
+        }
+
+        function addFriendById(userId, username) {
+            if (currentUser.friends.includes(userId)) {
+                showInlineMessage("Cet utilisateur est déjà votre ami");
+                return;
+            }
+
+            currentUser.friends.push(userId);
+            
+            // Sauvegarder
+            const userIndex = localUsers.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                localUsers[userIndex] = currentUser;
+                localStorage.setItem('xolbor_users', JSON.stringify(localUsers));
+            }
+
+            showInlineMessage(`${username} ajouté à vos amis !`);
+            renderFriends();
+        }
+
+        function inviteToGame(friendId) {
+            const friend = localUsers.find(u => u.id === friendId);
+            if (!friend) return;
+
+            addNotification({
+                id: Date.now(),
+                type: 'game_invite',
+                title: 'Invitation de jeu',
+                text: `${currentUser.username} vous invite à jouer`,
+                icon: '🎮',
+                color: '#667eea',
+                actions: [
+                    { type: 'accept', text: 'Accepter', onclick: `acceptGameInvite('${currentUser.id}')` },
+                    { type: 'decline', text: 'Refuser', onclick: `declineGameInvite('${currentUser.id}')` }
+                ]
+            });
+
+            showInlineMessage(`Invitation envoyée à ${friend.username}`);
+        }
+
+        function acceptGameInvite(inviterId) {
+            showInlineMessage("Invitation acceptée ! Lancement du jeu...");
+            // Ici on pourrait lancer un jeu multijoueur
+        }
+
+        function declineGameInvite(inviterId) {
+            showInlineMessage("Invitation refusée");
+        }
+
+        function startMatchmaking(gameName, gameId) {
+            const gameArea = document.getElementById('game-area');
+            gameArea.style.display = 'block';
+            gameArea.className = 'fullscreen-game';
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 style="margin: 0;">🔍 Recherche d'adversaire</h2>
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 14px;">${gameName}</span>
+                    </div>
+                    <button class="close-game-btn" onclick="cancelGame()">✕</button>
+                </div>
+                
+                <div class="matchmaking-status">
+                    <div class="searching-animation"></div>
+                    <h3 style="color: #333; margin-bottom: 15px;">Recherche d'un adversaire...</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Nous cherchons un joueur de votre niveau</p>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Joueurs en ligne:</span>
+                            <span style="font-weight: bold;">${onlineUsers.length}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Temps d'attente estimé:</span>
+                            <span style="font-weight: bold;" id="wait-time">0:30</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="cancelGame()">Annuler la recherche</button>
+                </div>
+            `;
+
+            // Simuler la recherche
+            let waitTime = 30;
+            const waitInterval = setInterval(() => {
+                waitTime--;
+                const timeElement = document.getElementById('wait-time');
+                if (timeElement) {
+                    timeElement.textContent = `0:${waitTime.toString().padStart(2, '0')}`;
+                }
+
+                if (waitTime <= 0) {
+                    clearInterval(waitInterval);
+                    // Simuler qu'on trouve un adversaire
+                    if (Math.random() > 0.3) {
+                        foundOpponent(gameName, gameId);
+                    } else {
+                        noOpponentFound(gameName, gameId);
+                    }
+                }
+            }, 1000);
+        }
+
+        function foundOpponent(gameName, gameId) {
+            const randomOpponent = onlineUsers[Math.floor(Math.random() * onlineUsers.length)] || 
+                                 { username: 'Joueur Mystère', skin: skins[0] };
+
+            showInlineMessage(`Adversaire trouvé : ${randomOpponent.username}`);
+            
+            // Lancer le jeu contre l'adversaire
+            if (gameId === 1) {
+                startTicTacToeVsPlayer(randomOpponent);
+            } else if (gameId === 2) {
+                startRockPaperScissorsVsPlayer(randomOpponent);
+            }
+        }
+
+        function noOpponentFound(gameName, gameId) {
+            showInlineMessage("Aucun adversaire trouvé, jeu contre l'ordinateur");
+            
+            if (gameId === 1) {
+                startTicTacToe();
+            } else if (gameId === 2) {
+                startRockPaperScissors();
+            }
+        }
+
+        function startTicTacToeVsPlayer(opponent) {
+            const gameArea = document.getElementById('game-area');
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 style="margin: 0;">🎮 Tic-Tac-Toe</h2>
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 14px;">vs ${opponent.username}</span>
+                    </div>
+                    <button class="close-game-btn" onclick="cancelGame()">✕</button>
+                </div>
+                
+                <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+                    <div class="player-info">
+                        <div class="player-card active">
+                            <div style="font-size: 24px; margin-bottom: 8px;">${skins.find(s => s.id === currentUser.currentSkin)?.emoji || '😀'}</div>
+                            <div>${currentUser.username}</div>
+                            <div style="font-size: 12px; color: #667eea;">Votre tour (X)</div>
+                        </div>
+                        <div class="player-card">
+                            <div style="font-size: 24px; margin-bottom: 8px;">${opponent.skin?.emoji || '🤖'}</div>
+                            <div>${opponent.username}</div>
+                            <div style="font-size: 12px; color: #ccc;">En attente (O)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-board tic-tac-toe-board" id="tic-tac-toe-board">
+                        ${Array(9).fill(0).map((_, i) => `
+                            <div class="game-cell" onclick="makeMove(${i})" data-index="${i}"></div>
+                        `).join('')}
+                    </div>
+                    <div id="game-status" style="margin-top: 20px; font-size: 18px; font-weight: bold; color: #333;">C'est votre tour ! (X)</div>
+                </div>
+            `;
+            
+            window.gameState = {
+                board: Array(9).fill(''),
+                currentPlayer: 'X',
+                winner: null,
+                isPlayerTurn: true,
+                opponent: opponent,
+                isMultiplayer: true
+            };
+        }
+
+        function startRockPaperScissorsVsPlayer(opponent) {
+            const gameArea = document.getElementById('game-area');
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <h2 style="margin: 0;">✂️ Pierre-Papier-Ciseaux</h2>
+                        <span style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; font-size: 14px;">vs ${opponent.username}</span>
+                    </div>
+                    <button class="close-game-btn" onclick="cancelGame()">✕</button>
+                </div>
+                
+                <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+                    <div class="player-info" style="margin-bottom: 30px;">
+                        <div class="player-card active">
+                            <div style="font-size: 24px; margin-bottom: 8px;">${skins.find(s => s.id === currentUser.currentSkin)?.emoji || '😀'}</div>
+                            <div>${currentUser.username}</div>
+                        </div>
+                        <div class="player-card">
+                            <div style="font-size: 24px; margin-bottom: 8px;">${opponent.skin?.emoji || '🤖'}</div>
+                            <div>${opponent.username}</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="color: #333; margin-bottom: 30px;">Choisissez votre arme !</h3>
+                    <div style="display: flex; justify-content: center; gap: 30px; margin: 40px 0;">
+                        <button class="btn btn-primary" onclick="makeRPSChoice('rock')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">🪨</button>
+                        <button class="btn btn-primary" onclick="makeRPSChoice('paper')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">📄</button>
+                        <button class="btn btn-primary" onclick="makeRPSChoice('scissors')" style="font-size: 60px; padding: 30px; border-radius: 20px; min-width: 120px;">✂️</button>
+                    </div>
+                    <div id="rps-status" style="margin-top: 30px; font-size: 20px; color: #333;">Faites votre choix !</div>
+                </div>
+            `;
+
+            window.gameState = {
+                opponent: opponent,
+                isMultiplayer: true
+            };
+        }
+
+        // Exposer les fonctions globalement
+        window.switchPage = switchPage;
+        window.buySkin = buySkin;
+        window.equipSkin = equipSkin;
+        window.buyXubor = buyXubor;
+        window.playGame = playGame;
+        window.logout = logout;
+        window.makeMove = makeMove;
+        window.makeRPSChoice = makeRPSChoice;
+        window.cancelGame = cancelGame;
+        window.toggleWifi = toggleWifi;
+        window.toggleNotifications = toggleNotifications;
+        window.addFriend = addFriend;
+        window.removeFriend = removeFriend;
+        window.addFriendById = addFriendById;
+        window.inviteToGame = inviteToGame;
+        window.acceptGameInvite = acceptGameInvite;
+        window.declineGameInvite = declineGameInvite;
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a53af897972c78',t:'MTc2MjQzODgxMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99ae77a44076e1cd',t:'MTc2MjUzNTY3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
