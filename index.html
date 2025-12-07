@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor - Jeux et Marketplace</title>
-    <link rel="icon" type="image/x-icon" href="Xolbor-logo.png.jpg">
+    <title>Xolbor - Plateforme Gaming Ultime</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
+        /* Styles spécifiques pour la page d'accueil */
         :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff4b91;
-            --dark: #1a1a2e;
-            --light: #f8f9fa;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --border: #cbd5e1;
+            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
         }
         
         * {
@@ -26,1266 +30,595 @@
         }
         
         body {
-            background: linear-gradient(135deg, var(--dark), #16213e);
-            color: var(--light);
+            background-color: #0f172a;
+            color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Page de connexion */
-        .login-container {
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--dark) 0%, #0f3460 100%);
+            justify-content: center;
+            padding: 0 20px;
+            overflow: hidden;
         }
         
-        .logo {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
+            z-index: -2;
+        }
+        
+        .hero-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+        
+        .hero-logo {
+            font-size: 6rem;
+            font-weight: 900;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(106, 17, 203, 0.5);
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            animation: float 3s ease-in-out infinite;
         }
         
-        .login-card {
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero-tagline {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .hero-stat {
+            text-align: center;
+        }
+        
+        .hero-stat .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+        
+        .hero-stat .label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .btn-primary {
+            padding: 18px 40px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            padding: 18px 40px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        .login-card:hover {
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
             transform: translateY(-5px);
         }
         
-        .login-tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        /* Features Preview */
+        .features {
+            padding: 100px 20px;
+            background: #1e293b;
         }
         
-        .tab {
-            padding: 0.8rem 1.5rem;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        
-        .tab.active {
-            opacity: 1;
-            border-bottom: 2px solid var(--accent);
-            color: var(--accent);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            color: var(--light);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(255, 75, 145, 0.2);
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .section-title {
             text-align: center;
-            width: 100%;
-            font-size: 1rem;
+            font-size: 3rem;
+            margin-bottom: 60px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
-        }
-        
-        .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .divider span {
-            padding: 0 1rem;
-            opacity: 0.7;
-        }
-        
-        /* Page principale */
-        .main-container {
-            display: none;
-            min-height: 100vh;
-        }
-        
-        .navbar {
-            background: rgba(26, 26, 46, 0.9);
+        .feature-card {
+            background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
         
-        .nav-content {
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .feature-description {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #0f172a;
+            padding: 60px 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 30px;
         }
         
         .nav-link {
-            color: var(--light);
+            color: #cbd5e1;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-actions {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            gap: 15px;
         }
         
-        .nav-link:hover, .nav-link.active {
-            color: var(--accent);
-        }
-        
-        .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            border: 2px solid var(--accent);
-        }
-        
-        .xubor-balance {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .page {
-            display: none;
-            padding: 2rem 0;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .page.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .page-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
-        .page-title {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .search-bar {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 2rem;
-            position: relative;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 0.8rem 1rem 0.8rem 3rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            color: var(--light);
-            font-size: 1rem;
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        /* Section jeux */
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        
-        .game-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .game-image {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-        
-        .game-info {
-            padding: 1.5rem;
-        }
-        
-        .game-title {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .game-description {
-            opacity: 0.7;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        /* Marketplace */
-        .marketplace-filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            color: var(--light);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-        
-        .skins-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .skin-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .skin-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .skin-image {
-            width: 100%;
-            height: 150px;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-        }
-        
-        .skin-info {
-            padding: 1rem;
-        }
-        
-        .skin-name {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .skin-price {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .price-tag {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            color: var(--warning);
-            font-weight: 600;
-        }
-        
-        .buy-btn {
-            padding: 0.3rem 0.8rem;
-            background: var(--accent);
+        .login-btn {
+            padding: 12px 30px;
+            background: var(--gradient);
+            color: white;
             border: none;
-            border-radius: 10px;
-            color: white;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .buy-btn:hover {
-            background: #ff2d7a;
-        }
-        
-        /* Section profil */
-        .profile-container {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .profile-sidebar {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .profile-avatar-large {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            margin: 0 auto 1.5rem;
-            border: 3px solid var(--accent);
-        }
-        
-        .profile-info {
-            text-align: center;
-        }
-        
-        .profile-username {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .profile-xubor {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--warning);
-        }
-        
-        .profile-content {
-            flex: 2;
-            min-width: 300px;
-        }
-        
-        .profile-section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .owned-skins {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-        
-        .skin-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        
-        .skin-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .skin-item.active {
-            border-color: var(--accent);
-        }
-        
-        .skin-item-image {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
-            margin: 0 auto 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        /* Section amis */
-        .friends-container {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .friends-sidebar {
-            flex: 1;
-            min-width: 300px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .friends-content {
-            flex: 2;
-            min-width: 300px;
-        }
-        
-        .friend-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .friend-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .friend-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .friend-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-        
-        .friend-info {
-            flex: 1;
-        }
-        
-        .friend-name {
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-        
-        .friend-status {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-        
-        /* Section boutique Xubor */
-        .xubor-packs {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-        
-        .xubor-pack {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .xubor-pack:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .xubor-pack.popular::before {
-            content: "POPULAIRE";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--accent);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.3rem 1rem;
-            border-bottom-left-radius: 10px;
-        }
-        
-        .xubor-amount {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--warning), #ff8c00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .xubor-price {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--light);
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
         }
         
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-content {
+            .hero-logo {
+                font-size: 4rem;
+            }
+            
+            .cta-buttons {
                 flex-direction: column;
-                gap: 1rem;
+                align-items: center;
             }
             
             .nav-links {
-                gap: 1rem;
+                display: none;
             }
             
-            .profile-container, .friends-container {
-                flex-direction: column;
+            .hero-stat .number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-logo {
+                font-size: 3rem;
             }
             
-            .profile-sidebar, .friends-sidebar {
-                width: 100%;
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .feature-card {
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Page de connexion -->
-    <div class="login-container" id="login-page">
-        <div class="logo">Xolbor</div>
-        <div class="login-card">
-            <div class="login-tabs">
-                <div class="tab active" id="login-tab">Connexion</div>
-                <div class="tab" id="register-tab">Inscription</div>
-            </div>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-username">Pseudo</label>
-                    <input type="text" id="login-username" class="form-control" placeholder="Votre pseudo" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Mot de passe</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="Votre mot de passe" required>
-                </div>
-                <button type="submit" class="btn">Se connecter</button>
-            </form>
-            
-            <form id="register-form" style="display: none;">
-                <div class="form-group">
-                    <label for="register-username">Pseudo</label>
-                    <input type="text" id="register-username" class="form-control" placeholder="Choisissez un pseudo" required>
-                    <div class="username-feedback" style="margin-top: 0.5rem; font-size: 0.8rem;"></div>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" class="form-control" placeholder="Votre email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Mot de passe</label>
-                    <input type="password" id="register-password" class="form-control" placeholder="Créez un mot de passe" required>
-                </div>
-                <button type="submit" class="btn">S'inscrire</button>
-            </form>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">XOLBOR</div>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Fonctionnalités</a>
+            <a href="#marketplace" class="nav-link">Marketplace</a>
+            <a href="#games" class="nav-link">Jeux</a>
+            <a href="#community" class="nav-link">Communauté</a>
         </div>
-    </div>
+        <div class="nav-actions">
+            <button class="login-btn" onclick="window.location.href='login.html'">
+                <i class="fas fa-sign-in-alt"></i> Connexion
+            </button>
+        </div>
+    </nav>
     
-    <!-- Page principale (après connexion) -->
-    <div class="main-container" id="main-page">
-        <nav class="navbar">
-            <div class="container">
-                <div class="nav-content">
-                    <div class="nav-links">
-                        <a href="#" class="nav-link active" data-page="home"><i class="fas fa-home"></i> Accueil</a>
-                        <a href="#" class="nav-link" data-page="marketplace"><i class="fas fa-store"></i> Marketplace</a>
-                        <a href="#" class="nav-link" data-page="friends"><i class="fas fa-users"></i> Amis</a>
-                        <a href="#" class="nav-link" data-page="profile"><i class="fas fa-user"></i> Profil</a>
-                    </div>
-                    <div class="profile-section">
-                        <div class="xubor-balance">
-                            <i class="fas fa-gem" style="color: var(--warning);"></i>
-                            <span id="xubor-count">0</span> Xubor
-                        </div>
-                        <div class="profile-avatar" id="nav-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background"></div>
+        <div class="hero-particles" id="particles-js"></div>
+        <div class="hero-content">
+            <h1 class="hero-logo">XOLBOR</h1>
+            <p class="hero-tagline">
+                La plateforme gaming ultime avec marketplace de skins, jeux exclusifs et communauté active.
+                Rejoignez des millions de joueurs à travers le monde.
+            </p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="number">2.5M+</span>
+                    <span class="label">Joueurs</span>
                 </div>
-            </div>
-        </nav>
-        
-        <div class="container">
-            <!-- Page d'accueil -->
-            <div class="page active" id="home-page">
-                <div class="page-header">
-                    <h1 class="page-title">Découvrez nos jeux</h1>
-                    <p>Plongez dans des aventures incroyables avec Xolbor</p>
+                <div class="hero-stat">
+                    <span class="number">100+</span>
+                    <span class="label">Jeux</span>
                 </div>
-                
-                <div class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Rechercher un jeu...">
+                <div class="hero-stat">
+                    <span class="number">500+</span>
+                    <span class="label">Skins</span>
                 </div>
-                
-                <div class="games-grid">
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-dragon"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Dragon's Legacy</h3>
-                            <p class="game-description">Affrontez des dragons légendaires dans ce RPG épique.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Cyber Nexus</h3>
-                            <p class="game-description">Explorez un monde futuriste rempli de technologie et de mystères.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-futbol"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Xtreme Soccer</h3>
-                            <p class="game-description">Le football comme vous ne l'avez jamais vu avec des pouvoirs spéciaux.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Kingdom Defense</h3>
-                            <p class="game-description">Défendez votre royaume contre des vagues d'ennemis.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-car"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Neon Racing</h3>
-                            <p class="game-description">Course à haute vitesse dans un environnement néon futuriste.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="game-card">
-                        <div class="game-image">
-                            <i class="fas fa-magic"></i>
-                        </div>
-                        <div class="game-info">
-                            <h3 class="game-title">Magic Academy</h3>
-                            <p class="game-description">Devenez le plus puissant sorcier de l'académie.</p>
-                        </div>
-                    </div>
+                <div class="hero-stat">
+                    <span class="number">50K+</span>
+                    <span class="label">Transactions</span>
                 </div>
             </div>
             
-            <!-- Marketplace -->
-            <div class="page" id="marketplace-page">
-                <div class="page-header">
-                    <h1 class="page-title">Marketplace</h1>
-                    <p>Personnalisez votre avatar avec plus de 100 skins uniques</p>
-                </div>
-                
-                <div class="search-bar">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Rechercher un skin...">
-                </div>
-                
-                <div class="marketplace-filters">
-                    <button class="filter-btn active">Tous</button>
-                    <button class="filter-btn">Populaires</button>
-                    <button class="filter-btn">Nouveautés</button>
-                    <button class="filter-btn">Épiques</button>
-                    <button class="filter-btn">Légendaires</button>
-                    <button class="filter-btn">En promo</button>
-                </div>
-                
-                <div class="skins-grid" id="skins-container">
-                    <!-- Les skins seront générés dynamiquement -->
-                </div>
-            </div>
-            
-            <!-- Page des amis -->
-            <div class="page" id="friends-page">
-                <div class="page-header">
-                    <h1 class="page-title">Amis</h1>
-                    <p>Connectez-vous avec d'autres joueurs</p>
-                </div>
-                
-                <div class="friends-container">
-                    <div class="friends-sidebar">
-                        <h3 class="profile-section-title">Rechercher des amis</h3>
-                        <div class="search-bar">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" class="search-input" placeholder="Rechercher un joueur...">
-                        </div>
-                        
-                        <div class="friend-list">
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">JoueurIA_01</div>
-                                    <div class="friend-status">En ligne - Jeu: Dragon's Legacy</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto;">Ajouter</button>
-                            </div>
-                            
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">GamerPro_42</div>
-                                    <div class="friend-status">En ligne - Jeu: Cyber Nexus</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto;">Ajouter</button>
-                            </div>
-                            
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">XolborFan_99</div>
-                                    <div class="friend-status">Hors ligne - Dernière connexion: il y a 2h</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto;">Ajouter</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="friends-content">
-                        <h3 class="profile-section-title">Mes amis</h3>
-                        
-                        <div class="friend-list">
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">ShadowHunter</div>
-                                    <div class="friend-status">En ligne - Jeu: Magic Academy</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto; background: var(--secondary);">Message</button>
-                            </div>
-                            
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">CyberQueen</div>
-                                    <div class="friend-status">En ligne - Jeu: Cyber Nexus</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto; background: var(--secondary);">Message</button>
-                            </div>
-                            
-                            <div class="friend-item">
-                                <div class="friend-avatar">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="friend-info">
-                                    <div class="friend-name">DragonSlayer</div>
-                                    <div class="friend-status">Hors ligne - Dernière connexion: il y a 5h</div>
-                                </div>
-                                <button class="btn" style="padding: 0.3rem 0.8rem; width: auto; background: var(--secondary);">Message</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Page profil -->
-            <div class="page" id="profile-page">
-                <div class="page-header">
-                    <h1 class="page-title">Mon Profil</h1>
-                    <p>Personnalisez votre avatar et gérez votre compte</p>
-                </div>
-                
-                <div class="profile-container">
-                    <div class="profile-sidebar">
-                        <div class="profile-avatar-large" id="profile-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="profile-info">
-                            <h2 class="profile-username" id="profile-username">Utilisateur</h2>
-                            <div class="profile-xubor">
-                                <i class="fas fa-gem"></i>
-                                <span id="profile-xubor">0</span> Xubor
-                            </div>
-                            <button class="btn" style="width: auto; margin-bottom: 1rem;" id="buy-xubor-btn">
-                                <i class="fas fa-shopping-cart"></i> Acheter des Xubor
-                            </button>
-                            <button class="btn" style="width: auto; background: var(--danger);" id="logout-btn">
-                                <i class="fas fa-sign-out-alt"></i> Déconnexion
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <h3 class="profile-section-title">Mes Skins</h3>
-                        <div class="owned-skins" id="owned-skins">
-                            <!-- Les skins possédés seront affichés ici -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Section boutique Xubor (cachée par défaut) -->
-            <div class="page" id="xubor-store-page">
-                <div class="page-header">
-                    <h1 class="page-title">Boutique Xubor</h1>
-                    <p>Achetez des Xubor pour personnaliser votre expérience</p>
-                </div>
-                
-                <div class="xubor-packs">
-                    <div class="xubor-pack">
-                        <div class="xubor-amount">100</div>
-                        <div class="xubor-price">10 €</div>
-                        <button class="btn" style="width: auto;">Acheter</button>
-                    </div>
-                    
-                    <div class="xubor-pack popular">
-                        <div class="xubor-amount">800</div>
-                        <div class="xubor-price">20 €</div>
-                        <button class="btn" style="width: auto;">Acheter</button>
-                    </div>
-                    
-                    <div class="xubor-pack">
-                        <div class="xubor-amount">12,095</div>
-                        <div class="xubor-price">234 €</div>
-                        <button class="btn" style="width: auto;">Acheter</button>
-                    </div>
-                    
-                    <div class="xubor-pack">
-                        <div class="xubor-amount">Illimités</div>
-                        <div class="xubor-price">456 €</div>
-                        <button class="btn" style="width: auto;">Acheter</button>
-                    </div>
-                </div>
+            <div class="cta-buttons">
+                <button class="btn-primary" onclick="window.location.href='register.html'">
+                    <i class="fas fa-user-plus"></i> Créer un compte gratuit
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='login.html'">
+                    <i class="fas fa-play-circle"></i> Explorer la plateforme
+                </button>
             </div>
         </div>
-    </div>
-
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Fonctionnalités Principales</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3 class="feature-title">Marketplace de Skins</h3>
+                <p class="feature-description">
+                    Plus de 500 skins uniques à collectionner, échanger et personnaliser.
+                    Système de rareté avec skins communs, rares, épiques et légendaires.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h3 class="feature-title">Jeux Exclusifs</h3>
+                <p class="feature-description">
+                    Accès à des jeux exclusifs développés spécialement pour la communauté Xolbor.
+                    Nouveaux jeux ajoutés chaque mois.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Communauté Active</h3>
+                <p class="feature-description">
+                    Rejoignez des milliers de joueurs, formez des équipes, participez à des tournois
+                    et montez dans les classements mondiaux.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h3 class="feature-title">Économie Xubor</h3>
+                <p class="feature-description">
+                    Monnaie virtuelle Xubor pour acheter skins, débloquer des fonctionnalités
+                    et participer à des événements spéciaux.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <h3 class="feature-title">Système d'Amis</h3>
+                <p class="feature-description">
+                    Ajoutez des amis, discutez en temps réel, formez des guildes et participez
+                    à des défis ensemble.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Sécurité Totale</h3>
+                <p class="feature-description">
+                    Transactions sécurisées, authentification à deux facteurs et protection
+                    des données personnelles.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>XOLBOR</h3>
+                <p>La plateforme gaming ultime pour les joueurs passionnés. Rejoignez-nous dès aujourd'hui !</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#features">Fonctionnalités</a></li>
+                    <li><a href="#marketplace">Marketplace</a></li>
+                    <li><a href="#games">Jeux</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Centre d'aide</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Réseaux sociaux</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Xolbor Gaming Platform. Tous droits réservés.</p>
+            <p>Xubor est une monnaie virtuelle. Les achats sont définitifs et non remboursables.</p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Données simulées pour le backend
-        const users = JSON.parse(localStorage.getItem('xolbor_users')) || {};
-        let currentUser = JSON.parse(localStorage.getItem('xolbor_current_user')) || null;
-        
-        // Données des skins
-        const skins = [
-            { id: 1, name: "Dragon Warrior", price: 150, rarity: "legendary", icon: "fas fa-dragon" },
-            { id: 2, name: "Cyber Ninja", price: 120, rarity: "epic", icon: "fas fa-user-ninja" },
-            { id: 3, name: "Magic Mage", price: 100, rarity: "epic", icon: "fas fa-hat-wizard" },
-            { id: 4, name: "Royal Knight", price: 80, rarity: "rare", icon: "fas fa-chess-knight" },
-            { id: 5, name: "Space Explorer", price: 90, rarity: "rare", icon: "fas fa-rocket" },
-            { id: 6, name: "Steampunk Engineer", price: 110, rarity: "epic", icon: "fas fa-cog" },
-            { id: 7, name: "Ice Queen", price: 130, rarity: "legendary", icon: "fas fa-snowflake" },
-            { id: 8, name: "Fire Lord", price: 130, rarity: "legendary", icon: "fas fa-fire" },
-            { id: 9, name: "Jungle Hunter", price: 70, rarity: "common", icon: "fas fa-paw" },
-            { id: 10, name: "Pirate Captain", price: 85, rarity: "rare", icon: "fas fa-skull-crossbones" },
-            { id: 11, name: "Samurai Warrior", price: 95, rarity: "rare", icon: "fas fa-user-secret" },
-            { id: 12, name: "Neon Racer", price: 105, rarity: "epic", icon: "fas fa-car" }
-        ];
-        
-        // Initialisation de l'application
+        // Initialisation des particules
         document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si un utilisateur est connecté
-            if (currentUser) {
-                showMainPage();
-            } else {
-                showLoginPage();
-            }
-            
-            // Gestion des onglets de connexion/inscription
-            document.getElementById('login-tab').addEventListener('click', function() {
-                switchTab('login');
-            });
-            
-            document.getElementById('register-tab').addEventListener('click', function() {
-                switchTab('register');
-            });
-            
-            // Gestion des formulaires
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                login();
-            });
-            
-            document.getElementById('register-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                register();
-            });
-            
-            // Gestion de la vérification du pseudo
-            document.getElementById('register-username').addEventListener('input', function() {
-                checkUsernameAvailability(this.value);
-            });
-            
-            // Gestion de la navigation
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    showPage(page);
-                    
-                    // Mettre à jour la navigation active
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-            
-            // Bouton d'achat de Xubor
-            document.getElementById('buy-xubor-btn').addEventListener('click', function() {
-                showPage('xubor-store');
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            });
-            
-            // Bouton de déconnexion
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                logout();
-            });
-            
-            // Initialiser le marketplace
-            initializeMarketplace();
-        });
-        
-        // Fonctions pour gérer l'interface
-        function showLoginPage() {
-            document.getElementById('login-page').style.display = 'flex';
-            document.getElementById('main-page').style.display = 'none';
-        }
-        
-        function showMainPage() {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('main-page').style.display = 'block';
-            updateUserInfo();
-        }
-        
-        function switchTab(tab) {
-            if (tab === 'login') {
-                document.getElementById('login-form').style.display = 'block';
-                document.getElementById('register-form').style.display = 'none';
-                document.getElementById('login-tab').classList.add('active');
-                document.getElementById('register-tab').classList.remove('active');
-            } else {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-                document.getElementById('login-tab').classList.remove('active');
-                document.getElementById('register-tab').classList.add('active');
-            }
-        }
-        
-        function showPage(page) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(`${page}-page`).classList.add('active');
-        }
-        
-        // Fonctions d'authentification
-        function login() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (users[username] && users[username].password === password) {
-                currentUser = users[username];
-                localStorage.setItem('xolbor_current_user', JSON.stringify(currentUser));
-                showMainPage();
-            } else {
-                alert('Pseudo ou mot de passe incorrect');
-            }
-        }
-        
-        function register() {
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            
-            if (users[username]) {
-                alert('Ce pseudo est déjà utilisé');
-                return;
-            }
-            
-            // Créer un nouvel utilisateur
-            users[username] = {
-                username: username,
-                email: email,
-                password: password,
-                xubor: 500, // Xubor de départ
-                ownedSkins: [1], // Skin de base
-                activeSkin: 1
-            };
-            
-            localStorage.setItem('xolbor_users', JSON.stringify(users));
-            currentUser = users[username];
-            localStorage.setItem('xolbor_current_user', JSON.stringify(currentUser));
-            showMainPage();
-        }
-        
-        function checkUsernameAvailability(username) {
-            const feedback = document.querySelector('.username-feedback');
-            if (users[username]) {
-                feedback.textContent = 'Ce pseudo est déjà utilisé';
-                feedback.style.color = 'var(--danger)';
-            } else if (username.length < 3) {
-                feedback.textContent = 'Le pseudo doit contenir au moins 3 caractères';
-                feedback.style.color = 'var(--warning)';
-            } else {
-                feedback.textContent = 'Ce pseudo est disponible';
-                feedback.style.color = 'var(--success)';
-            }
-        }
-        
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('xolbor_current_user');
-            showLoginPage();
-        }
-        
-        // Mettre à jour les informations utilisateur
-        function updateUserInfo() {
-            if (!currentUser) return;
-            
-            document.getElementById('xubor-count').textContent = currentUser.xubor;
-            document.getElementById('profile-xubor').textContent = currentUser.xubor;
-            document.getElementById('profile-username').textContent = currentUser.username;
-            
-            // Mettre à jour l'avatar avec le skin actif
-            const activeSkin = skins.find(skin => skin.id === currentUser.activeSkin);
-            const navAvatar = document.getElementById('nav-avatar');
-            const profileAvatar = document.getElementById('profile-avatar');
-            
-            if (activeSkin) {
-                navAvatar.innerHTML = `<i class="${activeSkin.icon}"></i>`;
-                profileAvatar.innerHTML = `<i class="${activeSkin.icon}"></i>`;
-            }
-            
-            // Mettre à jour les skins possédés
-            updateOwnedSkins();
-        }
-        
-        // Initialiser le marketplace
-        function initializeMarketplace() {
-            const skinsContainer = document.getElementById('skins-container');
-            skinsContainer.innerHTML = '';
-            
-            skins.forEach(skin => {
-                const isOwned = currentUser && currentUser.ownedSkins.includes(skin.id);
-                const skinCard = document.createElement('div');
-                skinCard.className = 'skin-card';
-                skinCard.innerHTML = `
-                    <div class="skin-image">
-                        <i class="${skin.icon}"></i>
-                    </div>
-                    <div class="skin-info">
-                        <h3 class="skin-name">${skin.name}</h3>
-                        <div class="skin-price">
-                            <div class="price-tag">
-                                <i class="fas fa-gem"></i>
-                                <span>${skin.price}</span>
-                            </div>
-                            ${isOwned ? 
-                                '<button class="buy-btn" style="background: var(--success);">Possédé</button>' : 
-                                `<button class="buy-btn" data-skin-id="${skin.id}">Acheter</button>`
-                            }
-                        </div>
-                    </div>
-                `;
-                
-                skinsContainer.appendChild(skinCard);
-            });
-            
-            // Gérer les achats de skins
-            document.querySelectorAll('.buy-btn').forEach(btn => {
-                if (btn.textContent === 'Acheter') {
-                    btn.addEventListener('click', function() {
-                        const skinId = parseInt(this.getAttribute('data-skin-id'));
-                        buySkin(skinId);
-                    });
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#6366f1" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#8b5cf6",
+                        opacity: 0.2,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 2,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false
+                    }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: { enable: true, mode: "repulse" },
+                        onclick: { enable: true, mode: "push" }
+                    }
                 }
             });
-        }
-        
-        // Acheter un skin
-        function buySkin(skinId) {
-            const skin = skins.find(s => s.id === skinId);
             
-            if (!skin) return;
-            
-            if (currentUser.xubor < skin.price) {
-                alert('Vous n\'avez pas assez de Xubor pour acheter ce skin');
-                return;
-            }
-            
-            // Déduire le prix et ajouter le skin
-            currentUser.xubor -= skin.price;
-            currentUser.ownedSkins.push(skinId);
-            
-            // Mettre à jour le stockage
-            users[currentUser.username] = currentUser;
-            localStorage.setItem('xolbor_users', JSON.stringify(users));
-            localStorage.setItem('xolbor_current_user', JSON.stringify(currentUser));
-            
-            // Mettre à jour l'interface
-            updateUserInfo();
-            initializeMarketplace();
-            
-            alert(`Félicitations ! Vous avez acheté le skin "${skin.name}"`);
-        }
-        
-        // Mettre à jour les skins possédés
-        function updateOwnedSkins() {
-            const ownedSkinsContainer = document.getElementById('owned-skins');
-            ownedSkinsContainer.innerHTML = '';
-            
-            if (!currentUser) return;
-            
-            currentUser.ownedSkins.forEach(skinId => {
-                const skin = skins.find(s => s.id === skinId);
-                if (!skin) return;
-                
-                const isActive = currentUser.activeSkin === skinId;
-                const skinItem = document.createElement('div');
-                skinItem.className = `skin-item ${isActive ? 'active' : ''}`;
-                skinItem.innerHTML = `
-                    <div class="skin-item-image">
-                        <i class="${skin.icon}"></i>
-                    </div>
-                    <div class="skin-name">${skin.name}</div>
-                `;
-                
-                skinItem.addEventListener('click', function() {
-                    equipSkin(skinId);
+            // Navigation smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
                 });
-                
-                ownedSkinsContainer.appendChild(skinItem);
             });
-        }
-        
-        // Équiper un skin
-        function equipSkin(skinId) {
-            currentUser.activeSkin = skinId;
             
-            // Mettre à jour le stockage
-            users[currentUser.username] = currentUser;
-            localStorage.setItem('xolbor_users', JSON.stringify(users));
-            localStorage.setItem('xolbor_current_user', JSON.stringify(currentUser));
-            
-            // Mettre à jour l'interface
-            updateUserInfo();
-        }
+            // Vérifier si l'utilisateur est déjà connecté
+            const token = localStorage.getItem('xolbor_token');
+            if (token) {
+                const loginBtn = document.querySelector('.login-btn');
+                loginBtn.innerHTML = '<i class="fas fa-user"></i> Dashboard';
+                loginBtn.onclick = function() {
+                    window.location.href = 'dashboard.html';
+                };
+            }
+        });
     </script>
 </body>
 </html>

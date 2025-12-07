@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace - Xolbor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Styles spécifiques pour le marketplace */
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+            --border: #cbd5e1;
+            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Layout principal */
+        .marketplace-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar identique au dashboard */
+        .sidebar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        /* Header du marketplace */
+        .marketplace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .marketplace-title {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            min-width: 300px;
+        }
+        
+        .balance-info h3 {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .add-balance-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .add-balance-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Filtres et recherche */
+        .filters-section {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .search-bar i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .filter-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 12px 25px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Grid des skins */
+        .skins-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .skin-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .skin-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .skin-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .skin-badge.legendary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .skin-badge.epic {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .skin-badge.rare {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .skin-badge.common {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+        
+        .skin-image {
+            height: 180px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #94a3b8;
+        }
+        
+        .skin-content {
+            padding: 20px;
+        }
+        
+        .skin-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .skin-description {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .skin-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .price-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .skin-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .buy-btn {
+            flex: 1;
+            padding: 12px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .buy-btn.owned {
+            background: #10b981;
+            cursor: default;
+        }
+        
+        .buy-btn.owned:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .preview-btn {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preview-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Modal de prévisualisation */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .preview-content {
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+        
+        .page-btn {
+            padding: 12px 20px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .marketplace-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .marketplace-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .balance-card {
+                min-width: 100%;
+            }
+            
+            .skins-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .skins-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                flex-direction: column;
+            }
+            
+            .filter-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marketplace-container">
+        <!-- Sidebar identique au dashboard -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">XOLBOR</div>
+            
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-name" id="userName">Chargement...</div>
+                <div class="user-balance">
+                    <i class="fas fa-gem"></i>
+                    <span id="userBalance">0</span> Xubor
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="games.html" class="nav-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Jeux</span>
+                </a>
+                <a href="marketplace.html" class="nav-item active">
+                    <i class="fas fa-store"></i>
+                    <span>Marketplace</span>
+                </a>
+                <a href="friends.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Amis</span>
+                </a>
+                <a href="profile.html" class="nav-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profil</span>
+                </a>
+                <a href="#" class="nav-item" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="marketplace-header">
+                <h1 class="marketplace-title">Marketplace</h1>
+                
+                <div class="balance-card">
+                    <div class="balance-icon">
+                        <i class="fas fa-gem fa-2x"></i>
+                    </div>
+                    <div class="balance-info">
+                        <h3>Votre solde Xubor</h3>
+                        <div class="balance-amount" id="balanceAmount">0</div>
+                        <button class="add-balance-btn" onclick="window.location.href='payment.html'">
+                            <i class="fas fa-plus"></i> Ajouter des Xubor
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Filtres et recherche -->
+            <section class="filters-section">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="skinSearch" placeholder="Rechercher un skin...">
+                </div>
+                
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">Tous les skins</button>
+                    <button class="filter-btn" data-filter="legendary">Légendaires</button>
+                    <button class="filter-btn" data-filter="epic">Épiques</button>
+                    <button class="filter-btn" data-filter="rare">Rares</button>
+                    <button class="filter-btn" data-filter="common">Communs</button>
+                    <button class="filter-btn" data-filter="owned">Possédés</button>
+                </div>
+            </section>
+            
+            <!-- Grid des skins -->
+            <div class="skins-grid" id="skinsGrid">
+                <!-- Les skins seront chargés dynamiquement -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- La pagination sera générée dynamiquement -->
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal de prévisualisation -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-content">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
+                <h2 id="previewTitle" style="font-size: 2rem;">Prévisualisation</h2>
+                <button id="closePreview" style="background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="previewContent">
+                <!-- Contenu de la prévisualisation -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier l'authentification
+            const token = localStorage.getItem('xolbor_token');
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Charger les données de l'utilisateur
+            const userData = JSON.parse(localStorage.getItem('xolbor_user')) || {};
+            
+            // Mettre à jour l'interface utilisateur
+            document.getElementById('userName').textContent = userData.username || 'Joueur';
+            document.getElementById('userBalance').textContent = userData.xubor || 0;
+            document.getElementById('balanceAmount').textContent = userData.xubor || 0;
+            
+            // Mettre à jour l'avatar si disponible
+            if (userData.avatar && userData.avatar !== 'default') {
+                const avatarElement = document.getElementById('userAvatar');
+                avatarElement.innerHTML = `<img src="${userData.avatar}" alt="Avatar">`;
+            }
+            
+            // Charger les skins
+            loadSkins();
+            
+            // Gestion de la déconnexion
+            document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                    localStorage.removeItem('xolbor_token');
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // Filtres
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    filterSkins(filter);
+                });
+            });
+            
+            // Recherche
+            document.getElementById('skinSearch').addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                filterSkinsBySearch(query);
+            });
+            
+            // Fermer le modal de prévisualisation
+            document.getElementById('closePreview').addEventListener('click', function() {
+                document.getElementById('previewModal').style.display = 'none';
+            });
+            
+            // Fermer le modal en cliquant à l'extérieur
+            document.getElementById('previewModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+            
+            // Générer 100+ skins
+            function generateSkins() {
+                const skins = [];
+                const rarities = ['common', 'rare', 'epic', 'legendary'];
+                const rarityNames = {
+                    'common': 'Commun',
+                    'rare': 'Rare',
+                    'epic': 'Épique',
+                    'legendary': 'Légendaire'
+                };
+                
+                const skinNames = [
+                    'Dragon Rouge', 'Ninja Shadow', 'Cyber Warrior', 'Phantom Assassin',
+                    'Golden Knight', 'Ice Mage', 'Fire Demon', 'Electric Samurai',
+                    'Steel Titan', 'Ocean Guardian', 'Forest Spirit', 'Desert Nomad',
+                    'Space Explorer', 'Time Traveler', 'Robot Guardian', 'Magic Archer',
+                    'Dark Wizard', 'Light Paladin', 'Storm Rider', 'Earth Golem',
+                    'Neon Cyborg', 'Crystal Guardian', 'Shadow Assassin', 'Solar Warrior',
+                    'Lunar Mage', 'Cosmic Hunter', 'Atomic Soldier', 'Quantum Ninja',
+                    'Galactic Pirate', 'Mystic Shaman', 'Techno Mage', 'Bio Warrior',
+                    'Psychedelic Samurai', 'Holographic Ninja', 'Digital Knight', 'Virtual Ranger',
+                    'Plasma Warrior', 'Gravity Mage', 'Dimension Walker', 'Reality Bender',
+                    'Infinity Soldier', 'Eternal Guardian', 'Celestial Warrior', 'Divine Paladin',
+                    'Demonic Warrior', 'Angel Guardian', 'Mecha Titan', 'Bio-Organic Soldier',
+                    'Cryo Warrior', 'Pyro Mage'
+                ];
+                
+                const icons = [
+                    'fas fa-dragon', 'fas fa-user-ninja', 'fas fa-robot', 'fas fa-user-secret',
+                    'fas fa-crown', 'fas fa-snowflake', 'fas fa-fire', 'fas fa-bolt',
+                    'fas fa-robot', 'fas fa-water', 'fas fa-leaf', 'fas fa-sun',
+                    'fas fa-rocket', 'fas fa-clock', 'fas fa-robot', 'fas fa-bow-arrow',
+                    'fas fa-hat-wizard', 'fas fa-shield-alt', 'fas fa-wind', 'fas fa-mountain',
+                    'fas fa-robot', 'fas fa-gem', 'fas fa-user-secret', 'fas fa-sun',
+                    'fas fa-moon', 'fas fa-user-astronaut', 'fas fa-atom', 'fas fa-user-ninja',
+                    'fas fa-skull-crossbones', 'fas fa-staff', 'fas fa-robot', 'fas fa-dna',
+                    'fas fa-user-ninja', 'fas fa-user-ninja', 'fas fa-helmet-battle', 'fas fa-user-astronaut',
+                    'fas fa-atom', 'fas fa-weight-hanging', 'fas fa-door-open', 'fas fa-magic',
+                    'fas fa-infinity', 'fas fa-shield-alt', 'fas fa-star', 'fas fa-cross',
+                    'fas fa-skull', 'fas fa-angel', 'fas fa-robot', 'fas fa-dna',
+                    'fas fa-snowflake', 'fas fa-fire'
+                ];
+                
+                // Générer 100 skins
+                for (let i = 0; i < 100; i++) {
+                    const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+                    const nameIndex = i % skinNames.length;
+                    const iconIndex = i % icons.length;
+                    
+                    let price;
+                    switch(rarity) {
+                        case 'common': price = 100 + Math.floor(Math.random() * 400); break;
+                        case 'rare': price = 500 + Math.floor(Math.random() * 500); break;
+                        case 'epic': price = 1000 + Math.floor(Math.random() * 1500); break;
+                        case 'legendary': price = 2500 + Math.floor(Math.random() * 5000); break;
+                    }
+                    
+                    skins.push({
+                        id: i + 1,
+                        name: skinNames[nameIndex] + ' ' + (Math.floor(i / skinNames.length) + 1),
+                        description: `Skin ${rarityNames[rarity]} unique avec des effets spéciaux`,
+                        rarity: rarity,
+                        rarityName: rarityNames[rarity],
+                        price: price,
+                        icon: icons[iconIndex],
+                        owned: Math.random() > 0.7 // 30% de chance d'être possédé
+                    });
+                }
+                
+                return skins;
+            }
+            
+            // Charger et afficher les skins
+            function loadSkins() {
+                const skins = generateSkins();
+                window.allSkins = skins; // Stocker globalement pour le filtrage
+                
+                const skinsGrid = document.getElementById('skinsGrid');
+                skinsGrid.innerHTML = '';
+                
+                skins.slice(0, 20).forEach(skin => { // Afficher les 20 premiers
+                    const skinCard = createSkinCard(skin);
+                    skinsGrid.appendChild(skinCard);
+                });
+                
+                // Générer la pagination
+                generatePagination(skins.length);
+            }
+            
+            // Créer une carte de skin
+            function createSkinCard(skin) {
+                const userData = JSON.parse(localStorage.getItem('xolbor_user')) || {};
+                const ownedSkins = userData.skins || [];
+                const isOwned = ownedSkins.includes(skin.id) || skin.owned;
+                
+                const skinCard = document.createElement('div');
+                skinCard.className = 'skin-card';
+                skinCard.dataset.rarity = skin.rarity;
+                skinCard.dataset.owned = isOwned;
+                
+                skinCard.innerHTML = `
+                    <div class="skin-badge ${skin.rarity}">${skin.rarityName}</div>
+                    <div class="skin-image">
+                        <i class="${skin.icon}"></i>
+                    </div>
+                    <div class="skin-content">
+                        <h3 class="skin-name">${skin.name}</h3>
+                        <p class="skin-description">${skin.description}</p>
+                        <div class="skin-price">
+                            <div class="price-amount">
+                                <i class="fas fa-gem"></i>
+                                <span>${skin.price}</span>
+                            </div>
+                            <div class="skin-actions">
+                                <button class="buy-btn ${isOwned ? 'owned' : ''}" 
+                                        ${isOwned ? 'disabled' : ''}
+                                        onclick="buySkin(${skin.id}, ${skin.price})">
+                                    ${isOwned ? '<i class="fas fa-check"></i> Possédé' : '<i class="fas fa-shopping-cart"></i> Acheter'}
+                                </button>
+                                <button class="preview-btn" onclick="previewSkin(${skin.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                return skinCard;
+            }
+            
+            // Filtrer les skins
+            function filterSkins(filter) {
+                const skins = window.allSkins;
+                const userData = JSON.parse(localStorage.getItem('xolbor_user')) || {};
+                const ownedSkins = userData.skins || [];
+                
+                let filteredSkins = skins;
+                
+                if (filter !== 'all') {
+                    if (filter === 'owned') {
+                        filteredSkins = skins.filter(skin => ownedSkins.includes(skin.id) || skin.owned);
+                    } else {
+                        filteredSkins = skins.filter(skin => skin.rarity === filter);
+                    }
+                }
+                
+                const skinsGrid = document.getElementById('skinsGrid');
+                skinsGrid.innerHTML = '';
+                
+                filteredSkins.slice(0, 20).forEach(skin => {
+                    const skinCard = createSkinCard(skin);
+                    skinsGrid.appendChild(skinCard);
+                });
+                
+                // Mettre à jour la pagination
+                generatePagination(filteredSkins.length);
+            }
+            
+            // Filtrer les skins par recherche
+            function filterSkinsBySearch(query) {
+                const skins = window.allSkins;
+                const filteredSkins = skins.filter(skin => 
+                    skin.name.toLowerCase().includes(query) ||
+                    skin.description.toLowerCase().includes(query) ||
+                    skin.rarityName.toLowerCase().includes(query)
+                );
+                
+                const skinsGrid = document.getElementById('skinsGrid');
+                skinsGrid.innerHTML = '';
+                
+                filteredSkins.slice(0, 20).forEach(skin => {
+                    const skinCard = createSkinCard(skin);
+                    skinsGrid.appendChild(skinCard);
+                });
+                
+                // Mettre à jour la pagination
+                generatePagination(filteredSkins.length);
+            }
+            
+            // Générer la pagination
+            function generatePagination(totalItems) {
+                const itemsPerPage = 20;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                const pagination = document.getElementById('pagination');
+                pagination.innerHTML = '';
+                
+                for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = 'page-btn' + (i === 1 ? ' active' : '');
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', function() {
+                        document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        showPage(i, totalItems);
+                    });
+                    pagination.appendChild(pageBtn);
+                }
+            }
+            
+            // Afficher une page spécifique
+            function showPage(pageNumber, totalItems) {
+                const itemsPerPage = 20;
+                const startIndex = (pageNumber - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                
+                const skins = window.allSkins;
+                const skinsGrid = document.getElementById('skinsGrid');
+                skinsGrid.innerHTML = '';
+                
+                skins.slice(startIndex, endIndex).forEach(skin => {
+                    const skinCard = createSkinCard(skin);
+                    skinsGrid.appendChild(skinCard);
+                });
+            }
+        });
+        
+        // Fonction pour acheter un skin
+        function buySkin(skinId, price) {
+            const userData = JSON.parse(localStorage.getItem('xolbor_user')) || {};
+            
+            if (!userData.xubor || userData.xubor < price) {
+                alert('Fonds insuffisants ! Achetez plus de Xubor.');
+                return;
+            }
+            
+            if (confirm(`Acheter ce skin pour ${price} Xubor ?`)) {
+                // Déduire le prix
+                userData.xubor -= price;
+                
+                // Ajouter le skin à la collection
+                if (!userData.skins) {
+                    userData.skins = [];
+                }
+                userData.skins.push(skinId);
+                
+                // Sauvegarder
+                localStorage.setItem('xolbor_user', JSON.stringify(userData));
+                
+                // Mettre à jour l'interface
+                document.getElementById('userBalance').textContent = userData.xubor;
+                document.getElementById('balanceAmount').textContent = userData.xubor;
+                
+                // Recharger les skins pour mettre à jour les boutons
+                const skinsGrid = document.getElementById('skinsGrid');
+                const skinCards = skinsGrid.querySelectorAll('.skin-card');
+                skinCards.forEach(card => {
+                    const buyBtn = card.querySelector('.buy-btn');
+                    if (card.dataset.owned === 'false') {
+                        card.dataset.owned = 'true';
+                        buyBtn.classList.add('owned');
+                        buyBtn.innerHTML = '<i class="fas fa-check"></i> Possédé';
+                        buyBtn.disabled = true;
+                    }
+                });
+                
+                alert('Achat réussi ! Le skin a été ajouté à votre collection.');
+            }
+        }
+        
+        // Fonction pour prévisualiser un skin
+        function previewSkin(skinId) {
+            const skins = window.allSkins;
+            const skin = skins.find(s => s.id === skinId);
+            
+            if (!skin) return;
+            
+            const modal = document.getElementById('previewModal');
+            const title = document.getElementById('previewTitle');
+            const content = document.getElementById('previewContent');
+            
+            title.textContent = skin.name;
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 5rem; color: #6366f1; margin-bottom: 20px;">
+                        <i class="${skin.icon}"></i>
+                    </div>
+                    <div class="skin-badge ${skin.rarity}" style="display: inline-block;">
+                        ${skin.rarityName}
+                    </div>
+                </div>
+                
+                <div style="background: rgba(15, 23, 42, 0.6); border-radius: 12px; padding: 25px; margin-bottom: 25px;">
+                    <h3 style="margin-bottom: 15px; color: white;">Description</h3>
+                    <p style="color: #94a3b8; line-height: 1.6;">${skin.description}</p>
+                    <p style="color: #94a3b8; margin-top: 15px;">
+                        Ce skin est disponible pour tous les personnages et inclut des effets visuels uniques.
+                    </p>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: white; margin-bottom: 10px;">Prix</h3>
+                        <div style="font-size: 2rem; color: #fbbf24; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-gem"></i>
+                            <span>${skin.price} Xubor</span>
+                        </div>
+                    </div>
+                    
+                    <button class="buy-btn" onclick="buySkin(${skin.id}, ${skin.price})" style="padding: 15px 30px;">
+                        <i class="fas fa-shopping-cart"></i> Acheter maintenant
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
