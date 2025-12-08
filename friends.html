@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xolbor - Amis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
+            <h2>XOLBOR</h2>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" id="friend-search" placeholder="Rechercher un ami...">
+        </div>
+        
+        <div class="profile-section">
+            <div class="xubor-balance">
+                <i class="fas fa-gem"></i>
+                <span id="xubor-balance">0</span>
+            </div>
+            
+            <div class="avatar-container" onclick="window.location.href='profile.html'">
+                <div class="avatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=6C63FF" alt="Avatar">
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Menu de navigation -->
+    <div class="nav-menu-container">
+        <div class="nav-menu">
+            <button class="nav-btn" onclick="window.location.href='home.html'">
+                <i class="fas fa-home"></i> Accueil
+            </button>
+            <button class="nav-btn" onclick="window.location.href='marketplace.html'">
+                <i class="fas fa-store"></i> Marketplace
+            </button>
+            <button class="nav-btn active" onclick="window.location.href='friends.html'">
+                <i class="fas fa-user-friends"></i> Amis
+            </button>
+            <button class="nav-btn" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user"></i> Profil
+            </button>
+            <button class="nav-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </div>
+    </div>
+    
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <!-- En-tête amis -->
+        <div class="friends-header">
+            <div class="section-header">
+                <h1>Vos amis</h1>
+                <div class="friends-actions">
+                    <button class="btn-add-friend" id="add-friend-btn">
+                        <i class="fas fa-user-plus"></i> Ajouter un ami
+                    </button>
+                    <button class="btn-refresh" onclick="loadFriends()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="friends-stats">
+                <div class="stat-card">
+                    <div class="stat-icon online">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="online-count">0</span>
+                        <span class="stat-label">En ligne</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon offline">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="offline-count">0</span>
+                        <span class="stat-label">Hors ligne</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon gaming">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="gaming-count">0</span>
+                        <span class="stat-label">En jeu</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-count">0</span>
+                        <span class="stat-label">Total amis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Onglets amis -->
+        <div class="friends-tabs">
+            <button class="friends-tab active" data-tab="all">Tous les amis</button>
+            <button class="friends-tab" data-tab="online">En ligne</button>
+            <button class="friends-tab" data-tab="pending">Demandes en attente</button>
+            <button class="friends-tab" data-tab="blocked">Bloqués</button>
+        </div>
+        
+        <!-- Liste des amis -->
+        <div class="friends-container">
+            <div class="friends-list" id="friends-list">
+                <!-- Les amis seront chargés dynamiquement -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement de vos amis...</p>
+                </div>
+            </div>
+            
+            <!-- Suggestions d'amis -->
+            <div class="friends-suggestions">
+                <div class="suggestions-header">
+                    <h3><i class="fas fa-user-plus"></i> Suggestions</h3>
+                </div>
+                <div class="suggestions-list" id="suggestions-list">
+                    <!-- Les suggestions seront chargées dynamiquement -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Visualisation 3D d'avatar -->
+        <div class="avatar-3d-section">
+            <div class="section-header">
+                <h2><i class="fas fa-cube"></i> Visualisation 3D</h2>
+                <p>Sélectionnez un ami pour voir son avatar en 3D</p>
+            </div>
+            
+            <div class="avatar-3d-container">
+                <div class="avatar-3d-viewer" id="avatar-3d-viewer">
+                    <div class="placeholder-3d">
+                        <i class="fas fa-user-astronaut"></i>
+                        <p>Sélectionnez un ami pour commencer</p>
+                    </div>
+                </div>
+                
+                <div class="avatar-controls">
+                    <div class="control-group">
+                        <label>Rotation</label>
+                        <input type="range" id="rotation-slider" min="0" max="360" value="0">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Zoom</label>
+                        <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1.5">
+                    </div>
+                    
+                    <button class="btn-reset" onclick="reset3DView()">
+                        <i class="fas fa-undo"></i> Réinitialiser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let friends = [];
+        let suggestions = [];
+        let activeTab = 'all';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier l'authentification
+            if (!window.authManager.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Charger les données
+            loadUserData();
+            loadFriends();
+            loadSuggestions();
+            
+            // Configurer la recherche
+            const searchInput = document.getElementById('friend-search');
+            searchInput.addEventListener('input', debounce(function() {
+                filterFriends();
+            }, 300));
+            
+            // Configurer les onglets
+            document.querySelectorAll('.friends-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.friends-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    activeTab = this.dataset.tab;
+                    filterFriends();
+                });
+            });
+            
+            // Configurer le bouton ajouter ami
+            document.getElementById('add-friend-btn').addEventListener('click', addFriend);
+        });
+        
+        function loadUserData() {
+            const user = window.authManager.getCurrentUser();
+            if (user) {
+                document.getElementById('xubor-balance').textContent = 
+                    (user.xuborBalance || 0).toLocaleString();
+                
+                const avatarImg = document.querySelector('.avatar img');
+                if (avatarImg && user.username) {
+                    avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}&backgroundColor=6C63FF`;
+                }
+            }
+        }
+        
+        async function loadFriends() {
+            try {
+                // Simulation de chargement depuis une API
+                friends = await generateSampleFriends(25);
+                filterFriends();
+                updateStats();
+            } catch (error) {
+                console.error('Erreur de chargement des amis:', error);
+                showNotification('Erreur de chargement des amis', 'error');
+            }
+        }
+        
+        async function loadSuggestions() {
+            try {
+                // Simulation de suggestions
+                suggestions = await generateSampleSuggestions(5);
+                displaySuggestions();
+            } catch (error) {
+                console.error('Erreur de chargement des suggestions:', error);
+            }
+        }
+        
+        function filterFriends() {
+            const searchTerm = document.getElementById('friend-search').value.toLowerCase();
+            const container = document.getElementById('friends-list');
+            
+            let filteredFriends = friends.filter(friend => {
+                // Recherche texte
+                if (searchTerm && !friend.username.toLowerCase().includes(searchTerm) && 
+                    !friend.name.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // Filtre onglet
+                if (activeTab === 'online' && friend.status !== 'online') return false;
+                if (activeTab === 'pending' && !friend.pending) return false;
+                if (activeTab === 'blocked' && !friend.blocked) return false;
+                
+                return true;
+            });
+            
+            displayFriends(filteredFriends);
+        }
+        
+        function displayFriends(friendList) {
+            const container = document.getElementById('friends-list');
+            
+            if (friendList.length === 0) {
+                container.innerHTML = `
+                    <div class="no-friends">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>Aucun ami trouvé</h3>
+                        <p>${activeTab === 'all' ? 'Ajoutez des amis pour commencer' : 
+                            activeTab === 'online' ? 'Aucun ami en ligne' :
+                            activeTab === 'pending' ? 'Aucune demande en attente' :
+                            'Aucun utilisateur bloqué'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = friendList.map(friend => `
+                <div class="friend-card" data-friend-id="${friend.id}">
+                    <div class="friend-avatar" onclick="viewFriend3D('${friend.username}')">
+                        <img src="${friend.avatar}" alt="${friend.username}">
+                        <div class="status-indicator ${friend.status}"></div>
+                    </div>
+                    
+                    <div class="friend-info">
+                        <div class="friend-main">
+                            <h3>${friend.username}</h3>
+                            <span class="friend-status-text ${friend.status}">
+                                <i class="fas fa-circle"></i>
+                                ${friend.status === 'online' ? 'En ligne' : 
+                                 friend.status === 'gaming' ? 'En jeu' : 'Hors ligne'}
+                            </span>
+                        </div>
+                        
+                        <div class="friend-details">
+                            <p class="friend-game" style="display: ${friend.currentGame ? 'block' : 'none'}">
+                                <i class="fas fa-gamepad"></i> ${friend.currentGame || ''}
+                            </p>
+                            <p class="friend-last-seen">
+                                ${friend.lastSeen || ''}
+                            </p>
+                        </div>
+                        
+                        <div class="friend-actions">
+                            ${friend.pending ? `
+                                <button class="btn-accept" onclick="acceptFriendRequest('${friend.id}')">
+                                    <i class="fas fa-check"></i> Accepter
+                                </button>
+                                <button class="btn-decline" onclick="declineFriendRequest('${friend.id}')">
+                                    <i class="fas fa-times"></i> Refuser
+                                </button>
+                            ` : friend.blocked ? `
+                                <button class="btn-unblock" onclick="unblockFriend('${friend.id}')">
+                                    <i class="fas fa-ban"></i> Débloquer
+                                </button>
+                            ` : `
+                                <button class="btn-message" onclick="messageFriend('${friend.id}')">
+                                    <i class="fas fa-comment"></i> Message
+                                </button>
+                                <button class="btn-profile" onclick="viewFriendProfile('${friend.id}')">
+                                    <i class="fas fa-user"></i> Profil
+                                </button>
+                                ${friend.status === 'gaming' ? `
+                                    <button class="btn-join" onclick="joinFriendGame('${friend.id}')">
+                                        <i class="fas fa-gamepad"></i> Rejoindre
+                                    </button>
+                                ` : ''}
+                            `}
+                        </div>
+                    </div>
+                    
+                    <div class="friend-xp">
+                        <div class="xp-level">Niv. ${friend.level}</div>
+                        <div class="xp-bar">
+                            <div class="xp-progress" style="width: ${friend.xpProgress}%"></div>
+                        </div>
+                        <div class="xp-text">${friend.xp} XP</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displaySuggestions() {
+            const container = document.getElementById('suggestions-list');
+            
+            if (suggestions.length === 0) {
+                container.innerHTML = '<p class="no-suggestions">Aucune suggestion pour le moment</p>';
+                return;
+            }
+            
+            container.innerHTML = suggestions.map(suggestion => `
+                <div class="suggestion-card">
+                    <div class="suggestion-avatar">
+                        <img src="${suggestion.avatar}" alt="${suggestion.username}">
+                    </div>
+                    <div class="suggestion-info">
+                        <h4>${suggestion.username}</h4>
+                        <p>${suggestion.mutualFriends} amis en commun</p>
+                    </div>
+                    <button class="btn-add" onclick="addSuggestedFriend('${suggestion.id}')">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function updateStats() {
+            const onlineCount = friends.filter(f => f.status === 'online').length;
+            const offlineCount = friends.filter(f => f.status === 'offline').length;
+            const gamingCount = friends.filter(f => f.status === 'gaming').length;
+            const pendingCount = friends.filter(f => f.pending).length;
+            
+            document.getElementById('online-count').textContent = onlineCount;
+            document.getElementById('offline-count').textContent = offlineCount;
+            document.getElementById('gaming-count').textContent = gamingCount;
+            document.getElementById('total-count').textContent = friends.length - pendingCount;
+        }
+        
+        async function addFriend() {
+            const username = prompt('Entrez le pseudo de l\'ami à ajouter :');
+            if (!username) return;
+            
+            if (username.length < 3) {
+                showNotification('Pseudo trop court', 'error');
+                return;
+            }
+            
+            // Vérifier que ce n'est pas soi-même
+            const user = window.authManager.getCurrentUser();
+            if (user && user.username.toLowerCase() === username.toLowerCase()) {
+                showNotification('Vous ne pouvez pas vous ajouter vous-même', 'error');
+                return;
+            }
+            
+            try {
+                showNotification(`Envoi de la demande à ${username}...`, 'info');
+                
+                // Simulation d'ajout d'ami
+                const success = await simulateAddFriend(username);
+                
+                if (success) {
+                    showNotification(`Demande envoyée à ${username}`, 'success');
+                    
+                    // Ajouter à la liste des amis (en attente)
+                    friends.unshift({
+                        id: 'new_' + Date.now(),
+                        username: username,
+                        name: username,
+                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
+                        status: 'offline',
+                        pending: true,
+                        level: 1,
+                        xp: 0,
+                        xpProgress: 0,
+                        lastSeen: 'Il y a quelques instants'
+                    });
+                    
+                    filterFriends();
+                    updateStats();
+                } else {
+                    showNotification('Utilisateur introuvable', 'error');
+                }
+            } catch (error) {
+                showNotification('Erreur lors de l\'ajout', 'error');
+            }
+        }
+        
+        async function addSuggestedFriend(suggestionId) {
+            const suggestion = suggestions.find(s => s.id === suggestionId);
+            if (!suggestion) return;
+            
+            await addFriendFromSuggestion(suggestion.username);
+            
+            // Retirer de la liste des suggestions
+            suggestions = suggestions.filter(s => s.id !== suggestionId);
+            displaySuggestions();
+        }
+        
+        async function addFriendFromSuggestion(username) {
+            try {
+                showNotification(`Ajout de ${username}...`, 'info');
+                
+                const success = await simulateAddFriend(username);
+                
+                if (success) {
+                    showNotification(`Demande envoyée à ${username}`, 'success');
+                } else {
+                    showNotification('Erreur lors de l\'ajout', 'error');
+                }
+            } catch (error) {
+                showNotification('Erreur réseau', 'error');
+            }
+        }
+        
+        async function acceptFriendRequest(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            try {
+                showNotification(`Acceptation de la demande...`, 'info');
+                
+                const success = await simulateAcceptFriend(friendId);
+                
+                if (success) {
+                    friend.pending = false;
+                    friend.status = 'online';
+                    filterFriends();
+                    updateStats();
+                    
+                    showNotification(`Vous êtes maintenant ami avec ${friend.username}`, 'success');
+                }
+            } catch (error) {
+                showNotification('Erreur lors de l\'acceptation', 'error');
+            }
+        }
+        
+        async function declineFriendRequest(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            if (!confirm(`Refuser la demande de ${friend.username} ?`)) {
+                return;
+            }
+            
+            try {
+                showNotification(`Refus de la demande...`, 'info');
+                
+                const success = await simulateDeclineFriend(friendId);
+                
+                if (success) {
+                    friends = friends.filter(f => f.id !== friendId);
+                    filterFriends();
+                    updateStats();
+                    
+                    showNotification('Demande refusée', 'info');
+                }
+            } catch (error) {
+                showNotification('Erreur lors du refus', 'error');
+            }
+        }
+        
+        function viewFriend3D(username) {
+            const viewer = document.getElementById('avatar-3d-viewer');
+            viewer.innerHTML = `
+                <div class="avatar-3d">
+                    <div class="avatar-model" id="avatar-model">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <div class="avatar-info">
+                        <h3>${username}</h3>
+                        <p>Visualisation 3D de l'avatar</p>
+                    </div>
+                </div>
+            `;
+            
+            // Animation de rotation
+            const model = document.getElementById('avatar-model');
+            const rotationSlider = document.getElementById('rotation-slider');
+            const zoomSlider = document.getElementById('zoom-slider');
+            
+            rotationSlider.addEventListener('input', function() {
+                model.style.transform = `rotateY(${this.value}deg) scale(${zoomSlider.value})`;
+            });
+            
+            zoomSlider.addEventListener('input', function() {
+                model.style.transform = `rotateY(${rotationSlider.value}deg) scale(${this.value})`;
+            });
+            
+            // Appliquer les valeurs initiales
+            model.style.transform = `rotateY(${rotationSlider.value}deg) scale(${zoomSlider.value})`;
+        }
+        
+        function reset3DView() {
+            document.getElementById('rotation-slider').value = 0;
+            document.getElementById('zoom-slider').value = 1.5;
+            
+            const model = document.getElementById('avatar-model');
+            if (model) {
+                model.style.transform = 'rotateY(0deg) scale(1.5)';
+            }
+        }
+        
+        function messageFriend(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            const message = prompt(`Envoyer un message à ${friend.username} :`);
+            if (message) {
+                showNotification(`Message envoyé à ${friend.username}`, 'success');
+            }
+        }
+        
+        function viewFriendProfile(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            showNotification(`Ouverture du profil de ${friend.username}...`, 'info');
+            // En production, rediriger vers la page de profil de l'ami
+        }
+        
+        function joinFriendGame(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            if (confirm(`Rejoindre ${friend.username} dans ${friend.currentGame} ?`)) {
+                showNotification(`Connexion à ${friend.currentGame}...`, 'info');
+                // En production, lancer le jeu et rejoindre la partie
+            }
+        }
+        
+        function unblockFriend(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            if (!friend) return;
+            
+            if (confirm(`Débloquer ${friend.username} ?`)) {
+                friend.blocked = false;
+                filterFriends();
+                showNotification(`${friend.username} a été débloqué`, 'success');
+            }
+        }
+        
+        // Générer des amis de démonstration
+        async function generateSampleFriends(count) {
+            const statuses = ['online', 'offline', 'gaming'];
+            const games = ['Dragon\'s Realm', 'Galaxy Conquest', 'Ultimate Football', 'Cyber Chess', null];
+            const names = ['Alex', 'Sarah', 'Mike', 'Luna', 'Tom', 'Emma', 'Leo', 'Chloe', 'Max', 'Zoe'];
+            
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const sampleFriends = [];
+                    
+                    for (let i = 1; i <= count; i++) {
+                        const status = statuses[Math.floor(Math.random() * statuses.length)];
+                        const game = status === 'gaming' ? games[Math.floor(Math.random() * (games.length - 1))] : null;
+                        const name = names[Math.floor(Math.random() * names.length)];
+                        const username = `${name}${i}`;
+                        const level = Math.floor(Math.random() * 100) + 1;
+                        const xp = Math.floor(Math.random() * 10000);
+                        
+                        sampleFriends.push({
+                            id: `friend_${i}`,
+                            username: username,
+                            name: `${name} ${['Pro', 'Gamer', 'Master', 'Legend', 'King'][Math.floor(Math.random() * 5)]}`,
+                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
+                            status: status,
+                            currentGame: game,
+                            level: level,
+                            xp: xp,
+                            xpProgress: Math.floor(Math.random() * 100),
+                            pending: Math.random() > 0.9, // 10% de chance d'être en attente
+                            blocked: Math.random() > 0.95, // 5% de chance d'être bloqué
+                            lastSeen: status === 'offline' ? 
+                                `Vu il y a ${Math.floor(Math.random() * 60)} min` : 
+                                status === 'gaming' ? `En jeu depuis ${Math.floor(Math.random() * 120)} min` : 'En ligne'
+                        });
+                    }
+                    
+                    resolve(sampleFriends);
+                }, 500);
+            });
+        }
+        
+        // Générer des suggestions de démonstration
+        async function generateSampleSuggestions(count) {
+            const names = ['Noah', 'Olivia', 'Liam', 'Ava', 'Ethan', 'Isabella', 'Mason', 'Sophia'];
+            
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const sampleSuggestions = [];
+                    
+                    for (let i = 1; i <= count; i++) {
+                        const name = names[Math.floor(Math.random() * names.length)];
+                        const username = `${name}${i}_new`;
+                        
+                        sampleSuggestions.push({
+                            id: `suggestion_${i}`,
+                            username: username,
+                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
+                            mutualFriends: Math.floor(Math.random() * 10) + 1
+                        });
+                    }
+                    
+                    resolve(sampleSuggestions);
+                }, 300);
+            });
+        }
+        
+        // Simulations
+        async function simulateAddFriend(username) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    // Simulation - toujours vrai pour la démo
+                    resolve(username.length >= 3);
+                }, 1000);
+            });
+        }
+        
+        async function simulateAcceptFriend(friendId) {
+            return new Promise(resolve => {
+                setTimeout(() => resolve(true), 500);
+            });
+        }
+        
+        async function simulateDeclineFriend(friendId) {
+            return new Promise(resolve => {
+                setTimeout(() => resolve(true), 500);
+            });
+        }
+    </script>
+</body>
+</html>

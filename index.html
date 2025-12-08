@@ -3,622 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor - Plateforme Gaming Ultime</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Xolbor - Connexion</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        /* Styles spécifiques pour la page d'accueil */
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --light-gray: #e2e8f0;
-            --border: #cbd5e1;
-            --gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Hero Section */
-        .hero {
-            position: relative;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 20px;
-            overflow: hidden;
-        }
-        
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
-            z-index: -2;
-        }
-        
-        .hero-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-        
-        .hero-content {
-            max-width: 1200px;
-            width: 100%;
-            text-align: center;
-            z-index: 1;
-        }
-        
-        .hero-logo {
-            font-size: 6rem;
-            font-weight: 900;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .hero-tagline {
-            font-size: 1.5rem;
-            color: #94a3b8;
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-        }
-        
-        .hero-stat {
-            text-align: center;
-        }
-        
-        .hero-stat .number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: block;
-        }
-        
-        .hero-stat .label {
-            color: #cbd5e1;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* CTA Buttons */
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-        
-        .btn-primary {
-            padding: 18px 40px;
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
-        }
-        
-        .btn-secondary {
-            padding: 18px 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-        }
-        
-        /* Features Preview */
-        .features {
-            padding: 100px 20px;
-            background: #1e293b;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 3rem;
-            margin-bottom: 60px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .feature-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-        
-        .feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: white;
-        }
-        
-        .feature-description {
-            color: #94a3b8;
-            line-height: 1.6;
-        }
-        
-        /* Footer */
-        .footer {
-            background: #0f172a;
-            padding: 60px 20px 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        
-        .footer-section h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-links a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-        
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .nav-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .nav-link {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link:hover {
-            color: var(--primary);
-        }
-        
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .login-btn {
-            padding: 12px 30px;
-            background: var(--gradient);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-logo {
-                font-size: 4rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .hero-stat .number {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-logo {
-                font-size: 3rem;
-            }
-            
-            .section-title {
-                font-size: 2.5rem;
-            }
-            
-            .feature-card {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-logo">XOLBOR</div>
-        <div class="nav-links">
-            <a href="#features" class="nav-link">Fonctionnalités</a>
-            <a href="#marketplace" class="nav-link">Marketplace</a>
-            <a href="#games" class="nav-link">Jeux</a>
-            <a href="#community" class="nav-link">Communauté</a>
-        </div>
-        <div class="nav-actions">
-            <button class="login-btn" onclick="window.location.href='login.html'">
-                <i class="fas fa-sign-in-alt"></i> Connexion
-            </button>
-        </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background"></div>
-        <div class="hero-particles" id="particles-js"></div>
-        <div class="hero-content">
-            <h1 class="hero-logo">XOLBOR</h1>
-            <p class="hero-tagline">
-                La plateforme gaming ultime avec marketplace de skins, jeux exclusifs et communauté active.
-                Rejoignez des millions de joueurs à travers le monde.
-            </p>
-            
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="number">2.5M+</span>
-                    <span class="label">Joueurs</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="number">100+</span>
-                    <span class="label">Jeux</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="number">500+</span>
-                    <span class="label">Skins</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="number">50K+</span>
-                    <span class="label">Transactions</span>
-                </div>
-            </div>
-            
-            <div class="cta-buttons">
-                <button class="btn-primary" onclick="window.location.href='register.html'">
-                    <i class="fas fa-user-plus"></i> Créer un compte gratuit
-                </button>
-                <button class="btn-secondary" onclick="window.location.href='login.html'">
-                    <i class="fas fa-play-circle"></i> Explorer la plateforme
-                </button>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <h2 class="section-title">Fonctionnalités Principales</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-store"></i>
-                </div>
-                <h3 class="feature-title">Marketplace de Skins</h3>
-                <p class="feature-description">
-                    Plus de 500 skins uniques à collectionner, échanger et personnaliser.
-                    Système de rareté avec skins communs, rares, épiques et légendaires.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-gamepad"></i>
-                </div>
-                <h3 class="feature-title">Jeux Exclusifs</h3>
-                <p class="feature-description">
-                    Accès à des jeux exclusifs développés spécialement pour la communauté Xolbor.
-                    Nouveaux jeux ajoutés chaque mois.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 class="feature-title">Communauté Active</h3>
-                <p class="feature-description">
-                    Rejoignez des milliers de joueurs, formez des équipes, participez à des tournois
-                    et montez dans les classements mondiaux.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-gem"></i>
-                </div>
-                <h3 class="feature-title">Économie Xubor</h3>
-                <p class="feature-description">
-                    Monnaie virtuelle Xubor pour acheter skins, débloquer des fonctionnalités
-                    et participer à des événements spéciaux.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-user-friends"></i>
-                </div>
-                <h3 class="feature-title">Système d'Amis</h3>
-                <p class="feature-description">
-                    Ajoutez des amis, discutez en temps réel, formez des guildes et participez
-                    à des défis ensemble.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3 class="feature-title">Sécurité Totale</h3>
-                <p class="feature-description">
-                    Transactions sécurisées, authentification à deux facteurs et protection
-                    des données personnelles.
-                </p>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>XOLBOR</h3>
-                <p>La plateforme gaming ultime pour les joueurs passionnés. Rejoignez-nous dès aujourd'hui !</p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Navigation</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Accueil</a></li>
-                    <li><a href="#features">Fonctionnalités</a></li>
-                    <li><a href="#marketplace">Marketplace</a></li>
-                    <li><a href="#games">Jeux</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Support</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Centre d'aide</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Politique de confidentialité</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Réseaux sociaux</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fab fa-discord"></i> Discord</a></li>
-                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
-                    <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
-                </ul>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
+                <h1>XOLBOR</h1>
+                <p>La plateforme gaming ultime</p>
             </div>
         </div>
         
-        <div class="footer-bottom">
-            <p>&copy; 2024 Xolbor Gaming Platform. Tous droits réservés.</p>
-            <p>Xubor est une monnaie virtuelle. Les achats sont définitifs et non remboursables.</p>
-        </div>
-    </footer>
-    
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
-        // Initialisation des particules
-        document.addEventListener('DOMContentLoaded', function() {
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 80, density: { enable: true, value_area: 800 } },
-                    color: { value: "#6366f1" },
-                    shape: { type: "circle" },
-                    opacity: { value: 0.5, random: true },
-                    size: { value: 3, random: true },
-                    line_linked: {
-                        enable: true,
-                        distance: 150,
-                        color: "#8b5cf6",
-                        opacity: 0.2,
-                        width: 1
-                    },
-                    move: {
-                        enable: true,
-                        speed: 2,
-                        direction: "none",
-                        random: true,
-                        straight: false,
-                        out_mode: "out",
-                        bounce: false
-                    }
-                },
-                interactivity: {
-                    detect_on: "canvas",
-                    events: {
-                        onhover: { enable: true, mode: "repulse" },
-                        onclick: { enable: true, mode: "push" }
-                    }
-                }
-            });
+        <div class="login-card">
+            <div class="tabs">
+                <button class="tab active" id="login-tab">Connexion</button>
+                <button class="tab" id="register-tab">Inscription</button>
+            </div>
             
-            // Navigation smooth scroll
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#') return;
+            <div class="form-container">
+                <!-- Formulaire de connexion -->
+                <form id="login-form" class="form active-form">
+                    <div class="input-group">
+                        <label for="login-username"><i class="fas fa-user"></i> Pseudo</label>
+                        <input type="text" id="login-username" placeholder="Votre pseudo" required>
+                    </div>
                     
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-            
-            // Vérifier si l'utilisateur est déjà connecté
-            const token = localStorage.getItem('xolbor_token');
-            if (token) {
-                const loginBtn = document.querySelector('.login-btn');
-                loginBtn.innerHTML = '<i class="fas fa-user"></i> Dashboard';
-                loginBtn.onclick = function() {
-                    window.location.href = 'dashboard.html';
-                };
-            }
-        });
-    </script>
+                    <div class="input-group">
+                        <label for="login-password"><i class="fas fa-lock"></i> Mot de passe</label>
+                        <input type="password" id="login-password" placeholder="Votre mot de passe" required>
+                        <div class="password-toggle">
+                            <i class="fas fa-eye" id="toggle-login-password"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <label class="checkbox">
+                            <input type="checkbox" id="remember-me">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-login">Se connecter</button>
+                    
+                    <div class="social-login">
+                        <p>Ou connectez-vous avec</p>
+                        <div class="social-icons">
+                            <button type="button" class="social-btn google">
+                                <i class="fab fa-google"></i>
+                            </button>
+                            <button type="button" class="social-btn discord">
+                                <i class="fab fa-discord"></i>
+                            </button>
+                            <button type="button" class="social-btn twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Formulaire d'inscription -->
+                <form id="register-form" class="form">
+                    <div class="input-group">
+                        <label for="register-username"><i class="fas fa-user"></i> Pseudo</label>
+                        <input type="text" id="register-username" placeholder="Choisissez un pseudo unique" required>
+                        <div class="feedback" id="username-feedback"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="register-email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="register-email" placeholder="Votre email" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="register-password"><i class="fas fa-lock"></i> Mot de passe</label>
+                        <input type="password" id="register-password" placeholder="Minimum 8 caractères" required>
+                        <div class="password-toggle">
+                            <i class="fas fa-eye" id="toggle-register-password"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="confirm-password"><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
+                        <input type="password" id="confirm-password" placeholder="Retapez votre mot de passe" required>
+                        <div class="password-toggle">
+                            <i class="fas fa-eye" id="toggle-confirm-password"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="terms">
+                        <label class="checkbox">
+                            <input type="checkbox" id="accept-terms" required>
+                            <span>J'accepte les <a href="#">conditions d'utilisation</a></span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-register">Créer un compte</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="login-footer">
+            <p>En vous connectant, vous acceptez nos <a href="#">Conditions d'utilisation</a> et <a href="#">Politique de confidentialité</a>.</p>
+        </div>
+    </div>
+    
+    <div class="particles-container" id="particles"></div>
+    
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

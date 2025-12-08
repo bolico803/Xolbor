@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xolbor - Profil</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
+            <h2>XOLBOR</h2>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Rechercher...">
+        </div>
+        
+        <div class="profile-section">
+            <div class="xubor-balance">
+                <i class="fas fa-gem"></i>
+                <span id="xubor-balance">0</span>
+            </div>
+            
+            <div class="avatar-container">
+                <div class="avatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=6C63FF" alt="Avatar">
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Menu de navigation -->
+    <div class="nav-menu-container">
+        <div class="nav-menu">
+            <button class="nav-btn" onclick="window.location.href='home.html'">
+                <i class="fas fa-home"></i> Accueil
+            </button>
+            <button class="nav-btn" onclick="window.location.href='marketplace.html'">
+                <i class="fas fa-store"></i> Marketplace
+            </button>
+            <button class="nav-btn" onclick="window.location.href='friends.html'">
+                <i class="fas fa-user-friends"></i> Amis
+            </button>
+            <button class="nav-btn active" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user"></i> Profil
+            </button>
+            <button class="nav-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </div>
+    </div>
+    
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <!-- En-tête profil -->
+        <div class="profile-header">
+            <div class="profile-avatar" id="main-avatar">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=6C63FF" alt="Avatar">
+                <div class="avatar-badge">
+                    <i class="fas fa-crown"></i>
+                </div>
+            </div>
+            
+            <div class="profile-info">
+                <h1 id="profile-username">Chargement...</h1>
+                <p class="profile-title" id="profile-title">Membre Xolbor</p>
+                <p class="profile-bio" id="profile-bio">Aucune biographie</p>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="stat-level">1</div>
+                        <div class="stat-label">Niveau</div>
+                    </div>
+                    
+                    <div class="stat">
+                        <div class="stat-value" id="stat-xp">0</div>
+                        <div class="stat-label">XP</div>
+                    </div>
+                    
+                    <div class="stat">
+                        <div class="stat-value" id="stat-friends">0</div>
+                        <div class="stat-label">Amis</div>
+                    </div>
+                    
+                    <div class="stat">
+                        <div class="stat-value" id="stat-skins">0</div>
+                        <div class="stat-label">Skins</div>
+                    </div>
+                </div>
+                
+                <div class="profile-actions">
+                    <button class="btn-edit-profile" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Modifier le profil
+                    </button>
+                    <button class="btn-buy-xubor" onclick="window.location.href='checkout.html'">
+                        <i class="fas fa-gem"></i> Acheter des Xubor
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barre de progression -->
+        <div class="xp-progress-section">
+            <div class="xp-header">
+                <h3>Progression du niveau</h3>
+                <span id="xp-next-level">0/1000 XP</span>
+            </div>
+            <div class="xp-bar-large">
+                <div class="xp-progress-large" id="xp-progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="xp-info">
+                <span>Niveau <span id="current-level">1</span></span>
+                <span>Niveau <span id="next-level">2</span></span>
+            </div>
+        </div>
+        
+        <!-- Contenu en onglets -->
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="skins">Mes Skins</button>
+            <button class="profile-tab" data-tab="achievements">Succès</button>
+            <button class="profile-tab" data-tab="history">Historique</button>
+            <button class="profile-tab" data-tab="settings">Paramètres</button>
+        </div>
+        
+        <!-- Onglet Skins -->
+        <div class="profile-tab-content active" id="tab-skins">
+            <div class="skins-filter">
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="equipped">Équipés</button>
+                <button class="filter-btn" data-filter="legendary">Légendaire</button>
+                <button class="filter-btn" data-filter="epic">Épique</button>
+                <button class="filter-btn" data-filter="rare">Rare</button>
+            </div>
+            
+            <div class="owned-skins-grid" id="owned-skins">
+                <!-- Les skins possédés seront chargés dynamiquement -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement de vos skins...</p>
+                </div>
+            </div>
+            
+            <div class="skin-actions">
+                <button class="btn-equip-random" onclick="equipRandomSkin()">
+                    <i class="fas fa-random"></i> Équiper un skin aléatoire
+                </button>
+                <button class="btn-marketplace" onclick="window.location.href='marketplace.html'">
+                    <i class="fas fa-store"></i> Voir le Marketplace
+                </button>
+            </div>
+        </div>
+        
+        <!-- Onglet Succès -->
+        <div class="profile-tab-content" id="tab-achievements">
+            <div class="achievements-grid">
+                <div class="achievement-card unlocked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <h4>Premiers pas</h4>
+                        <p>Créez votre compte Xolbor</p>
+                        <span class="achievement-date">Débloqué le 15/06/2024</span>
+                    </div>
+                    <div class="achievement-reward">
+                        <i class="fas fa-gem"></i> 100 Xubor
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <h4>Joueur assidu</h4>
+                        <p>Jouez 10 heures sur Xolbor</p>
+                        <span class="achievement-progress">Progression: 3/10 heures</span>
+                    </div>
+                    <div class="achievement-reward">
+                        <i class="fas fa-gem"></i> 500 Xubor
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <h4>Sociable</h4>
+                        <p>Ajoutez 10 amis</p>
+                        <span class="achievement-progress">Progression: 2/10 amis</span>
+                    </div>
+                    <div class="achievement-reward">
+                        <i class="fas fa-gem"></i> 300 Xubor
+                    </div>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="achievement-info">
+                        <h4>Collectionneur</h4>
+                        <p>Achetez 5 skins</p>
+                        <span class="achievement-progress">Progression: 0/5 skins</span>
+                    </div>
+                    <div class="achievement-reward">
+                        <i class="fas fa-gem"></i> 750 Xubor
+                    </div>
+                </div>
+            </div>
+            
+            <div class="achievements-summary">
+                <div class="summary-card">
+                    <h4>Succès débloqués</h4>
+                    <div class="summary-value">1/24</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Xubor gagnés</h4>
+                    <div class="summary-value">100</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Taux de complétion</h4>
+                    <div class="summary-value">4%</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Onglet Historique -->
+        <div class="profile-tab-content" id="tab-history">
+            <div class="history-timeline" id="history-timeline">
+                <!-- L'historique sera chargé dynamiquement -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Chargement de l'historique...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Onglet Paramètres -->
+        <div class="profile-tab-content" id="tab-settings">
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3><i class="fas fa-user-cog"></i> Paramètres du compte</h3>
+                    
+                    <div class="setting-item">
+                        <label for="username-change">Pseudo</label>
+                        <div class="setting-input">
+                            <input type="text" id="username-change" placeholder="Votre pseudo">
+                            <button class="btn-save" onclick="changeUsername()">Changer</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="email-change">Email</label>
+                        <div class="setting-input">
+                            <input type="email" id="email-change" placeholder="Votre email">
+                            <button class="btn-save" onclick="changeEmail()">Changer</button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label for="bio-change">Biographie</label>
+                        <textarea id="bio-change" placeholder="Parlez de vous..."></textarea>
+                        <button class="btn-save" onclick="changeBio()">Enregistrer</button>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-lock"></i> Sécurité</h3>
+                    
+                    <div class="setting-item">
+                        <label>Mot de passe</label>
+                        <button class="btn-change-password" onclick="changePassword()">
+                            Changer le mot de passe
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <label>Sessions actives</label>
+                        <div class="sessions-list">
+                            <div class="session-item">
+                                <div class="session-info">
+                                    <strong>Windows - Chrome</strong>
+                                    <span>Actuel · Paris, France</span>
+                                </div>
+                                <button class="btn-logout-session">Déconnecter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-card">
+                    <h3><i class="fas fa-bell"></i> Notifications</h3>
+                    
+                    <div class="setting-item toggle">
+                        <label>Notifications par email</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label>Notifications de jeux</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item toggle">
+                        <label>Notifications d'amis</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-card danger">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Zone dangereuse</h3>
+                    
+                    <div class="setting-item">
+                        <label>Supprimer le compte</label>
+                        <p class="danger-text">
+                            Cette action est irréversible. Tout votre profil, vos skins et votre solde Xubor seront perdus.
+                        </p>
+                        <button class="btn-delete-account" onclick="deleteAccount()">
+                            Supprimer mon compte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modifier profil modal -->
+    <div class="modal" id="edit-profile-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modifier le profil</h2>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-profile-form">
+                    <div class="form-group">
+                        <label for="edit-username">Pseudo</label>
+                        <input type="text" id="edit-username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-title">Titre</label>
+                        <input type="text" id="edit-title" placeholder="Membre Xolbor">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-bio">Biographie</label>
+                        <textarea id="edit-bio" rows="4" placeholder="Parlez de vous..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Avatar</label>
+                        <div class="avatar-options">
+                            <div class="avatar-option selected">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="Avatar 1">
+                            </div>
+                            <div class="avatar-option">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user2" alt="Avatar 2">
+                            </div>
+                            <div class="avatar-option">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3" alt="Avatar 3">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-save-profile">Enregistrer les modifications</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let userData = null;
+        let ownedSkins = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier l'authentification
+            if (!window.authManager.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Charger les données
+            loadProfileData();
+            loadOwnedSkins();
+            loadHistory();
+            
+            // Configurer les onglets
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.profile-tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab;
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                });
+            });
+            
+            // Configurer les filtres de skins
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterOwnedSkins(this.dataset.filter);
+                });
+            });
+        });
+        
+        function loadProfileData() {
+            userData = window.authManager.getCurrentUser();
+            if (!userData) return;
+            
+            // Mettre à jour les informations de base
+            document.getElementById('profile-username').textContent = userData.username || 'Utilisateur';
+            document.getElementById('xubor-balance').textContent = (userData.xuborBalance || 0).toLocaleString();
+            
+            // Mettre à jour l'avatar
+            const avatarImg = document.querySelector('.avatar img');
+            const mainAvatarImg = document.querySelector('#main-avatar img');
+            if (avatarImg && userData.username) {
+                avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.username}&backgroundColor=6C63FF`;
+            }
+            if (mainAvatarImg && userData.username) {
+                mainAvatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.username}&backgroundColor=6C63FF`;
+            }
+            
+            // Charger les données étendues
+            loadExtendedProfileData();
+        }
+        
+        async function loadExtendedProfileData() {
+            try {
+                // Simulation de chargement des données étendues
+                const extendedData = await simulateLoadExtendedData();
+                
+                document.getElementById('profile-title').textContent = extendedData.title;
+                document.getElementById('profile-bio').textContent = extendedData.bio;
+                document.getElementById('stat-level').textContent = extendedData.level;
+                document.getElementById('stat-xp').textContent = extendedData.xp.toLocaleString();
+                document.getElementById('stat-friends').textContent = extendedData.friends;
+                document.getElementById('stat-skins').textContent = extendedData.skins;
+                
+                // Mettre à jour la barre de progression
+                updateXPProgress(extendedData.xp, extendedData.xpForNextLevel);
+                
+            } catch (error) {
+                console.error('Erreur de chargement des données:', error);
+            }
+        }
+        
+        function updateXPProgress(currentXP, xpForNextLevel) {
+            const progress = Math.min((currentXP / xpForNextLevel) * 100, 100);
+            const currentLevel = parseInt(document.getElementById('stat-level').textContent);
+            
+            document.getElementById('xp-progress-bar').style.width = `${progress}%`;
+            document.getElementById('xp-next-level').textContent = 
+                `${currentXP.toLocaleString()}/${xpForNextLevel.toLocaleString()} XP`;
+            document.getElementById('current-level').textContent = currentLevel;
+            document.getElementById('next-level').textContent = currentLevel + 1;
+        }
+        
+        async function loadOwnedSkins() {
+            try {
+                // Simulation de chargement des skins possédés
+                ownedSkins = await simulateLoadOwnedSkins();
+                filterOwnedSkins('all');
+            } catch (error) {
+                console.error('Erreur de chargement des skins:', error);
+                showNotification('Erreur de chargement des skins', 'error');
+            }
+        }
+        
+        function filterOwnedSkins(filter) {
+            const container = document.getElementById('owned-skins');
+            
+            let filteredSkins = ownedSkins;
+            if (filter !== 'all') {
+                filteredSkins = ownedSkins.filter(skin => {
+                    if (filter === 'equipped') return skin.equipped;
+                    return skin.rarity.toLowerCase() === filter;
+                });
+            }
+            
+            if (filteredSkins.length === 0) {
+                container.innerHTML = `
+                    <div class="no-skins">
+                        <i class="fas fa-tshirt"></i>
+                        <h3>Aucun skin trouvé</h3>
+                        <p>${filter === 'equipped' ? 'Aucun skin équipé' : 
+                           filter === 'all' ? 'Vous ne possédez aucun skin' :
+                           `Aucun skin ${filter} dans votre collection`}</p>
+                        <button class="btn-marketplace" onclick="window.location.href='marketplace.html'">
+                            <i class="fas fa-store"></i> Acheter des skins
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredSkins.map(skin => `
+                <div class="skin-card ${skin.equipped ? 'equipped' : ''}" data-skin-id="${skin.id}">
+                    <div class="skin-image" style="background: ${skin.gradient}">
+                        <i class="${skin.icon}"></i>
+                        ${skin.equipped ? '<div class="equipped-badge"><i class="fas fa-check"></i></div>' : ''}
+                    </div>
+                    <div class="skin-info">
+                        <h3 class="skin-name">${skin.name}</h3>
+                        <div class="skin-meta">
+                            <span class="skin-rarity ${skin.rarity.toLowerCase()}">${skin.rarity}</span>
+                            <span class="skin-date">Acheté le ${skin.purchaseDate}</span>
+                        </div>
+                        <div class="skin-actions">
+                            <button class="btn-equip ${skin.equipped ? 'active' : ''}" 
+                                    onclick="${skin.equipped ? 'unequipSkin' : 'equipSkin'}('${skin.id}')">
+                                ${skin.equipped ? 'ÉQUIPÉ' : 'ÉQUIPER'}
+                            </button>
+                            <button class="btn-preview" onclick="previewSkin('${skin.id}')">
+                                <i class="fas fa-eye"></i> Prévisualiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadHistory() {
+            try {
+                // Simulation de chargement de l'historique
+                const history = await simulateLoadHistory();
+                displayHistory(history);
+            } catch (error) {
+                console.error('Erreur de chargement de l\'historique:', error);
+            }
+        }
+        
+        function displayHistory(history) {
+            const container = document.getElementById('history-timeline');
+            
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-history"></i>
+                        <h3>Aucun historique</h3>
+                        <p>Votre historique d'activité apparaîtra ici</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = history.map(item => `
+                <div class="history-item ${item.type}">
+                    <div class="history-icon">
+                        <i class="${item.icon}"></i>
+                    </div>
+                    <div class="history-content">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                        <span class="history-date">${item.date}</span>
+                    </div>
+                    ${item.xubor ? `
+                        <div class="history-xubor ${item.xubor > 0 ? 'positive' : 'negative'}">
+                            <i class="fas fa-gem"></i> ${item.xubor > 0 ? '+' : ''}${item.xubor}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function editProfile() {
+            const modal = document.getElementById('edit-profile-modal');
+            modal.style.display = 'flex';
+            
+            // Pré-remplir le formulaire
+            document.getElementById('edit-username').value = userData.username || '';
+            document.getElementById('edit-title').value = document.getElementById('profile-title').textContent;
+            document.getElementById('edit-bio').value = document.getElementById('profile-bio').textContent;
+        }
+        
+        function closeEditModal() {
+            document.getElementById('edit-profile-modal').style.display = 'none';
+        }
+        
+        function saveProfileChanges(event) {
+            event.preventDefault();
+            
+            const newUsername = document.getElementById('edit-username').value;
+            const newTitle = document.getElementById('edit-title').value;
+            const newBio = document.getElementById('edit-bio').value;
+            
+            // Mettre à jour l'affichage
+            document.getElementById('profile-username').textContent = newUsername;
+            document.getElementById('profile-title').textContent = newTitle;
+            document.getElementById('profile-bio').textContent = newBio;
+            
+            // Mettre à jour les données utilisateur
+            userData.username = newUsername;
+            window.authManager.saveUserData(userData);
+            
+            // Mettre à jour l'avatar
+            const avatarImg = document.querySelector('.avatar img');
+            const mainAvatarImg = document.querySelector('#main-avatar img');
+            if (avatarImg) {
+                avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername}&backgroundColor=6C63FF`;
+            }
+            if (mainAvatarImg) {
+                mainAvatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${newUsername}&backgroundColor=6C63FF`;
+            }
+            
+            closeEditModal();
+            showNotification('Profil mis à jour avec succès', 'success');
+        }
+        
+        async function equipSkin(skinId) {
+            const skin = ownedSkins.find(s => s.id === skinId);
+            if (!skin) return;
+            
+            try {
+                showNotification(`Équipement de "${skin.name}"...`, 'info');
+                
+                // Simulation d'équipement
+                await simulateEquipSkin(skinId);
+                
+                // Mettre à jour l'interface
+                ownedSkins.forEach(s => s.equipped = false);
+                skin.equipped = true;
+                
+                // Mettre à jour le skin actif
+                window.authManager.updateActiveSkin(skinId);
+                
+                // Mettre à jour l'avatar principal
+                const mainAvatarImg = document.querySelector('#main-avatar img');
+                if (mainAvatarImg) {
+                    // Ici, vous appliqueriez le skin
+                    mainAvatarImg.style.filter = 'hue-rotate(90deg)';
+                }
+                
+                // Mettre à jour l'affichage
+                filterOwnedSkins(document.querySelector('.filter-btn.active').dataset.filter);
+                
+                showNotification(`"${skin.name}" équipé !`, 'success');
+            } catch (error) {
+                showNotification('Erreur lors de l\'équipement', 'error');
+            }
+        }
+        
+        async function unequipSkin(skinId) {
+            const skin = ownedSkins.find(s => s.id === skinId);
+            if (!skin) return;
+            
+            try {
+                showNotification(`Déséquipement de "${skin.name}"...`, 'info');
+                
+                // Simulation de déséquipement
+                await simulateUnequipSkin(skinId);
+                
+                // Mettre à jour l'interface
+                skin.equipped = false;
+                
+                // Réinitialiser le skin actif
+                window.authManager.updateActiveSkin(null);
+                
+                // Réinitialiser l'avatar
+                const mainAvatarImg = document.querySelector('#main-avatar img');
+                if (mainAvatarImg) {
+                    mainAvatarImg.style.filter = 'none';
+                }
+                
+                // Mettre à jour l'affichage
+                filterOwnedSkins(document.querySelector('.filter-btn.active').dataset.filter);
+                
+                showNotification(`"${skin.name}" déséquipé`, 'info');
+            } catch (error) {
+                showNotification('Erreur lors du déséquipement', 'error');
+            }
+        }
+        
+        async function equipRandomSkin() {
+            if (ownedSkins.length === 0) {
+                showNotification('Vous ne possédez aucun skin', 'error');
+                return;
+            }
+            
+            const unequippedSkins = ownedSkins.filter(s => !s.equipped);
+            if (unequippedSkins.length === 0) {
+                showNotification('Tous vos skins sont déjà équipés', 'info');
+                return;
+            }
+            
+            const randomSkin = unequippedSkins[Math.floor(Math.random() * unequippedSkins.length)];
+            await equipSkin(randomSkin.id);
+        }
+        
+        function previewSkin(skinId) {
+            const skin = ownedSkins.find(s => s.id === skinId);
+            if (!skin) return;
+            
+            showNotification(`Prévisualisation de "${skin.name}"`, 'info');
+            // En production, ouvrir une modale de prévisualisation
+        }
+        
+        function changeUsername() {
+            const newUsername = document.getElementById('username-change').value;
+            if (!newUsername) {
+                showNotification('Veuillez entrer un pseudo', 'error');
+                return;
+            }
+            
+            if (newUsername === userData.username) {
+                showNotification('C\'est déjà votre pseudo actuel', 'info');
+                return;
+            }
+            
+            showNotification(`Changement de pseudo en "${newUsername}"...`, 'info');
+            // En production, appeler l'API backend
+        }
+        
+        function changeEmail() {
+            const newEmail = document.getElementById('email-change').value;
+            if (!newEmail) {
+                showNotification('Veuillez entrer un email', 'error');
+                return;
+            }
+            
+            showNotification(`Changement d'email en "${newEmail}"...`, 'info');
+            // En production, appeler l'API backend
+        }
+        
+        function changeBio() {
+            const newBio = document.getElementById('bio-change').value;
+            if (!newBio) {
+                showNotification('La biographie ne peut pas être vide', 'error');
+                return;
+            }
+            
+            document.getElementById('profile-bio').textContent = newBio;
+            showNotification('Biographie mise à jour', 'success');
+        }
+        
+        function changePassword() {
+            const newPassword = prompt('Entrez votre nouveau mot de passe :');
+            if (!newPassword) return;
+            
+            if (newPassword.length < 8) {
+                showNotification('Le mot de passe doit contenir au moins 8 caractères', 'error');
+                return;
+            }
+            
+            showNotification('Mot de passe changé avec succès', 'success');
+        }
+        
+        function deleteAccount() {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                return;
+            }
+            
+            if (prompt('Pour confirmer, tapez "SUPPRIMER" :') !== 'SUPPRIMER') {
+                showNotification('Suppression annulée', 'info');
+                return;
+            }
+            
+            showNotification('Suppression du compte en cours...', 'info');
+            // En production, appeler l'API backend
+            
+            setTimeout(() => {
+                logout();
+            }, 2000);
+        }
+        
+        // Simulations
+        async function simulateLoadExtendedData() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({
+                        title: 'Membre Xolbor',
+                        bio: 'Passionné de gaming et de skins uniques !',
+                        level: 15,
+                        xp: 12450,
+                        xpForNextLevel: 20000,
+                        friends: 42,
+                        skins: 8
+                    });
+                }, 500);
+            });
+        }
+        
+        async function simulateLoadOwnedSkins() {
+            const icons = ['fas fa-dragon', 'fas fa-robot', 'fas fa-crown', 'fas fa-hat-wizard', 
+                          'fas fa-ghost', 'fas fa-knight', 'fas fa-helmet-battle', 'fas fa-mask'];
+            const rarities = ['Légendaire', 'Épique', 'Rare', 'Commun'];
+            const colors = ['#6C63FF', '#FF6584', '#36D1DC', '#10B981', '#F59E0B', '#EF4444'];
+            
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const skins = [];
+                    
+                    for (let i = 1; i <= 8; i++) {
+                        const rarity = rarities[Math.floor(Math.random() * rarities.length)];
+                        const icon = icons[Math.floor(Math.random() * icons.length)];
+                        const color1 = colors[Math.floor(Math.random() * colors.length)];
+                        const color2 = colors[Math.floor(Math.random() * colors.length)];
+                        
+                        skins.push({
+                            id: `owned_${i}`,
+                            name: `Skin Possédé ${i}`,
+                            icon: icon,
+                            gradient: `linear-gradient(135deg, ${color1}, ${color2})`,
+                            rarity: rarity,
+                            equipped: i === 1, // Le premier skin est équipé
+                            purchaseDate: '15/06/2024'
+                        });
+                    }
+                    
+                    resolve(skins);
+                }, 500);
+            });
+        }
+        
+        async function simulateLoadHistory() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve([
+                        {
+                            type: 'purchase',
+                            icon: 'fas fa-shopping-cart',
+                            title: 'Achat de skin',
+                            description: 'Skin "Dragon Légendaire" acheté',
+                            date: 'Aujourd\'hui, 14:30',
+                            xubor: -500
+                        },
+                        {
+                            type: 'game',
+                            icon: 'fas fa-gamepad',
+                            title: 'Partie terminée',
+                            description: 'Victoire dans Dragon\'s Realm',
+                            date: 'Hier, 20:15',
+                            xubor: 150
+                        },
+                        {
+                            type: 'friend',
+                            icon: 'fas fa-user-plus',
+                            title: 'Nouvel ami',
+                            description: 'Vous êtes maintenant ami avec AlexPro',
+                            date: '15/06/2024, 16:45'
+                        },
+                        {
+                            type: 'login',
+                            icon: 'fas fa-sign-in-alt',
+                            title: 'Connexion',
+                            description: 'Connexion depuis Paris, France',
+                            date: '15/06/2024, 14:20'
+                        }
+                    ]);
+                }, 500);
+            });
+        }
+        
+        async function simulateEquipSkin(skinId) {
+            return new Promise(resolve => setTimeout(() => resolve(true), 500));
+        }
+        
+        async function simulateUnequipSkin(skinId) {
+            return new Promise(resolve => setTimeout(() => resolve(true), 500));
+        }
+        
+        // Gestion du formulaire d'édition
+        document.getElementById('edit-profile-form')?.addEventListener('submit', saveProfileChanges);
+        
+        // Fermer la modale en cliquant à l'extérieur
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('edit-profile-modal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xolbor - Acheter des Xubor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
+            <h2>XOLBOR</h2>
+        </div>
+        
+        <div class="profile-section">
+            <div class="xubor-balance">
+                <i class="fas fa-gem"></i>
+                <span id="xubor-balance">0</span>
+            </div>
+            
+            <div class="avatar-container" onclick="window.location.href='profile.html'">
+                <div class="avatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=6C63FF" alt="Avatar">
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Menu de navigation -->
+    <div class="nav-menu-container">
+        <div class="nav-menu">
+            <button class="nav-btn" onclick="window.location.href='home.html'">
+                <i class="fas fa-home"></i> Accueil
+            </button>
+            <button class="nav-btn" onclick="window.location.href='marketplace.html'">
+                <i class="fas fa-store"></i> Marketplace
+            </button>
+            <button class="nav-btn" onclick="window.location.href='friends.html'">
+                <i class="fas fa-user-friends"></i> Amis
+            </button>
+            <button class="nav-btn" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user"></i> Profil
+            </button>
+            <button class="nav-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </button>
+        </div>
+    </div>
+    
+    <!-- Contenu principal -->
+    <main class="main-content">
+        <!-- En-tête -->
+        <div class="checkout-header">
+            <h1><i class="fas fa-gem"></i> Acheter des Xubor</h1>
+            <p>La monnaie virtuelle officielle de Xolbor</p>
+            
+            <div class="balance-card">
+                <div class="balance-info">
+                    <h3>Votre solde actuel</h3>
+                    <div class="balance-amount">
+                        <i class="fas fa-gem"></i>
+                        <span id="current-balance">0</span>
+                    </div>
+                </div>
+                <div class="balance-actions">
+                    <button class="btn-refresh-balance" onclick="updateBalance()">
+                        <i class="fas fa-sync-alt"></i> Actualiser
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section packs -->
+        <div class="checkout-section">
+            <h2><i class="fas fa-box"></i> Choisissez votre pack</h2>
+            <p>Sélectionnez le pack de Xubor qui vous convient</p>
+            
+            <div class="packs-grid">
+                <!-- Pack 1 -->
+                <div class="pack-card" data-xubor="100" data-price="10" onclick="selectPack(this)">
+                    <div class="pack-header">
+                        <h3>Starter</h3>
+                        <div class="pack-badge">Populaire</div>
+                    </div>
+                    <div class="pack-xubor">100 Xubor</div>
+                    <div class="pack-price">10 €</div>
+                    <ul class="pack-features">
+                        <li><i class="fas fa-check"></i> Idéal pour débuter</li>
+                        <li><i class="fas fa-check"></i> 1 skin rare</li>
+                        <li><i class="fas fa-check"></i> Support prioritaire</li>
+                    </ul>
+                    <button class="btn-select-pack">Sélectionner</button>
+                </div>
+                
+                <!-- Pack 2 -->
+                <div class="pack-card" data-xubor="800" data-price="20" onclick="selectPack(this)">
+                    <div class="pack-header">
+                        <h3>Gamer</h3>
+                        <div class="pack-badge best-value">Meilleur rapport</div>
+                    </div>
+                    <div class="pack-xubor">800 Xubor</div>
+                    <div class="pack-price">20 €</div>
+                    <div class="pack-savings">Économisez 60%</div>
+                    <ul class="pack-features">
+                        <li><i class="fas fa-check"></i> 8x plus de valeur</li>
+                        <li><i class="fas fa-check"></i> 1 skin épique gratuit</li>
+                        <li><i class="fas fa-check"></i> Bonus exclusif</li>
+                    </ul>
+                    <button class="btn-select-pack">Sélectionner</button>
+                </div>
+                
+                <!-- Pack 3 -->
+                <div class="pack-card" data-xubor="12095" data-price="234" onclick="selectPack(this)">
+                    <div class="pack-header">
+                        <h3>Pro Gamer</h3>
+                        <div class="pack-badge">Ultime</div>
+                    </div>
+                    <div class="pack-xubor">12,095 Xubor</div>
+                    <div class="pack-price">234 €</div>
+                    <div class="pack-savings">Économisez 70%</div>
+                    <ul class="pack-features">
+                        <li><i class="fas fa-check"></i> Collection complète</li>
+                        <li><i class="fas fa-check"></i> 3 skins légendaires</li>
+                        <li><i class="fas fa-check"></i> Statut VIP</li>
+                    </ul>
+                    <button class="btn-select-pack">Sélectionner</button>
+                </div>
+                
+                <!-- Pack 4 -->
+                <div class="pack-card unlimited" data-xubor="999999" data-price="456" onclick="selectPack(this)">
+                    <div class="pack-header">
+                        <h3>Illimité</h3>
+                        <div class="pack-badge exclusive">Exclusif</div>
+                    </div>
+                    <div class="pack-xubor">Xubor Illimités</div>
+                    <div class="pack-price">456 €</div>
+                    <div class="pack-savings">Valeur maximale</div>
+                    <ul class="pack-features">
+                        <li><i class="fas fa-check"></i> Accès illimité</li>
+                        <li><i class="fas fa-check"></i> Tous les skins futurs</li>
+                        <li><i class="fas fa-check"></i> Statut Légendaire</li>
+                    </ul>
+                    <button class="btn-select-pack">Sélectionner</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section paiement -->
+        <div class="checkout-section">
+            <h2><i class="fas fa-credit-card"></i> Informations de paiement</h2>
+            
+            <div class="payment-container">
+                <div class="payment-methods">
+                    <h3>Méthode de paiement</h3>
+                    
+                    <div class="methods-grid">
+                        <div class="method-card active" data-method="card" onclick="selectMethod(this)">
+                            <div class="method-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Carte bancaire</h4>
+                                <p>Visa, Mastercard, etc.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="method-card" data-method="paypal" onclick="selectMethod(this)">
+                            <div class="method-icon">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>PayPal</h4>
+                                <p>Paiement sécurisé</p>
+                            </div>
+                        </div>
+                        
+                        <div class="method-card" data-method="crypto" onclick="selectMethod(this)">
+                            <div class="method-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Crypto-monnaie</h4>
+                                <p>Bitcoin, Ethereum</p>
+                            </div>
+                        </div>
+                        
+                        <div class="method-card" data-method="apple" onclick="selectMethod(this)">
+                            <div class="method-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="method-info">
+                                <h4>Apple Pay</h4>
+                                <p>Paiement rapide</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-form">
+                    <form id="payment-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-number">Numéro de carte</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="card-holder">Nom sur la carte</label>
+                                <input type="text" id="card-holder" placeholder="JEAN DUPONT">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry-date">Date d'expiration</label>
+                                <input type="text" id="expiry-date" placeholder="MM/AA" maxlength="5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <div class="input-with-icon">
+                                    <input type="password" id="cvv" placeholder="123" maxlength="4">
+                                    <i class="fas fa-question-circle" title="3 ou 4 chiffres au dos de votre carte"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email de confirmation</label>
+                                <input type="email" id="email" placeholder="votre@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="save-card" checked>
+                            <label for="save-card">Enregistrer cette carte pour de futurs achats</label>
+                        </div>
+                        
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="accept-terms" required>
+                            <label for="accept-terms">
+                                J'accepte les <a href="#">Conditions Générales de Vente</a> et la 
+                                <a href="#">Politique de confidentialité</a>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Récapitulatif -->
+        <div class="checkout-summary">
+            <div class="summary-card">
+                <h3><i class="fas fa-receipt"></i> Récapitulatif de commande</h3>
+                
+                <div class="summary-details">
+                    <div class="summary-item">
+                        <span>Pack sélectionné</span>
+                        <span id="selected-pack">Aucun</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span>Xubor</span>
+                        <span id="summary-xubor">0</span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span>Méthode de paiement</span>
+                        <span id="summary-method">Carte bancaire</span>
+                    </div>
+                    
+                    <div class="summary-item total">
+                        <span>Total</span>
+                        <span id="summary-total">0 €</span>
+                    </div>
+                </div>
+                
+                <div class="summary-security">
+                    <i class="fas fa-lock"></i>
+                    <div>
+                        <strong>Paiement 100% sécurisé</strong>
+                        <p>Vos données sont cryptées et protégées</p>
+                    </div>
+                </div>
+                
+                <button class="btn-confirm-purchase" id="confirm-purchase" onclick="processPayment()">
+                    <i class="fas fa-lock"></i> Payer maintenant
+                </button>
+                
+                <p class="secure-note">
+                    <i class="fas fa-shield-alt"></i>
+                    Vous serez redirigé vers une passerelle de paiement sécurisée
+                </p>
+            </div>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="checkout-faq">
+            <h2><i class="fas fa-question-circle"></i> Questions fréquentes</h2>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Les Xubor sont-ils remboursables ?</h3>
+                    <p>Les Xubor achetés ne sont pas remboursables, sauf en cas d'erreur de notre part. Consultez nos CGV pour plus d'informations.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Quand recevrai-je mes Xubor ?</h3>
+                    <p>Les Xubor sont crédités immédiatement après confirmation du paiement. En cas de retard, contactez notre support.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Puis-je transférer mes Xubor ?</h3>
+                    <p>Les Xubor sont liés à votre compte et ne sont pas transférables à d'autres comptes.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Est-ce sécurisé ?</h3>
+                    <p>Oui, nous utilisons le cryptage SSL et ne stockons jamais vos informations de carte bancaire.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal de confirmation -->
+    <div class="modal" id="confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Paiement confirmé</h2>
+                <button class="modal-close" onclick="closeConfirmationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-success">
+                    <div class="success-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 id="confirmation-title">Paiement réussi !</h3>
+                    <p id="confirmation-message">Vos Xubor ont été crédités sur votre compte.</p>
+                    
+                    <div class="confirmation-details">
+                        <div class="detail-item">
+                            <span>Référence :</span>
+                            <strong id="confirmation-ref">XOL-2024-001</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Montant :</span>
+                            <strong id="confirmation-amount">0 €</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Xubor reçus :</span>
+                            <strong id="confirmation-xubor">0</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Nouveau solde :</span>
+                            <strong id="confirmation-balance">0</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="confirmation-actions">
+                        <button class="btn-go-home" onclick="window.location.href='home.html'">
+                            <i class="fas fa-home"></i> Retour à l'accueil
+                        </button>
+                        <button class="btn-go-marketplace" onclick="window.location.href='marketplace.html'">
+                            <i class="fas fa-store"></i> Voir le Marketplace
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <script>
+        let selectedPack = null;
+        let selectedMethod = 'card';
+        let userData = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier l'authentification
+            if (!window.authManager.isLoggedIn()) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Charger les données utilisateur
+            loadUserData();
+            
+            // Initialiser le formulaire de carte
+            initCardForm();
+            
+            // Sélectionner le premier pack par défaut
+            selectPack(document.querySelector('.pack-card'));
+            
+            // Sélectionner la méthode par défaut
+            selectMethod(document.querySelector('.method-card[data-method="card"]'));
+        });
+        
+        function loadUserData() {
+            userData = window.authManager.getCurrentUser();
+            if (userData) {
+                document.getElementById('xubor-balance').textContent = 
+                    (userData.xuborBalance || 0).toLocaleString();
+                document.getElementById('current-balance').textContent = 
+                    (userData.xuborBalance || 0).toLocaleString();
+                
+                const avatarImg = document.querySelector('.avatar img');
+                if (avatarImg && userData.username) {
+                    avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.username}&backgroundColor=6C63FF`;
+                }
+            }
+        }
+        
+        function updateBalance() {
+            // Simulation de mise à jour du solde
+            showNotification('Actualisation du solde...', 'info');
+            
+            setTimeout(() => {
+                loadUserData();
+                showNotification('Solde actualisé', 'success');
+            }, 500);
+        }
+        
+        function selectPack(packElement) {
+            // Désélectionner tous les packs
+            document.querySelectorAll('.pack-card').forEach(pack => {
+                pack.classList.remove('selected');
+                pack.querySelector('.btn-select-pack').textContent = 'Sélectionner';
+            });
+            
+            // Sélectionner le pack cliqué
+            packElement.classList.add('selected');
+            packElement.querySelector('.btn-select-pack').textContent = 'Sélectionné';
+            
+            // Mettre à jour les informations du pack sélectionné
+            selectedPack = {
+                xubor: parseInt(packElement.dataset.xubor),
+                price: parseFloat(packElement.dataset.price),
+                name: packElement.querySelector('h3').textContent
+            };
+            
+            // Mettre à jour le récapitulatif
+            updateSummary();
+        }
+        
+        function selectMethod(methodElement) {
+            // Désélectionner toutes les méthodes
+            document.querySelectorAll('.method-card').forEach(method => {
+                method.classList.remove('active');
+            });
+            
+            // Sélectionner la méthode cliquée
+            methodElement.classList.add('active');
+            selectedMethod = methodElement.dataset.method;
+            
+            // Mettre à jour le formulaire en fonction de la méthode
+            updatePaymentForm();
+            
+            // Mettre à jour le récapitulatif
+            updateSummary();
+        }
+        
+        function updatePaymentForm() {
+            const paymentForm = document.getElementById('payment-form');
+            
+            // Afficher/cacher les champs en fonction de la méthode
+            if (selectedMethod === 'card') {
+                paymentForm.style.display = 'block';
+            } else if (selectedMethod === 'paypal') {
+                paymentForm.innerHTML = `
+                    <div class="alternative-payment">
+                        <div class="alternative-icon">
+                            <i class="fab fa-paypal"></i>
+                        </div>
+                        <h3>Redirection vers PayPal</h3>
+                        <p>Vous serez redirigé vers PayPal pour compléter votre paiement.</p>
+                    </div>
+                `;
+            } else if (selectedMethod === 'crypto') {
+                paymentForm.innerHTML = `
+                    <div class="alternative-payment">
+                        <div class="alternative-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3>Paiement en crypto-monnaie</h3>
+                        <p>Une adresse de portefeuille vous sera fournie après confirmation.</p>
+                    </div>
+                `;
+            } else if (selectedMethod === 'apple') {
+                paymentForm.innerHTML = `
+                    <div class="alternative-payment">
+                        <div class="alternative-icon">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <h3>Apple Pay</h3>
+                        <p>Utilisez Face ID, Touch ID ou votre code pour confirmer.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function initCardForm() {
+            const cardNumber = document.getElementById('card-number');
+            const expiryDate = document.getElementById('expiry-date');
+            
+            // Formatage du numéro de carte
+            if (cardNumber) {
+                cardNumber.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                    let matches = value.match(/\d{4,16}/g);
+                    let match = (matches && matches[0]) || '';
+                    let parts = [];
+                    
+                    for (let i = 0, len = match.length; i < len; i += 4) {
+                        parts.push(match.substring(i, i + 4));
+                    }
+                    
+                    if (parts.length) {
+                        e.target.value = parts.join(' ');
+                    } else {
+                        e.target.value = value;
+                    }
+                });
+            }
+            
+            // Formatage de la date d'expiration
+            if (expiryDate) {
+                expiryDate.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^0-9]/g, '');
+                    if (value.length >= 2) {
+                        e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                });
+            }
+        }
+        
+        function updateSummary() {
+            if (!selectedPack) return;
+            
+            document.getElementById('selected-pack').textContent = selectedPack.name;
+            document.getElementById('summary-xubor').textContent = 
+                selectedPack.xubor === 999999 ? 'Illimités' : selectedPack.xubor.toLocaleString();
+            document.getElementById('summary-total').textContent = selectedPack.price + ' €';
+            
+            // Méthode de paiement
+            let methodText = '';
+            switch (selectedMethod) {
+                case 'card': methodText = 'Carte bancaire'; break;
+                case 'paypal': methodText = 'PayPal'; break;
+                case 'crypto': methodText = 'Crypto-monnaie'; break;
+                case 'apple': methodText = 'Apple Pay'; break;
+            }
+            document.getElementById('summary-method').textContent = methodText;
+        }
+        
+        async function processPayment() {
+            // Validation
+            if (!selectedPack) {
+                showNotification('Veuillez sélectionner un pack', 'error');
+                return;
+            }
+            
+            if (!document.getElementById('accept-terms')?.checked) {
+                showNotification('Veuillez accepter les conditions', 'error');
+                return;
+            }
+            
+            // Validation spécifique à la méthode
+            if (selectedMethod === 'card') {
+                if (!validateCardForm()) {
+                    return;
+                }
+            }
+            
+            // Confirmation
+            if (!confirm(`Confirmer l'achat de ${selectedPack.xubor === 999999 ? 'Xubor illimités' : selectedPack.xubor.toLocaleString() + ' Xubor'} pour ${selectedPack.price}€ ?`)) {
+                return;
+            }
+            
+            // Simulation de paiement
+            showNotification('Traitement du paiement...', 'info');
+            
+            try {
+                const success = await simulatePayment(
+                    selectedPack.xubor, 
+                    selectedPack.price, 
+                    selectedMethod
+                );
+                
+                if (success) {
+                    // Mettre à jour le solde utilisateur
+                    const newBalance = (userData.xuborBalance || 0) + selectedPack.xubor;
+                    window.authManager.updateXuborBalance(newBalance);
+                    
+                    // Afficher la confirmation
+                    showConfirmation(selectedPack, newBalance);
+                } else {
+                    showNotification('Paiement refusé', 'error');
+                }
+            } catch (error) {
+                console.error('Erreur de paiement:', error);
+                showNotification('Erreur lors du paiement', 'error');
+            }
+        }
+        
+        function validateCardForm() {
+            const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+            const cardHolder = document.getElementById('card-holder').value;
+            const expiryDate = document.getElementById('expiry-date').value;
+            const cvv = document.getElementById('cvv').value;
+            const email = document.getElementById('email').value;
+            
+            // Validation du numéro de carte (algorithme de Luhn simplifié)
+            if (!cardNumber || cardNumber.length < 16) {
+                showNotification('Numéro de carte invalide', 'error');
+                return false;
+            }
+            
+            if (!cardHolder || cardHolder.length < 3) {
+                showNotification('Nom sur la carte invalide', 'error');
+                return false;
+            }
+            
+            if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
+                showNotification('Date d\'expiration invalide (MM/AA)', 'error');
+                return false;
+            }
+            
+            if (!cvv || (cvv.length !== 3 && cvv.length !== 4)) {
+                showNotification('CVV invalide (3 ou 4 chiffres)', 'error');
+                return false;
+            }
+            
+            if (!email || !/\S+@\S+\.\S+/.test(email)) {
+                showNotification('Email invalide', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function showConfirmation(pack, newBalance) {
+            // Générer une référence
+            const reference = `XOL-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+            
+            // Mettre à jour le modal
+            document.getElementById('confirmation-title').textContent = 
+                pack.xubor === 999999 ? 'Accès illimité activé !' : 'Paiement réussi !';
+            document.getElementById('confirmation-message').textContent = 
+                pack.xubor === 999999 ? 
+                'Vous avez maintenant accès à tous les Xubor de manière illimitée !' :
+                'Vos Xubor ont été crédités sur votre compte.';
+            document.getElementById('confirmation-ref').textContent = reference;
+            document.getElementById('confirmation-amount').textContent = pack.price + ' €';
+            document.getElementById('confirmation-xubor').textContent = 
+                pack.xubor === 999999 ? 'Illimités' : pack.xubor.toLocaleString();
+            document.getElementById('confirmation-balance').textContent = newBalance.toLocaleString();
+            
+            // Afficher le modal
+            document.getElementById('confirmation-modal').style.display = 'flex';
+            
+            // Mettre à jour l'affichage du solde
+            document.getElementById('xubor-balance').textContent = newBalance.toLocaleString();
+            document.getElementById('current-balance').textContent = newBalance.toLocaleString();
+        }
+        
+        function closeConfirmationModal() {
+            document.getElementById('confirmation-modal').style.display = 'none';
+        }
+        
+        // Simulation de paiement
+        async function simulatePayment(xubor, price, method) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    // Simulation - toujours vrai pour la démo
+                    resolve(true);
+                }, 2000);
+            });
+        }
+        
+        // Fermer la modale en cliquant à l'extérieur
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('confirmation-modal');
+            if (event.target === modal) {
+                closeConfirmationModal();
+            }
+        });
+    </script>
+</body>
+</html>
