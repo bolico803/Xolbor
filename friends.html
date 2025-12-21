@@ -8,6 +8,163 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles additionnels pour le système d'amis */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .friend-request-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .friend-request-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #2a2d3e;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #3a3f58;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .request-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #2a2d3e;
+            border-radius: 10px;
+            margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            border: 1px solid #3a3f58;
+        }
+        
+        .search-results.active {
+            display: block;
+        }
+        
+        .search-result-item {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .search-result-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .search-result-item.already-friend {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-remove-friend {
+            background: #ff4757;
+        }
+        
+        .btn-remove-friend:hover {
+            background: #ff3742;
+        }
+        
+        .btn-block {
+            background: #ff9f43;
+        }
+        
+        .btn-block:hover {
+            background: #ff8f33;
+        }
+        
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2a2d3e;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #6C63FF;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(120%);
+            transition: transform 0.3s;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+        
+        .notification-toast.success {
+            border-left-color: #2ed573;
+        }
+        
+        .notification-toast.error {
+            border-left-color: #ff4757;
+        }
+        
+        .notification-toast.info {
+            border-left-color: #1e90ff;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -19,6 +176,7 @@
         
         <div class="search-bar">
             <input type="text" id="friend-search" placeholder="Rechercher un ami...">
+            <div class="search-results" id="search-results"></div>
         </div>
         
         <div class="profile-section">
@@ -31,6 +189,12 @@
                 <div class="avatar">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user&backgroundColor=6C63FF" alt="Avatar">
                 </div>
+            </div>
+            
+            <!-- Bouton notifications demandes d'amis -->
+            <div class="notification-icon" style="position: relative; margin-right: 15px; cursor: pointer;" onclick="showFriendRequests()">
+                <i class="fas fa-user-plus" style="font-size: 20px;"></i>
+                <span class="notification-badge" id="request-count">0</span>
             </div>
         </div>
     </nav>
@@ -119,8 +283,8 @@
         <div class="friends-tabs">
             <button class="friends-tab active" data-tab="all">Tous les amis</button>
             <button class="friends-tab" data-tab="online">En ligne</button>
-            <button class="friends-tab" data-tab="pending">Demandes en attente</button>
-            <button class="friends-tab" data-tab="blocked">Bloqués</button>
+            <button class="friends-tab" data-tab="pending">Demandes en attente (<span id="pending-count">0</span>)</button>
+            <button class="friends-tab" data-tab="blocked">Bloqués (<span id="blocked-count">0</span>)</button>
         </div>
         
         <!-- Liste des amis -->
@@ -137,6 +301,9 @@
             <div class="friends-suggestions">
                 <div class="suggestions-header">
                     <h3><i class="fas fa-user-plus"></i> Suggestions</h3>
+                    <button class="btn-small" onclick="refreshSuggestions()">
+                        <i class="fas fa-redo"></i>
+                    </button>
                 </div>
                 <div class="suggestions-list" id="suggestions-list">
                     <!-- Les suggestions seront chargées dynamiquement -->
@@ -178,29 +345,376 @@
         </div>
     </main>
     
-    <script src="auth.js"></script>
-    <script src="script.js"></script>
+    <!-- Modal des demandes d'amis -->
+    <div class="friend-request-modal" id="friend-request-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Demandes d'amis</h2>
+                <button class="close-modal" onclick="hideFriendRequests()">&times;</button>
+            </div>
+            <div id="requests-list">
+                <!-- Les demandes seront chargées ici -->
+            </div>
+            <div id="no-requests" style="text-align: center; padding: 20px; display: none;">
+                <i class="fas fa-user-friends" style="font-size: 48px; opacity: 0.3; margin-bottom: 10px;"></i>
+                <p>Aucune demande d'ami pour le moment</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div class="notification-toast" id="notification-toast">
+        <div class="notification-content">
+            <strong id="notification-title">Notification</strong>
+            <p id="notification-message">Message de notification</p>
+        </div>
+    </div>
+
     <script>
-        let friends = [];
-        let suggestions = [];
+        // Gestionnaire d'amis avec localStorage comme backend simulé
+        class FriendSystem {
+            constructor() {
+                this.currentUser = null;
+                this.friends = [];
+                this.pendingRequests = [];
+                this.blockedUsers = [];
+                this.init();
+            }
+            
+            init() {
+                this.loadCurrentUser();
+                this.loadFriendsData();
+                this.updateNotificationBadge();
+            }
+            
+            loadCurrentUser() {
+                const userData = localStorage.getItem('currentUser');
+                if (userData) {
+                    this.currentUser = JSON.parse(userData);
+                } else {
+                    // Simulation d'un utilisateur pour la démo
+                    this.currentUser = {
+                        id: 'user_1',
+                        username: 'PlayerOne',
+                        xuborBalance: 1500,
+                        level: 42,
+                        xp: 12500
+                    };
+                    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+                }
+            }
+            
+            loadFriendsData() {
+                // Charger les amis depuis localStorage
+                const friendsData = localStorage.getItem(`friends_${this.currentUser.id}`);
+                if (friendsData) {
+                    const data = JSON.parse(friendsData);
+                    this.friends = data.friends || [];
+                    this.pendingRequests = data.pendingRequests || [];
+                    this.blockedUsers = data.blockedUsers || [];
+                } else {
+                    // Données de démonstration
+                    this.generateDemoData();
+                    this.saveFriendsData();
+                }
+            }
+            
+            saveFriendsData() {
+                const data = {
+                    friends: this.friends,
+                    pendingRequests: this.pendingRequests,
+                    blockedUsers: this.blockedUsers
+                };
+                localStorage.setItem(`friends_${this.currentUser.id}`, JSON.stringify(data));
+            }
+            
+            generateDemoData() {
+                // Amis de démonstration
+                this.friends = [
+                    {
+                        id: 'friend_1',
+                        username: 'AlexPro',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AlexPro',
+                        status: 'online',
+                        level: 35,
+                        xp: 8900,
+                        lastSeen: 'En ligne maintenant',
+                        currentGame: 'Dragon\'s Realm',
+                        isFavorite: true
+                    },
+                    {
+                        id: 'friend_2',
+                        username: 'SarahGamer',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SarahGamer',
+                        status: 'gaming',
+                        level: 28,
+                        xp: 7200,
+                        lastSeen: 'En jeu depuis 45 min',
+                        currentGame: 'Galaxy Conquest'
+                    }
+                ];
+                
+                // Demandes en attente de démonstration
+                this.pendingRequests = [
+                    {
+                        id: 'request_1',
+                        fromUserId: 'user_3',
+                        fromUsername: 'MikeLegend',
+                        fromAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MikeLegend',
+                        timestamp: Date.now() - 3600000 // Il y a 1 heure
+                    }
+                ];
+                
+                // Utilisateurs bloqués de démonstration
+                this.blockedUsers = [
+                    {
+                        id: 'blocked_1',
+                        username: 'TrollMaster',
+                        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TrollMaster',
+                        blockedSince: Date.now() - 86400000 // Il y a 1 jour
+                    }
+                ];
+            }
+            
+            searchUsers(query) {
+                // Simulation de recherche dans une base de données
+                const allUsers = [
+                    { id: 'user_2', username: 'AlexPro', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AlexPro' },
+                    { id: 'user_3', username: 'MikeLegend', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MikeLegend' },
+                    { id: 'user_4', username: 'LunaStar', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LunaStar' },
+                    { id: 'user_5', username: 'TomChampion', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TomChampion' },
+                    { id: 'user_6', username: 'EmmaWarrior', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=EmmaWarrior' },
+                    { id: 'user_7', username: 'LeoMaster', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LeoMaster' },
+                    { id: 'user_8', username: 'ChloeQueen', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ChloeQueen' },
+                    { id: 'user_9', username: 'MaxDestroyer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MaxDestroyer' },
+                    { id: 'user_10', username: 'ZoePro', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ZoePro' }
+                ];
+                
+                return allUsers.filter(user => 
+                    user.username.toLowerCase().includes(query.toLowerCase()) &&
+                    user.id !== this.currentUser.id
+                );
+            }
+            
+            sendFriendRequest(targetUsername) {
+                const targetUser = this.searchUsers(targetUsername)[0];
+                if (!targetUser) {
+                    return { success: false, message: 'Utilisateur introuvable' };
+                }
+                
+                // Vérifier si déjà ami
+                if (this.friends.some(f => f.id === targetUser.id)) {
+                    return { success: false, message: 'Déjà ami avec cet utilisateur' };
+                }
+                
+                // Vérifier si déjà une demande en attente
+                if (this.pendingRequests.some(r => r.fromUserId === targetUser.id)) {
+                    return { success: false, message: 'Demande déjà envoyée' };
+                }
+                
+                // Vérifier si bloqué
+                if (this.blockedUsers.some(b => b.id === targetUser.id)) {
+                    return { success: false, message: 'Cet utilisateur est bloqué' };
+                }
+                
+                // Simuler l'envoi de la demande
+                const request = {
+                    id: `req_${Date.now()}`,
+                    fromUserId: this.currentUser.id,
+                    fromUsername: this.currentUser.username,
+                    fromAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${this.currentUser.username}`,
+                    toUserId: targetUser.id,
+                    timestamp: Date.now()
+                };
+                
+                // Enregistrer la demande côté expéditeur
+                this.pendingRequests.push({
+                    id: request.id,
+                    toUserId: targetUser.id,
+                    toUsername: targetUser.username,
+                    timestamp: request.timestamp
+                });
+                
+                // Simuler la réception côté destinataire
+                this.simulateReceivedRequest(targetUser.id, request);
+                
+                this.saveFriendsData();
+                this.updateNotificationBadge();
+                
+                return { 
+                    success: true, 
+                    message: `Demande envoyée à ${targetUser.username}` 
+                };
+            }
+            
+            simulateReceivedRequest(targetUserId, request) {
+                // Simulation: dans un vrai système, ceci serait géré par le backend
+                // Pour la démo, on stocke côté client
+                const targetData = localStorage.getItem(`friends_${targetUserId}`);
+                if (targetData) {
+                    const data = JSON.parse(targetData);
+                    data.pendingRequests = data.pendingRequests || [];
+                    data.pendingRequests.push(request);
+                    localStorage.setItem(`friends_${targetUserId}`, JSON.stringify(data));
+                }
+            }
+            
+            acceptFriendRequest(requestId) {
+                const requestIndex = this.pendingRequests.findIndex(r => r.id === requestId);
+                if (requestIndex === -1) return { success: false, message: 'Demande introuvable' };
+                
+                const request = this.pendingRequests[requestIndex];
+                
+                // Ajouter comme ami
+                const newFriend = {
+                    id: request.toUserId,
+                    username: request.toUsername,
+                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${request.toUsername}`,
+                    status: Math.random() > 0.5 ? 'online' : 'offline',
+                    level: Math.floor(Math.random() * 100) + 1,
+                    xp: Math.floor(Math.random() * 10000),
+                    lastSeen: 'Récemment',
+                    isFavorite: false
+                };
+                
+                this.friends.push(newFriend);
+                this.pendingRequests.splice(requestIndex, 1);
+                this.saveFriendsData();
+                this.updateNotificationBadge();
+                
+                return { 
+                    success: true, 
+                    message: `Vous êtes maintenant ami avec ${request.toUsername}` 
+                };
+            }
+            
+            declineFriendRequest(requestId) {
+                const requestIndex = this.pendingRequests.findIndex(r => r.id === requestId);
+                if (requestIndex === -1) return { success: false, message: 'Demande introuvable' };
+                
+                const request = this.pendingRequests[requestIndex];
+                this.pendingRequests.splice(requestIndex, 1);
+                this.saveFriendsData();
+                this.updateNotificationBadge();
+                
+                return { success: true, message: 'Demande refusée' };
+            }
+            
+            removeFriend(friendId) {
+                const friendIndex = this.friends.findIndex(f => f.id === friendId);
+                if (friendIndex === -1) return { success: false, message: 'Ami introuvable' };
+                
+                const friend = this.friends[friendIndex];
+                this.friends.splice(friendIndex, 1);
+                this.saveFriendsData();
+                
+                return { success: true, message: `${friend.username} a été retiré de vos amis` };
+            }
+            
+            blockUser(userId) {
+                const user = this.searchUsers('').find(u => u.id === userId);
+                if (!user) return { success: false, message: 'Utilisateur introuvable' };
+                
+                // Retirer des amis si présent
+                this.friends = this.friends.filter(f => f.id !== userId);
+                
+                // Retirer des demandes en attente
+                this.pendingRequests = this.pendingRequests.filter(r => r.toUserId !== userId);
+                
+                // Ajouter aux bloqués
+                this.blockedUsers.push({
+                    id: userId,
+                    username: user.username,
+                    avatar: user.avatar,
+                    blockedSince: Date.now()
+                });
+                
+                this.saveFriendsData();
+                
+                return { success: true, message: `${user.username} a été bloqué` };
+            }
+            
+            unblockUser(userId) {
+                const blockIndex = this.blockedUsers.findIndex(b => b.id === userId);
+                if (blockIndex === -1) return { success: false, message: 'Utilisateur non bloqué' };
+                
+                const user = this.blockedUsers[blockIndex];
+                this.blockedUsers.splice(blockIndex, 1);
+                this.saveFriendsData();
+                
+                return { success: true, message: `${user.username} a été débloqué` };
+            }
+            
+            toggleFavorite(friendId) {
+                const friend = this.friends.find(f => f.id === friendId);
+                if (friend) {
+                    friend.isFavorite = !friend.isFavorite;
+                    this.saveFriendsData();
+                    return true;
+                }
+                return false;
+            }
+            
+            getStats() {
+                const online = this.friends.filter(f => f.status === 'online').length;
+                const gaming = this.friends.filter(f => f.status === 'gaming').length;
+                const offline = this.friends.filter(f => f.status === 'offline').length;
+                
+                return {
+                    online,
+                    gaming,
+                    offline,
+                    total: this.friends.length,
+                    pending: this.pendingRequests.length,
+                    blocked: this.blockedUsers.length
+                };
+            }
+            
+            getSuggestions() {
+                // Suggestions basées sur les amis d'amis
+                const allUsers = this.searchUsers('');
+                const suggestions = allUsers.filter(user => 
+                    !this.friends.some(f => f.id === user.id) &&
+                    !this.pendingRequests.some(r => r.toUserId === user.id) &&
+                    !this.blockedUsers.some(b => b.id === user.id)
+                ).slice(0, 5);
+                
+                return suggestions.map(user => ({
+                    ...user,
+                    mutualFriends: Math.floor(Math.random() * 5) + 1
+                }));
+            }
+            
+            updateNotificationBadge() {
+                const badge = document.getElementById('request-count');
+                if (badge) {
+                    badge.textContent = this.pendingRequests.length;
+                    badge.style.display = this.pendingRequests.length > 0 ? 'flex' : 'none';
+                }
+            }
+        }
+
+        // Initialisation du système
+        const friendSystem = new FriendSystem();
+        
+        // Variables globales
         let activeTab = 'all';
         
         document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier l'authentification
-            if (!window.authManager.isLoggedIn()) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Charger les données
+            // Initialiser l'interface
             loadUserData();
             loadFriends();
             loadSuggestions();
+            updateStats();
             
             // Configurer la recherche
             const searchInput = document.getElementById('friend-search');
-            searchInput.addEventListener('input', debounce(function() {
-                filterFriends();
+            searchInput.addEventListener('input', debounce(function(e) {
+                if (e.target.value.length >= 2) {
+                    searchUsers(e.target.value);
+                } else {
+                    hideSearchResults();
+                }
             }, 300));
             
             // Configurer les onglets
@@ -214,11 +728,25 @@
             });
             
             // Configurer le bouton ajouter ami
-            document.getElementById('add-friend-btn').addEventListener('click', addFriend);
+            document.getElementById('add-friend-btn').addEventListener('click', function() {
+                const username = prompt('Entrez le pseudo de l\'ami à ajouter :');
+                if (username && username.length >= 3) {
+                    addFriend(username);
+                } else if (username) {
+                    showNotification('Pseudo trop court (minimum 3 caractères)', 'error');
+                }
+            });
+            
+            // Fermer la recherche en cliquant ailleurs
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-bar')) {
+                    hideSearchResults();
+                }
+            });
         });
         
         function loadUserData() {
-            const user = window.authManager.getCurrentUser();
+            const user = friendSystem.currentUser;
             if (user) {
                 document.getElementById('xubor-balance').textContent = 
                     (user.xuborBalance || 0).toLocaleString();
@@ -230,48 +758,61 @@
             }
         }
         
-        async function loadFriends() {
-            try {
-                // Simulation de chargement depuis une API
-                friends = await generateSampleFriends(25);
-                filterFriends();
-                updateStats();
-            } catch (error) {
-                console.error('Erreur de chargement des amis:', error);
-                showNotification('Erreur de chargement des amis', 'error');
-            }
+        function loadFriends() {
+            const container = document.getElementById('friends-list');
+            filterFriends();
         }
         
-        async function loadSuggestions() {
-            try {
-                // Simulation de suggestions
-                suggestions = await generateSampleSuggestions(5);
-                displaySuggestions();
-            } catch (error) {
-                console.error('Erreur de chargement des suggestions:', error);
-            }
+        function loadSuggestions() {
+            const suggestions = friendSystem.getSuggestions();
+            displaySuggestions(suggestions);
+        }
+        
+        function refreshSuggestions() {
+            loadSuggestions();
+            showNotification('Suggestions actualisées', 'info');
         }
         
         function filterFriends() {
             const searchTerm = document.getElementById('friend-search').value.toLowerCase();
             const container = document.getElementById('friends-list');
             
-            let filteredFriends = friends.filter(friend => {
-                // Recherche texte
-                if (searchTerm && !friend.username.toLowerCase().includes(searchTerm) && 
-                    !friend.name.toLowerCase().includes(searchTerm)) {
-                    return false;
-                }
-                
-                // Filtre onglet
-                if (activeTab === 'online' && friend.status !== 'online') return false;
-                if (activeTab === 'pending' && !friend.pending) return false;
-                if (activeTab === 'blocked' && !friend.blocked) return false;
-                
-                return true;
-            });
+            let friendsToShow = [];
             
-            displayFriends(filteredFriends);
+            switch (activeTab) {
+                case 'all':
+                    friendsToShow = friendSystem.friends;
+                    break;
+                case 'online':
+                    friendsToShow = friendSystem.friends.filter(f => f.status === 'online');
+                    break;
+                case 'pending':
+                    friendsToShow = friendSystem.pendingRequests.map(req => ({
+                        id: req.toUserId,
+                        username: req.toUsername,
+                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${req.toUsername}`,
+                        status: 'offline',
+                        isPending: true,
+                        requestId: req.id
+                    }));
+                    break;
+                case 'blocked':
+                    friendsToShow = friendSystem.blockedUsers.map(user => ({
+                        ...user,
+                        status: 'blocked',
+                        isBlocked: true
+                    }));
+                    break;
+            }
+            
+            // Appliquer la recherche
+            if (searchTerm) {
+                friendsToShow = friendsToShow.filter(friend => 
+                    friend.username.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayFriends(friendsToShow);
         }
         
         function displayFriends(friendList) {
@@ -296,6 +837,7 @@
                     <div class="friend-avatar" onclick="viewFriend3D('${friend.username}')">
                         <img src="${friend.avatar}" alt="${friend.username}">
                         <div class="status-indicator ${friend.status}"></div>
+                        ${friend.isFavorite ? '<div class="favorite-badge"><i class="fas fa-star"></i></div>' : ''}
                     </div>
                     
                     <div class="friend-info">
@@ -304,29 +846,32 @@
                             <span class="friend-status-text ${friend.status}">
                                 <i class="fas fa-circle"></i>
                                 ${friend.status === 'online' ? 'En ligne' : 
-                                 friend.status === 'gaming' ? 'En jeu' : 'Hors ligne'}
+                                 friend.status === 'gaming' ? 'En jeu' : 
+                                 friend.status === 'blocked' ? 'Bloqué' : 'Hors ligne'}
                             </span>
                         </div>
                         
                         <div class="friend-details">
-                            <p class="friend-game" style="display: ${friend.currentGame ? 'block' : 'none'}">
-                                <i class="fas fa-gamepad"></i> ${friend.currentGame || ''}
-                            </p>
+                            ${friend.currentGame ? `
+                                <p class="friend-game">
+                                    <i class="fas fa-gamepad"></i> ${friend.currentGame}
+                                </p>
+                            ` : ''}
                             <p class="friend-last-seen">
                                 ${friend.lastSeen || ''}
                             </p>
                         </div>
                         
                         <div class="friend-actions">
-                            ${friend.pending ? `
-                                <button class="btn-accept" onclick="acceptFriendRequest('${friend.id}')">
+                            ${friend.isPending ? `
+                                <button class="btn-accept" onclick="acceptFriendRequest('${friend.requestId}')">
                                     <i class="fas fa-check"></i> Accepter
                                 </button>
-                                <button class="btn-decline" onclick="declineFriendRequest('${friend.id}')">
+                                <button class="btn-decline" onclick="declineFriendRequest('${friend.requestId}')">
                                     <i class="fas fa-times"></i> Refuser
                                 </button>
-                            ` : friend.blocked ? `
-                                <button class="btn-unblock" onclick="unblockFriend('${friend.id}')">
+                            ` : friend.isBlocked ? `
+                                <button class="btn-unblock" onclick="unblockUser('${friend.id}')">
                                     <i class="fas fa-ban"></i> Débloquer
                                 </button>
                             ` : `
@@ -341,22 +886,33 @@
                                         <i class="fas fa-gamepad"></i> Rejoindre
                                     </button>
                                 ` : ''}
+                                <button class="btn-favorite" onclick="toggleFavorite('${friend.id}')">
+                                    <i class="fas ${friend.isFavorite ? 'fa-star' : 'fa-star'}"></i>
+                                </button>
+                                <button class="btn-remove-friend" onclick="removeFriend('${friend.id}')">
+                                    <i class="fas fa-user-times"></i>
+                                </button>
+                                <button class="btn-block" onclick="blockUser('${friend.id}')">
+                                    <i class="fas fa-ban"></i>
+                                </button>
                             `}
                         </div>
                     </div>
                     
-                    <div class="friend-xp">
-                        <div class="xp-level">Niv. ${friend.level}</div>
-                        <div class="xp-bar">
-                            <div class="xp-progress" style="width: ${friend.xpProgress}%"></div>
+                    ${friend.level ? `
+                        <div class="friend-xp">
+                            <div class="xp-level">Niv. ${friend.level}</div>
+                            <div class="xp-bar">
+                                <div class="xp-progress" style="width: ${(friend.xp % 1000) / 10}%"></div>
+                            </div>
+                            <div class="xp-text">${friend.xp} XP</div>
                         </div>
-                        <div class="xp-text">${friend.xp} XP</div>
-                    </div>
+                    ` : ''}
                 </div>
             `).join('');
         }
         
-        function displaySuggestions() {
+        function displaySuggestions(suggestions) {
             const container = document.getElementById('suggestions-list');
             
             if (suggestions.length === 0) {
@@ -373,7 +929,7 @@
                         <h4>${suggestion.username}</h4>
                         <p>${suggestion.mutualFriends} amis en commun</p>
                     </div>
-                    <button class="btn-add" onclick="addSuggestedFriend('${suggestion.id}')">
+                    <button class="btn-add" onclick="addFriend('${suggestion.username}')">
                         <i class="fas fa-user-plus"></i>
                     </button>
                 </div>
@@ -381,138 +937,181 @@
         }
         
         function updateStats() {
-            const onlineCount = friends.filter(f => f.status === 'online').length;
-            const offlineCount = friends.filter(f => f.status === 'offline').length;
-            const gamingCount = friends.filter(f => f.status === 'gaming').length;
-            const pendingCount = friends.filter(f => f.pending).length;
+            const stats = friendSystem.getStats();
             
-            document.getElementById('online-count').textContent = onlineCount;
-            document.getElementById('offline-count').textContent = offlineCount;
-            document.getElementById('gaming-count').textContent = gamingCount;
-            document.getElementById('total-count').textContent = friends.length - pendingCount;
+            document.getElementById('online-count').textContent = stats.online;
+            document.getElementById('offline-count').textContent = stats.offline;
+            document.getElementById('gaming-count').textContent = stats.gaming;
+            document.getElementById('total-count').textContent = stats.total;
+            document.getElementById('pending-count').textContent = stats.pending;
+            document.getElementById('blocked-count').textContent = stats.blocked;
         }
         
-        async function addFriend() {
-            const username = prompt('Entrez le pseudo de l\'ami à ajouter :');
-            if (!username) return;
+        function searchUsers(query) {
+            const results = friendSystem.searchUsers(query);
+            const container = document.getElementById('search-results');
             
-            if (username.length < 3) {
-                showNotification('Pseudo trop court', 'error');
+            if (results.length === 0) {
+                container.innerHTML = '<div class="search-result-item">Aucun utilisateur trouvé</div>';
+                container.classList.add('active');
                 return;
             }
             
-            // Vérifier que ce n'est pas soi-même
-            const user = window.authManager.getCurrentUser();
-            if (user && user.username.toLowerCase() === username.toLowerCase()) {
-                showNotification('Vous ne pouvez pas vous ajouter vous-même', 'error');
-                return;
-            }
+            const friends = friendSystem.friends;
+            const pending = friendSystem.pendingRequests;
             
-            try {
-                showNotification(`Envoi de la demande à ${username}...`, 'info');
+            container.innerHTML = results.map(user => {
+                const isFriend = friends.some(f => f.id === user.id);
+                const hasPendingRequest = pending.some(r => r.toUserId === user.id);
                 
-                // Simulation d'ajout d'ami
-                const success = await simulateAddFriend(username);
+                return `
+                    <div class="search-result-item ${isFriend ? 'already-friend' : ''}" 
+                         onclick="${!isFriend ? `addFriend('${user.username}')` : ''}">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="${user.avatar}" alt="${user.username}" style="width: 30px; height: 30px; border-radius: 50%;">
+                            <span>${user.username}</span>
+                        </div>
+                        ${isFriend ? 
+                            '<span style="color: #6C63FF; font-size: 12px;">Déjà ami</span>' : 
+                            hasPendingRequest ?
+                            '<span style="color: #ff9f43; font-size: 12px;">Demande envoyée</span>' :
+                            '<button class="btn-add" style="padding: 5px 10px; font-size: 12px;">Ajouter</button>'
+                        }
+                    </div>
+                `;
+            }).join('');
+            
+            container.classList.add('active');
+        }
+        
+        function hideSearchResults() {
+            document.getElementById('search-results').classList.remove('active');
+        }
+        
+        async function addFriend(username) {
+            const result = friendSystem.sendFriendRequest(username);
+            showNotification(result.message, result.success ? 'success' : 'error');
+            
+            if (result.success) {
+                hideSearchResults();
+                document.getElementById('friend-search').value = '';
+                filterFriends();
+                updateStats();
+                loadSuggestions();
+            }
+        }
+        
+        function acceptFriendRequest(requestId) {
+            const result = friendSystem.acceptFriendRequest(requestId);
+            showNotification(result.message, result.success ? 'success' : 'error');
+            
+            if (result.success) {
+                filterFriends();
+                updateStats();
+                loadSuggestions();
+                hideFriendRequests();
+            }
+        }
+        
+        function declineFriendRequest(requestId) {
+            if (confirm('Refuser cette demande d\'ami ?')) {
+                const result = friendSystem.declineFriendRequest(requestId);
+                showNotification(result.message, result.success ? 'info' : 'error');
                 
-                if (success) {
-                    showNotification(`Demande envoyée à ${username}`, 'success');
-                    
-                    // Ajouter à la liste des amis (en attente)
-                    friends.unshift({
-                        id: 'new_' + Date.now(),
-                        username: username,
-                        name: username,
-                        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-                        status: 'offline',
-                        pending: true,
-                        level: 1,
-                        xp: 0,
-                        xpProgress: 0,
-                        lastSeen: 'Il y a quelques instants'
-                    });
-                    
+                if (result.success) {
                     filterFriends();
                     updateStats();
-                } else {
-                    showNotification('Utilisateur introuvable', 'error');
+                    hideFriendRequests();
                 }
-            } catch (error) {
-                showNotification('Erreur lors de l\'ajout', 'error');
             }
         }
         
-        async function addSuggestedFriend(suggestionId) {
-            const suggestion = suggestions.find(s => s.id === suggestionId);
-            if (!suggestion) return;
-            
-            await addFriendFromSuggestion(suggestion.username);
-            
-            // Retirer de la liste des suggestions
-            suggestions = suggestions.filter(s => s.id !== suggestionId);
-            displaySuggestions();
-        }
-        
-        async function addFriendFromSuggestion(username) {
-            try {
-                showNotification(`Ajout de ${username}...`, 'info');
+        function removeFriend(friendId) {
+            if (confirm('Retirer cet ami de votre liste ?')) {
+                const result = friendSystem.removeFriend(friendId);
+                showNotification(result.message, result.success ? 'info' : 'error');
                 
-                const success = await simulateAddFriend(username);
-                
-                if (success) {
-                    showNotification(`Demande envoyée à ${username}`, 'success');
-                } else {
-                    showNotification('Erreur lors de l\'ajout', 'error');
-                }
-            } catch (error) {
-                showNotification('Erreur réseau', 'error');
-            }
-        }
-        
-        async function acceptFriendRequest(friendId) {
-            const friend = friends.find(f => f.id === friendId);
-            if (!friend) return;
-            
-            try {
-                showNotification(`Acceptation de la demande...`, 'info');
-                
-                const success = await simulateAcceptFriend(friendId);
-                
-                if (success) {
-                    friend.pending = false;
-                    friend.status = 'online';
+                if (result.success) {
                     filterFriends();
                     updateStats();
-                    
-                    showNotification(`Vous êtes maintenant ami avec ${friend.username}`, 'success');
                 }
-            } catch (error) {
-                showNotification('Erreur lors de l\'acceptation', 'error');
             }
         }
         
-        async function declineFriendRequest(friendId) {
-            const friend = friends.find(f => f.id === friendId);
-            if (!friend) return;
-            
-            if (!confirm(`Refuser la demande de ${friend.username} ?`)) {
-                return;
-            }
-            
-            try {
-                showNotification(`Refus de la demande...`, 'info');
+        function blockUser(userId) {
+            if (confirm('Bloquer cet utilisateur ? Il ne pourra plus vous envoyer de messages ni de demandes d\'ami.')) {
+                const result = friendSystem.blockUser(userId);
+                showNotification(result.message, result.success ? 'info' : 'error');
                 
-                const success = await simulateDeclineFriend(friendId);
-                
-                if (success) {
-                    friends = friends.filter(f => f.id !== friendId);
+                if (result.success) {
                     filterFriends();
                     updateStats();
-                    
-                    showNotification('Demande refusée', 'info');
                 }
-            } catch (error) {
-                showNotification('Erreur lors du refus', 'error');
             }
+        }
+        
+        function unblockUser(userId) {
+            const result = friendSystem.unblockUser(userId);
+            showNotification(result.message, result.success ? 'success' : 'error');
+            
+            if (result.success) {
+                filterFriends();
+                updateStats();
+            }
+        }
+        
+        function toggleFavorite(friendId) {
+            const success = friendSystem.toggleFavorite(friendId);
+            if (success) {
+                filterFriends();
+                showNotification('Favori modifié', 'info');
+            }
+        }
+        
+        function showFriendRequests() {
+            const modal = document.getElementById('friend-request-modal');
+            const container = document.getElementById('requests-list');
+            const noRequests = document.getElementById('no-requests');
+            
+            const requests = friendSystem.pendingRequests;
+            
+            if (requests.length === 0) {
+                container.style.display = 'none';
+                noRequests.style.display = 'block';
+            } else {
+                container.style.display = 'block';
+                noRequests.style.display = 'none';
+                
+                container.innerHTML = requests.map(request => `
+                    <div class="request-item">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${request.toUsername}" 
+                                 alt="${request.toUsername}" 
+                                 style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div>
+                                <strong>${request.toUsername}</strong>
+                                <p style="font-size: 12px; opacity: 0.7;">
+                                    Demande reçue il y a ${Math.floor((Date.now() - request.timestamp) / 3600000)}h
+                                </p>
+                            </div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn-accept" onclick="acceptFriendRequest('${request.id}')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn-decline" onclick="declineFriendRequest('${request.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            modal.classList.add('active');
+        }
+        
+        function hideFriendRequests() {
+            document.getElementById('friend-request-modal').classList.remove('active');
         }
         
         function viewFriend3D(username) {
@@ -557,7 +1156,7 @@
         }
         
         function messageFriend(friendId) {
-            const friend = friends.find(f => f.id === friendId);
+            const friend = friendSystem.friends.find(f => f.id === friendId);
             if (!friend) return;
             
             const message = prompt(`Envoyer un message à ${friend.username} :`);
@@ -567,120 +1166,71 @@
         }
         
         function viewFriendProfile(friendId) {
-            const friend = friends.find(f => f.id === friendId);
+            const friend = friendSystem.friends.find(f => f.id === friendId);
             if (!friend) return;
             
             showNotification(`Ouverture du profil de ${friend.username}...`, 'info');
-            // En production, rediriger vers la page de profil de l'ami
         }
         
         function joinFriendGame(friendId) {
-            const friend = friends.find(f => f.id === friendId);
+            const friend = friendSystem.friends.find(f => f.id === friendId);
             if (!friend) return;
             
             if (confirm(`Rejoindre ${friend.username} dans ${friend.currentGame} ?`)) {
                 showNotification(`Connexion à ${friend.currentGame}...`, 'info');
-                // En production, lancer le jeu et rejoindre la partie
             }
         }
         
-        function unblockFriend(friendId) {
-            const friend = friends.find(f => f.id === friendId);
-            if (!friend) return;
+        function showNotification(message, type = 'info') {
+            const toast = document.getElementById('notification-toast');
+            const title = document.getElementById('notification-title');
+            const msg = document.getElementById('notification-message');
             
-            if (confirm(`Débloquer ${friend.username} ?`)) {
-                friend.blocked = false;
-                filterFriends();
-                showNotification(`${friend.username} a été débloqué`, 'success');
+            // Définir le type de notification
+            toast.className = 'notification-toast';
+            toast.classList.add(type);
+            
+            // Définir le titre selon le type
+            switch(type) {
+                case 'success':
+                    title.textContent = 'Succès';
+                    break;
+                case 'error':
+                    title.textContent = 'Erreur';
+                    break;
+                default:
+                    title.textContent = 'Information';
             }
-        }
-        
-        // Générer des amis de démonstration
-        async function generateSampleFriends(count) {
-            const statuses = ['online', 'offline', 'gaming'];
-            const games = ['Dragon\'s Realm', 'Galaxy Conquest', 'Ultimate Football', 'Cyber Chess', null];
-            const names = ['Alex', 'Sarah', 'Mike', 'Luna', 'Tom', 'Emma', 'Leo', 'Chloe', 'Max', 'Zoe'];
             
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const sampleFriends = [];
-                    
-                    for (let i = 1; i <= count; i++) {
-                        const status = statuses[Math.floor(Math.random() * statuses.length)];
-                        const game = status === 'gaming' ? games[Math.floor(Math.random() * (games.length - 1))] : null;
-                        const name = names[Math.floor(Math.random() * names.length)];
-                        const username = `${name}${i}`;
-                        const level = Math.floor(Math.random() * 100) + 1;
-                        const xp = Math.floor(Math.random() * 10000);
-                        
-                        sampleFriends.push({
-                            id: `friend_${i}`,
-                            username: username,
-                            name: `${name} ${['Pro', 'Gamer', 'Master', 'Legend', 'King'][Math.floor(Math.random() * 5)]}`,
-                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-                            status: status,
-                            currentGame: game,
-                            level: level,
-                            xp: xp,
-                            xpProgress: Math.floor(Math.random() * 100),
-                            pending: Math.random() > 0.9, // 10% de chance d'être en attente
-                            blocked: Math.random() > 0.95, // 5% de chance d'être bloqué
-                            lastSeen: status === 'offline' ? 
-                                `Vu il y a ${Math.floor(Math.random() * 60)} min` : 
-                                status === 'gaming' ? `En jeu depuis ${Math.floor(Math.random() * 120)} min` : 'En ligne'
-                        });
-                    }
-                    
-                    resolve(sampleFriends);
-                }, 500);
-            });
-        }
-        
-        // Générer des suggestions de démonstration
-        async function generateSampleSuggestions(count) {
-            const names = ['Noah', 'Olivia', 'Liam', 'Ava', 'Ethan', 'Isabella', 'Mason', 'Sophia'];
+            msg.textContent = message;
             
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const sampleSuggestions = [];
-                    
-                    for (let i = 1; i <= count; i++) {
-                        const name = names[Math.floor(Math.random() * names.length)];
-                        const username = `${name}${i}_new`;
-                        
-                        sampleSuggestions.push({
-                            id: `suggestion_${i}`,
-                            username: username,
-                            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
-                            mutualFriends: Math.floor(Math.random() * 10) + 1
-                        });
-                    }
-                    
-                    resolve(sampleSuggestions);
-                }, 300);
-            });
+            // Afficher la notification
+            toast.classList.add('show');
+            
+            // Masquer après 3 secondes
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
         
-        // Simulations
-        async function simulateAddFriend(username) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    // Simulation - toujours vrai pour la démo
-                    resolve(username.length >= 3);
-                }, 1000);
-            });
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
         
-        async function simulateAcceptFriend(friendId) {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(true), 500);
-            });
-        }
-        
-        async function simulateDeclineFriend(friendId) {
-            return new Promise(resolve => {
-                setTimeout(() => resolve(true), 500);
-            });
+        // Fonctions de simulation (pour compatibilité)
+        function logout() {
+            showNotification('Déconnexion en cours...', 'info');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
         }
     </script>
 </body>
