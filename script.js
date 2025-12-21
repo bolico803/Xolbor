@@ -1,719 +1,623 @@
-// Script principal pour Xolbor
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialisation
-    initParticles();
-    initTabs();
-    initPasswordToggle();
-    initUsernameCheck();
-    
-    // Gestion de la connexion
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
-    }
-    
-    // Gestion de l'inscription
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegister);
-    }
-    
-    // Gestion du marketplace
-    initMarketplace();
-    
-    // Gestion des amis
-    initFriendsSystem();
-    
-    // Gestion du paiement
-    initPaymentSystem();
-    
-    // Vérifier si l'utilisateur est connecté
-    checkAuthStatus();
-});
+// Configuration globale
+const CONFIG = {
+    API_URL: 'http://localhost:3000/api',
+    SITE_NAME: 'Xolbor',
+    VERSION: '1.0.0'
+};
 
-// Système de particules
-function initParticles() {
-    const particlesContainer = document.getElementById('particles');
-    if (!particlesContainer) return;
-    
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'absolute';
-        particle.style.width = Math.random() * 5 + 2 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.floor(Math.random() * 100 + 156)}, ${Math.floor(Math.random() * 100 + 156)}, 255, ${Math.random() * 0.5 + 0.1})`;
-        particle.style.borderRadius = '50%';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.top = Math.random() * 100 + '%';
-        
-        // Animation
-        particle.animate([
-            { transform: 'translateY(0px)' },
-            { transform: `translateY(${Math.random() * 100 - 50}px)` }
-        ], {
-            duration: Math.random() * 3000 + 2000,
-            iterations: Infinity,
-            direction: 'alternate'
-        });
-        
-        particlesContainer.appendChild(particle);
+// Gestionnaire d'authentification
+class AuthManager {
+    constructor() {
+        this.currentUser = null;
+        this.token = localStorage.getItem('xolbor_token');
+        this.init();
     }
-}
 
-// Système d'onglets
-function initTabs() {
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    
-    if (!loginTab || !registerTab) return;
-    
-    loginTab.addEventListener('click', () => {
-        loginTab.classList.add('active');
-        registerTab.classList.remove('active');
-        loginForm.classList.add('active-form');
-        registerForm.classList.remove('active-form');
-    });
-    
-    registerTab.addEventListener('click', () => {
-        registerTab.classList.add('active');
-        loginTab.classList.remove('active');
-        registerForm.classList.add('active-form');
-        loginForm.classList.remove('active-form');
-    });
-}
+    init() {
+        this.loadUser();
+        this.setupEventListeners();
+    }
 
-// Toggle mot de passe
-function initPasswordToggle() {
-    const toggles = [
-        { icon: 'toggle-login-password', input: 'login-password' },
-        { icon: 'toggle-register-password', input: 'register-password' },
-        { icon: 'toggle-confirm-password', input: 'confirm-password' }
-    ];
-    
-    toggles.forEach(toggle => {
-        const icon = document.getElementById(toggle.icon);
-        const input = document.getElementById(toggle.input);
-        
-        if (icon && input) {
-            icon.addEventListener('click', () => {
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
+    async loadUser() {
+        if (this.token) {
+            try {
+                const response = await fetch(`${CONFIG.API_URL}/user`, {
+                    headers: {
+                        'Authorization': `Bearer ${this.token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    this.currentUser = await response.json();
+                    this.updateUI();
                 } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+                    this.logout();
                 }
-            });
+            } catch (error) {
+                console.error('Erreur de chargement utilisateur:', error);
+                // Simulation pour la démo
+                this.simulateUser();
+            }
+        } else {
+            this.simulateUser();
         }
-    });
-}
+    }
 
-// Vérification du pseudo
-function initUsernameCheck() {
-    const usernameInput = document.getElementById('register-username');
-    const feedback = document.getElementById('username-feedback');
-    
-    if (!usernameInput || !feedback) return;
-    
-    usernameInput.addEventListener('input', debounce(async () => {
-        const username = usernameInput.value.trim();
-        
-        if (username.length < 3) {
-            feedback.textContent = 'Le pseudo doit contenir au moins 3 caractères';
-            feedback.className = 'feedback error';
-            return;
-        }
-        
-        if (username.length > 20) {
-            feedback.textContent = 'Le pseudo ne doit pas dépasser 20 caractères';
-            feedback.className = 'feedback error';
-            return;
-        }
-        
+    simulateUser() {
+        // Simulation d'utilisateur pour la démo
+        this.currentUser = {
+            id: 1,
+            username: 'PlayerOne',
+            email: 'player@xolbor.com',
+            xuborBalance: 1500,
+            level: 42,
+            xp: 12500,
+            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=PlayerOne',
+            createdAt: new Date().toISOString()
+        };
+        this.updateUI();
+    }
+
+    async login(email, password) {
         try {
-            // Simulation de vérification
-            const isAvailable = await checkUsernameAvailability(username);
+            const response = await fetch(`${CONFIG.API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
             
-            if (isAvailable) {
-                feedback.textContent = '✓ Pseudo disponible';
-                feedback.className = 'feedback success';
+            if (data.success) {
+                this.token = data.token;
+                this.currentUser = data.user;
+                localStorage.setItem('xolbor_token', this.token);
+                this.updateUI();
+                showNotification('Connexion réussie !', 'success');
+                return true;
             } else {
-                feedback.textContent = '✗ Pseudo déjà utilisé';
-                feedback.className = 'feedback error';
+                showNotification(data.message || 'Erreur de connexion', 'error');
+                return false;
             }
         } catch (error) {
-            feedback.textContent = 'Erreur de vérification';
-            feedback.className = 'feedback error';
+            console.error('Erreur de connexion:', error);
+            // Simulation pour la démo
+            this.simulateUser();
+            showNotification('Connexion réussie (simulation)', 'success');
+            return true;
         }
-    }, 500));
-}
-
-// Vérifier la disponibilité du pseudo
-async function checkUsernameAvailability(username) {
-    // Simulation - En production, appeler l'API backend
-    const usedUsernames = ['admin', 'test', 'user', 'gamer'];
-    return !usedUsernames.includes(username.toLowerCase());
-}
-
-// Gestion de la connexion
-async function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-    const remember = document.getElementById('remember-me').checked;
-    
-    if (!username || !password) {
-        showNotification('Veuillez remplir tous les champs', 'error');
-        return;
     }
-    
-    // Simulation de connexion
-    showNotification('Connexion en cours...', 'info');
-    
-    try {
-        // En production, appeler l'API backend
-        const success = await simulateLogin(username, password);
-        
-        if (success) {
-            showNotification('Connexion réussie !', 'success');
+
+    async register(username, email, password) {
+        try {
+            const response = await fetch(`${CONFIG.API_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await response.json();
             
-            // Stocker les informations de session
-            localStorage.setItem('xolbor_user', JSON.stringify({
-                username,
-                loggedIn: true,
-                remember,
-                timestamp: Date.now()
-            }));
-            
-            // Redirection vers la page d'accueil
-            setTimeout(() => {
-                window.location.href = 'home.html';
-            }, 1500);
-        } else {
-            showNotification('Identifiants incorrects', 'error');
-        }
-    } catch (error) {
-        showNotification('Erreur de connexion', 'error');
-    }
-}
-
-// Gestion de l'inscription
-async function handleRegister(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('register-username').value;
-    const email = document.getElementById('register-email').value;
-    const password = document.getElementById('register-password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
-    const terms = document.getElementById('accept-terms').checked;
-    
-    // Validation
-    if (!username || !email || !password || !confirmPassword) {
-        showNotification('Veuillez remplir tous les champs', 'error');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        showNotification('Les mots de passe ne correspondent pas', 'error');
-        return;
-    }
-    
-    if (password.length < 8) {
-        showNotification('Le mot de passe doit contenir au moins 8 caractères', 'error');
-        return;
-    }
-    
-    if (!terms) {
-        showNotification('Vous devez accepter les conditions', 'error');
-        return;
-    }
-    
-    // Vérification du pseudo
-    const isAvailable = await checkUsernameAvailability(username);
-    if (!isAvailable) {
-        showNotification('Ce pseudo est déjà utilisé', 'error');
-        return;
-    }
-    
-    // Simulation d'inscription
-    showNotification('Création du compte...', 'info');
-    
-    try {
-        // En production, appeler l'API backend
-        const success = await simulateRegister(username, email, password);
-        
-        if (success) {
-            showNotification('Compte créé avec succès !', 'success');
-            
-            // Auto-connexion
-            localStorage.setItem('xolbor_user', JSON.stringify({
-                username,
-                email,
-                loggedIn: true,
-                timestamp: Date.now()
-            }));
-            
-            // Redirection
-            setTimeout(() => {
-                window.location.href = 'home.html';
-            }, 1500);
-        }
-    } catch (error) {
-        showNotification('Erreur lors de la création du compte', 'error');
-    }
-}
-
-// Simuler la connexion
-async function simulateLogin(username, password) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Simulation - toujours vrai pour la démo
-            resolve(username === 'demo' && password === 'demo123');
-        }, 1000);
-    });
-}
-
-// Simuler l'inscription
-async function simulateRegister(username, email, password) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Simulation - toujours vrai pour la démo
-            resolve(true);
-        }, 1500);
-    });
-}
-
-// Vérifier le statut d'authentification
-function checkAuthStatus() {
-    const userData = localStorage.getItem('xolbor_user');
-    
-    if (userData) {
-        const user = JSON.parse(userData);
-        const currentTime = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        
-        if (user.loggedIn && (user.remember || currentTime - user.timestamp < oneDay)) {
-            // Mettre à jour le timestamp
-            user.timestamp = currentTime;
-            localStorage.setItem('xolbor_user', JSON.stringify(user));
-            
-            // Si on est sur la page de login, rediriger vers l'accueil
-            if (window.location.pathname.endsWith('index.html')) {
-                window.location.href = 'home.html';
+            if (data.success) {
+                showNotification('Inscription réussie !', 'success');
+                return true;
+            } else {
+                showNotification(data.message || 'Erreur d\'inscription', 'error');
+                return false;
             }
-            
-            // Mettre à jour l'interface utilisateur
-            updateUserInterface(user);
-        } else if (!window.location.pathname.endsWith('index.html')) {
-            // Déconnecté, rediriger vers login
-            window.location.href = 'index.html';
+        } catch (error) {
+            console.error('Erreur d\'inscription:', error);
+            showNotification('Inscription réussie (simulation)', 'success');
+            return true;
         }
-    } else if (!window.location.pathname.endsWith('index.html')) {
+    }
+
+    logout() {
+        this.token = null;
+        this.currentUser = null;
+        localStorage.removeItem('xolbor_token');
         window.location.href = 'index.html';
     }
-}
 
-// Mettre à jour l'interface utilisateur
-function updateUserInterface(user) {
-    // Mettre à jour le nom d'utilisateur
-    const usernameElements = document.querySelectorAll('.username-display');
-    usernameElements.forEach(el => {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.value = user.username;
-        } else {
-            el.textContent = user.username;
-        }
-    });
-    
-    // Mettre à jour l'avatar
-    const avatarElements = document.querySelectorAll('.avatar img, .profile-avatar img');
-    avatarElements.forEach(img => {
-        img.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}&backgroundColor=6C63FF`;
-    });
-    
-    // Charger le solde Xubor
-    loadXuborBalance();
-    
-    // Charger le skin actif
-    loadActiveSkin();
-}
+    isLoggedIn() {
+        return !!this.currentUser;
+    }
 
-// Marketplace
-function initMarketplace() {
-    const skinCards = document.querySelectorAll('.skin-card');
-    
-    skinCards.forEach(card => {
-        const buyBtn = card.querySelector('.buy-btn');
-        if (!buyBtn) return;
-        
-        buyBtn.addEventListener('click', async () => {
-            const skinId = card.dataset.skinId;
-            const skinPrice = parseInt(card.dataset.price);
-            const skinName = card.querySelector('.skin-name').textContent;
-            
-            if (buyBtn.classList.contains('owned')) {
-                // Équiper le skin
-                await equipSkin(skinId, skinName);
-            } else {
-                // Acheter le skin
-                await buySkin(skinId, skinPrice, skinName);
+    updateUI() {
+        // Mettre à jour l'affichage de l'utilisateur
+        const userElements = document.querySelectorAll('[data-user-info]');
+        userElements.forEach(element => {
+            const prop = element.dataset.userInfo;
+            if (prop === 'username') {
+                element.textContent = this.currentUser.username;
+            } else if (prop === 'xuborBalance') {
+                element.textContent = this.currentUser.xuborBalance.toLocaleString();
+            } else if (prop === 'level') {
+                element.textContent = this.currentUser.level;
+            } else if (prop === 'xp') {
+                element.textContent = this.currentUser.xp.toLocaleString();
+            } else if (prop === 'avatar' && element.tagName === 'IMG') {
+                element.src = this.currentUser.avatar;
             }
         });
-    });
-}
 
-// Acheter un skin
-async function buySkin(skinId, price, name) {
-    // Vérifier le solde
-    const balance = getXuborBalance();
-    
-    if (balance < price) {
-        showNotification('Solde Xubor insuffisant', 'error');
-        showXuborPacks();
-        return;
-    }
-    
-    if (!confirm(`Acheter "${name}" pour ${price} Xubor ?`)) {
-        return;
-    }
-    
-    try {
-        showNotification(`Achat de "${name}" en cours...`, 'info');
-        
-        // En production, appeler l'API backend
-        const success = await simulatePurchase(skinId, price);
-        
-        if (success) {
-            // Mettre à jour le solde
-            updateXuborBalance(balance - price);
-            
-            // Mettre à jour le bouton
-            const buyBtn = document.querySelector(`.skin-card[data-skin-id="${skinId}"] .buy-btn`);
-            if (buyBtn) {
-                buyBtn.textContent = 'ÉQUIPER';
-                buyBtn.classList.add('owned');
+        // Afficher/masquer les éléments selon l'état de connexion
+        const authElements = document.querySelectorAll('[data-auth-state]');
+        authElements.forEach(element => {
+            const state = element.dataset.authState;
+            if (state === 'logged-in') {
+                element.style.display = this.isLoggedIn() ? 'block' : 'none';
+            } else if (state === 'logged-out') {
+                element.style.display = this.isLoggedIn() ? 'none' : 'block';
             }
-            
-            showNotification(`"${name}" acheté avec succès !`, 'success');
-        }
-    } catch (error) {
-        showNotification('Erreur lors de l\'achat', 'error');
-    }
-}
-
-// Équiper un skin
-async function equipSkin(skinId, name) {
-    try {
-        showNotification(`Équipement de "${name}"...`, 'info');
-        
-        // En production, appeler l'API backend
-        const success = await simulateEquipSkin(skinId);
-        
-        if (success) {
-            // Mettre à jour l'avatar
-            const avatarImg = document.querySelector('.avatar img');
-            if (avatarImg) {
-                // Ici, vous changeriez l'image du skin
-                avatarImg.style.filter = 'hue-rotate(90deg)';
-            }
-            
-            showNotification(`"${name}" équipé !`, 'success');
-        }
-    } catch (error) {
-        showNotification('Erreur lors de l\'équipement', 'error');
-    }
-}
-
-// Système d'amis
-function initFriendsSystem() {
-    const addFriendBtn = document.getElementById('add-friend-btn');
-    const searchFriendInput = document.getElementById('search-friend');
-    
-    if (addFriendBtn) {
-        addFriendBtn.addEventListener('click', async () => {
-            const friendUsername = prompt('Entrez le pseudo de l\'ami à ajouter :');
-            if (!friendUsername) return;
-            
-            if (friendUsername.length < 3) {
-                showNotification('Pseudo trop court', 'error');
-                return;
-            }
-            
-            await addFriend(friendUsername);
         });
     }
-    
-    if (searchFriendInput) {
-        searchFriendInput.addEventListener('input', debounce(async () => {
-            const query = searchFriendInput.value.trim();
-            if (query.length >= 2) {
-                await searchFriends(query);
-            }
-        }, 300));
+
+    setupEventListeners() {
+        // Gestion de la déconnexion
+        const logoutButtons = document.querySelectorAll('[data-action="logout"]');
+        logoutButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.logout();
+            });
+        });
+    }
+
+    getCurrentUser() {
+        return this.currentUser;
     }
 }
 
-// Ajouter un ami
-async function addFriend(username) {
-    try {
-        showNotification(`Envoi de la demande à ${username}...`, 'info');
-        
-        // En production, appeler l'API backend
-        const success = await simulateAddFriend(username);
-        
-        if (success) {
-            showNotification(`Demande envoyée à ${username}`, 'success');
-        } else {
-            showNotification('Utilisateur introuvable', 'error');
+// Gestionnaire de notifications
+class NotificationManager {
+    constructor() {
+        this.container = document.getElementById('notification-container');
+        if (!this.container) {
+            this.createContainer();
         }
-    } catch (error) {
-        showNotification('Erreur lors de l\'ajout', 'error');
     }
-}
 
-// Rechercher des amis
-async function searchFriends(query) {
-    // Simulation de recherche
-    const friendsList = document.querySelector('.friends-list');
-    if (!friendsList) return;
-    
-    friendsList.innerHTML = `
-        <div class="loading">
-            <div class="spinner"></div>
-        </div>
-    `;
-    
-    setTimeout(() => {
-        // Simulation de résultats
-        const results = [
-            { name: `${query}Pro`, status: 'En ligne' },
-            { name: `${query}Master`, status: 'Hors ligne' },
-            { name: `Super${query}`, status: 'En jeu' }
-        ];
+    createContainer() {
+        this.container = document.createElement('div');
+        this.container.id = 'notification-container';
+        this.container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        `;
+        document.body.appendChild(this.container);
+    }
+
+    show(message, type = 'info', duration = 3000) {
+        const notification = document.createElement('div');
+        notification.className = `notification-toast ${type}`;
         
-        friendsList.innerHTML = results.map(friend => `
-            <div class="friend-card">
-                <div class="friend-avatar">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${friend.name}" alt="${friend.name}">
+        const icon = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            info: 'fas fa-info-circle',
+            warning: 'fas fa-exclamation-triangle'
+        }[type];
+
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <i class="${icon}" style="font-size: 20px;"></i>
+                <div>
+                    <strong>${this.getTitle(type)}</strong>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9rem;">${message}</p>
                 </div>
-                <div class="friend-info">
-                    <h3>${friend.name}</h3>
-                    <div class="friend-status">
-                        <div class="status-dot"></div>
-                        ${friend.status}
-                    </div>
-                </div>
-                <button class="btn-add-friend">Ajouter</button>
+                <button class="close-notification" style="margin-left: auto; background: none; border: none; color: inherit; cursor: pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        `).join('');
-    }, 1000);
-}
+        `;
 
-// Système de paiement
-function initPaymentSystem() {
-    const packCards = document.querySelectorAll('.pack-card');
-    const paymentMethods = document.querySelectorAll('.payment-method');
-    
-    // Sélection des packs
-    packCards.forEach(card => {
-        card.addEventListener('click', () => {
-            packCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        });
-    });
-    
-    // Sélection des méthodes de paiement
-    paymentMethods.forEach(method => {
-        method.addEventListener('click', () => {
-            paymentMethods.forEach(m => m.classList.remove('selected'));
-            method.classList.add('selected');
-        });
-    });
-    
-    // Bouton d'achat
-    const purchaseBtn = document.getElementById('purchase-btn');
-    if (purchaseBtn) {
-        purchaseBtn.addEventListener('click', handlePurchase);
-    }
-}
+        this.container.appendChild(notification);
 
-// Gérer l'achat de Xubor
-async function handlePurchase() {
-    const selectedPack = document.querySelector('.pack-card.selected');
-    if (!selectedPack) {
-        showNotification('Veuillez sélectionner un pack', 'error');
-        return;
-    }
-    
-    const selectedMethod = document.querySelector('.payment-method.selected');
-    if (!selectedMethod) {
-        showNotification('Veuillez sélectionner un mode de paiement', 'error');
-        return;
-    }
-    
-    const xuborAmount = parseInt(selectedPack.dataset.xubor);
-    const price = parseFloat(selectedPack.dataset.price);
-    
-    if (!confirm(`Acheter ${xuborAmount} Xubor pour ${price}€ ?`)) {
-        return;
-    }
-    
-    try {
-        showNotification('Traitement du paiement...', 'info');
-        
-        // Simulation de paiement
-        await simulatePayment(xuborAmount, price);
-        
-        // Mettre à jour le solde
-        const currentBalance = getXuborBalance();
-        updateXuborBalance(currentBalance + xuborAmount);
-        
-        showNotification(`${xuborAmount} Xubor ajoutés à votre compte !`, 'success');
-        
-        // Redirection vers l'accueil
+        // Animation d'entrée
         setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 2000);
-    } catch (error) {
-        showNotification('Erreur de paiement', 'error');
-    }
-}
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateX(0)';
+        }, 10);
 
-// Gestion Xubor
-function getXuborBalance() {
-    const userData = localStorage.getItem('xolbor_user');
-    if (userData) {
-        const user = JSON.parse(userData);
-        return user.xuborBalance || 0;
-    }
-    return 0;
-}
+        // Fermeture automatique
+        const autoClose = setTimeout(() => {
+            this.close(notification);
+        }, duration);
 
-function updateXuborBalance(newBalance) {
-    const userData = localStorage.getItem('xolbor_user');
-    if (userData) {
-        const user = JSON.parse(userData);
-        user.xuborBalance = newBalance;
-        localStorage.setItem('xolbor_user', JSON.stringify(user));
-        
-        // Mettre à jour l'affichage
-        const balanceElements = document.querySelectorAll('.xubor-balance span');
-        balanceElements.forEach(el => {
-            el.textContent = newBalance.toLocaleString();
+        // Fermeture manuelle
+        const closeBtn = notification.querySelector('.close-notification');
+        closeBtn.addEventListener('click', () => {
+            clearTimeout(autoClose);
+            this.close(notification);
         });
     }
+
+    getTitle(type) {
+        const titles = {
+            success: 'Succès',
+            error: 'Erreur',
+            info: 'Information',
+            warning: 'Attention'
+        };
+        return titles[type] || 'Notification';
+    }
+
+    close(notification) {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }
 }
 
-function loadXuborBalance() {
-    const balance = getXuborBalance();
-    updateXuborBalance(balance);
-}
+// Gestionnaire de modals
+class ModalManager {
+    constructor() {
+        this.modals = new Map();
+        this.setupEventListeners();
+    }
 
-// Charger le skin actif
-function loadActiveSkin() {
-    // En production, récupérer depuis le backend
-    const userData = localStorage.getItem('xolbor_user');
-    if (userData) {
-        const user = JSON.parse(userData);
-        // Appliquer le skin
-        const avatarImg = document.querySelector('.avatar img');
-        if (avatarImg && user.activeSkin) {
-            // Ici, vous appliqueriez le skin
+    register(modalId, options = {}) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        const overlay = modal.closest('.modal-overlay') || this.createOverlay(modal);
+        
+        this.modals.set(modalId, { modal, overlay, options });
+
+        // Bouton de fermeture
+        const closeBtn = modal.querySelector('.close-modal');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.close(modalId));
+        }
+
+        // Fermeture en cliquant sur l'overlay
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay && options.closeOnOverlay !== false) {
+                this.close(modalId);
+            }
+        });
+    }
+
+    createOverlay(modal) {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        modal.parentNode.insertBefore(overlay, modal);
+        overlay.appendChild(modal);
+        return overlay;
+    }
+
+    open(modalId) {
+        const modalData = this.modals.get(modalId);
+        if (!modalData) return;
+
+        const { overlay, options } = modalData;
+        
+        // Fermer les autres modals
+        this.closeAll();
+
+        // Ouvrir ce modal
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Callback d'ouverture
+        if (options.onOpen) {
+            options.onOpen();
         }
     }
+
+    close(modalId) {
+        const modalData = this.modals.get(modalId);
+        if (!modalData) return;
+
+        const { overlay, options } = modalData;
+        
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        // Callback de fermeture
+        if (options.onClose) {
+            options.onClose();
+        }
+    }
+
+    closeAll() {
+        this.modals.forEach(({ overlay }) => {
+            overlay.classList.remove('active');
+        });
+        document.body.style.overflow = '';
+    }
+
+    setupEventListeners() {
+        // Fermeture avec ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeAll();
+            }
+        });
+    }
 }
 
-// Afficher les packs Xubor
-function showXuborPacks() {
-    const notification = document.createElement('div');
-    notification.className = 'notification info';
-    notification.innerHTML = `
-        <strong>Solde insuffisant</strong><br>
-        <small>Rechargez vos Xubor pour continuer</small>
-        <div style="margin-top: 10px;">
-            <button onclick="window.location.href='checkout.html'" class="play-btn" style="padding: 8px 15px;">
-                Voir les packs
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 5000);
+// Gestionnaire de chargement
+class LoadingManager {
+    constructor() {
+        this.overlay = this.createOverlay();
+    }
+
+    createOverlay() {
+        const overlay = document.createElement('div');
+        overlay.id = 'loading-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        `;
+
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        spinner.style.cssText = `
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(108, 99, 255, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        `;
+
+        const text = document.createElement('p');
+        text.textContent = 'Chargement...';
+        text.style.color = 'var(--text)';
+        text.style.fontFamily = 'Orbitron, sans-serif';
+
+        overlay.appendChild(spinner);
+        overlay.appendChild(text);
+        document.body.appendChild(overlay);
+
+        // Ajouter l'animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        return overlay;
+    }
+
+    show(message = 'Chargement...') {
+        const text = this.overlay.querySelector('p');
+        if (text) text.textContent = message;
+        this.overlay.style.display = 'flex';
+    }
+
+    hide() {
+        this.overlay.style.display = 'none';
+    }
 }
 
 // Utilitaires
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
+class Utils {
+    static debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
             clearTimeout(timeout);
-            func(...args);
+            timeout = setTimeout(later, wait);
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+    }
+
+    static throttle(func, limit) {
+        let inThrottle;
+        return function(...args) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+
+    static formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        }
+        return num.toString();
+    }
+
+    static formatDate(date) {
+        return new Date(date).toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    static copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Copié dans le presse-papier', 'success');
+        }).catch(err => {
+            console.error('Erreur de copie:', err);
+            showNotification('Erreur de copie', 'error');
+        });
+    }
+}
+
+// Initialisation globale
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialiser les managers
+    window.authManager = new AuthManager();
+    window.notificationManager = new NotificationManager();
+    window.modalManager = new ModalManager();
+    window.loadingManager = new LoadingManager();
+    
+    // Définir les fonctions globales
+    window.showNotification = (message, type = 'info') => {
+        window.notificationManager.show(message, type);
+    };
+
+    window.showLoading = (message) => {
+        window.loadingManager.show(message);
+    };
+
+    window.hideLoading = () => {
+        window.loadingManager.hide();
+    };
+
+    // Initialiser les modals
+    document.querySelectorAll('.modal').forEach(modal => {
+        const modalId = modal.id;
+        if (modalId) {
+            window.modalManager.register(modalId);
+        }
+    });
+
+    // Gestion du menu mobile
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+    }
+
+    // Gestion des onglets
+    document.querySelectorAll('[data-tab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            const container = tab.closest('.tabs-container');
+            
+            // Mettre à jour l'onglet actif
+            container.querySelectorAll('[data-tab]').forEach(t => {
+                t.classList.toggle('active', t === tab);
+            });
+
+            // Afficher le contenu correspondant
+            container.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === `${tabId}-tab`);
+            });
+        });
+    });
+
+    // Gestion des tooltips
+    const tooltips = document.querySelectorAll('[data-tooltip]');
+    tooltips.forEach(element => {
+        element.addEventListener('mouseenter', (e) => {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = element.dataset.tooltip;
+            
+            Object.assign(tooltip.style, {
+                position: 'absolute',
+                background: 'var(--dark-light)',
+                color: 'var(--text)',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                fontSize: '0.85rem',
+                whiteSpace: 'nowrap',
+                zIndex: '1000',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+            });
+
+            document.body.appendChild(tooltip);
+
+            const rect = element.getBoundingClientRect();
+            tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
+            tooltip.style.left = `${rect.left + (rect.width - tooltip.offsetWidth) / 2}px`;
+
+            element._tooltip = tooltip;
+        });
+
+        element.addEventListener('mouseleave', () => {
+            if (element._tooltip) {
+                element._tooltip.remove();
+                delete element._tooltip;
+            }
+        });
+    });
+
+    // Gestion du thème
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            const isLight = document.body.classList.contains('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            showNotification(`Thème ${isLight ? 'clair' : 'sombre'} activé`, 'info');
+        });
+    }
+
+    // Charger le thème sauvegardé
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+    }
+
+    console.log(`${CONFIG.SITE_NAME} v${CONFIG.VERSION} initialisé`);
+});
+
+// Fonctions d'aide globales
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('fr-FR', {
+        style: 'currency',
+        currency: 'EUR'
+    }).format(amount);
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePassword(password) {
+    return password.length >= 8;
+}
+
+function getRandomColor() {
+    const colors = ['#6C63FF', '#FF6584', '#00D4AA', '#FFB84D', '#1E90FF'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Export pour les modules
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        AuthManager,
+        NotificationManager,
+        ModalManager,
+        LoadingManager,
+        Utils
     };
 }
-
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <strong>${type === 'error' ? '✗' : type === 'success' ? '✓' : 'ℹ'}</strong>
-        ${message}
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Supprimer après 3 secondes
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-        }
-    }, 3000);
-}
-
-// Simulations d'API
-async function simulatePurchase(skinId, price) {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(true), 1500);
-    });
-}
-
-async function simulateEquipSkin(skinId) {
-    return new Promise(resolve => {
-        setTimeout(() => resolve(true), 1000);
-    });
-}
-
-async function simulateAddFriend(username) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Simulation - toujours vrai pour la démo
-            resolve(username.length >= 3);
-        }, 1000);
-    });
-}
-
-async function simulatePayment(amount, price) {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Simulation - toujours vrai pour la démo
-            resolve(true);
-        }, 2000);
-    });
-}
-
-// Déconnexion
-function logout() {
-    localStorage.removeItem('xolbor_user');
-    window.location.href = 'index.html';
-}
-
-// Exporter les fonctions globales
-window.logout = logout;
-window.showXuborPacks = showXuborPacks;
