@@ -3,119 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor - Connexion</title>
+    <title>Xolbor - La Plateforme Gaming Ultime</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <div class="login-header">
-            <div class="logo">
+<body class="landing-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
+            <h2>XOLBOR</h2>
+        </div>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Fonctionnalités</a>
+            <a href="#games" class="nav-link">Jeux</a>
+            <a href="#marketplace" class="nav-link">Marketplace</a>
+            <a href="#community" class="nav-link">Communauté</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="login.html" class="btn-login">Connexion</a>
+            <a href="register.html" class="btn-register">Inscription</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">LA <span class="gradient-text">PLATEFORME GAMING</span> DU FUTUR</h1>
+            <p class="hero-subtitle">Jouez, échangez, connectez-vous avec des millions de gamers à travers le monde</p>
+            <div class="hero-cta">
+                <a href="register.html" class="btn-hero-primary">
+                    <i class="fas fa-rocket"></i> COMMENCER GRATUITEMENT
+                </a>
+                <a href="#features" class="btn-hero-secondary">
+                    <i class="fas fa-play-circle"></i> Voir la démo
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <h3>500K+</h3>
+                    <p>Joueurs actifs</p>
+                </div>
+                <div class="stat">
+                    <h3>1.2M+</h3>
+                    <p>Transactions</p>
+                </div>
+                <div class="stat">
+                    <h3>50+</h3>
+                    <p>Jeux supportés</p>
+                </div>
+                <div class="stat">
+                    <h3>99.9%</h3>
+                    <p>Uptime</p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="floating-cards">
+                <div class="floating-card card-1">
+                    <i class="fas fa-gamepad"></i>
+                    <h4>Jeux Premium</h4>
+                </div>
+                <div class="floating-card card-2">
+                    <i class="fas fa-gem"></i>
+                    <h4>Xubor Coins</h4>
+                </div>
+                <div class="floating-card card-3">
+                    <i class="fas fa-users"></i>
+                    <h4>Communauté</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-header">
+            <h2>Pourquoi choisir <span class="gradient-text">Xolbor</span> ?</h2>
+            <p>Une expérience gaming complète et innovante</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Performance Ultime</h3>
+                <p>Serveurs optimisés pour une latence minimale et une expérience fluide</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Sécurité Maximale</h3>
+                <p>Protection des données et transactions sécurisées par blockchain</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3>Marketplace</h3>
+                <p>Échangez skins, objets et comptes en toute sécurité</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Compétitions</h3>
+                <p>Tournois avec prix en cash et Xubor Coins</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="games-section">
+        <div class="section-header">
+            <h2>Jeux <span class="gradient-text">Populaires</span></h2>
+            <p>Rejoignez la communauté de vos jeux préférés</p>
+        </div>
+        <div class="games-carousel">
+            <div class="game-card">
+                <div class="game-banner" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h3>Dragon's Realm</h3>
+                    <p>MMORPG</p>
+                </div>
+                <div class="game-info">
+                    <p><i class="fas fa-users"></i> 250K joueurs</p>
+                    <button class="btn-game">Explorer</button>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-banner" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <h3>Galaxy Conquest</h3>
+                    <p>Stratégie</p>
+                </div>
+                <div class="game-info">
+                    <p><i class="fas fa-users"></i> 180K joueurs</p>
+                    <button class="btn-game">Explorer</button>
+                </div>
+            </div>
+            <div class="game-card">
+                <div class="game-banner" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <h3>Cyber Chess</h3>
+                    <p>Puzzle</p>
+                </div>
+                <div class="game-info">
+                    <p><i class="fas fa-users"></i> 95K joueurs</p>
+                    <button class="btn-game">Explorer</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Prêt à rejoindre l'aventure ?</h2>
+            <p>Inscrivez-vous maintenant et obtenez 100 Xubor Coins gratuits !</p>
+            <a href="register.html" class="btn-cta">
+                <i class="fas fa-gift"></i> S'INSCRIRE GRATUITEMENT
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
                 <span class="logo-icon"><i class="fas fa-gamepad"></i></span>
-                <h1>XOLBOR</h1>
-                <p>La plateforme gaming ultime</p>
+                <h3>XOLBOR</h3>
+                <p>La plateforme gaming nouvelle génération</p>
+            </div>
+            <div class="footer-links">
+                <div class="link-group">
+                    <h4>Plateforme</h4>
+                    <a href="home.html">Accueil</a>
+                    <a href="games.html">Jeux</a>
+                    <a href="marketplace.html">Marketplace</a>
+                    <a href="friends.html">Amis</a>
+                </div>
+                <div class="link-group">
+                    <h4>Support</h4>
+                    <a href="#">Centre d'aide</a>
+                    <a href="#">Contact</a>
+                    <a href="#">CGU</a>
+                    <a href="#">Politique de confidentialité</a>
+                </div>
+                <div class="link-group">
+                    <h4>Communauté</h4>
+                    <a href="#">Discord</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">YouTube</a>
+                    <a href="#">Twitch</a>
+                </div>
             </div>
         </div>
-        
-        <div class="login-card">
-            <div class="tabs">
-                <button class="tab active" id="login-tab">Connexion</button>
-                <button class="tab" id="register-tab">Inscription</button>
-            </div>
-            
-            <div class="form-container">
-                <!-- Formulaire de connexion -->
-                <form id="login-form" class="form active-form">
-                    <div class="input-group">
-                        <label for="login-username"><i class="fas fa-user"></i> Pseudo</label>
-                        <input type="text" id="login-username" placeholder="Votre pseudo" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="login-password"><i class="fas fa-lock"></i> Mot de passe</label>
-                        <input type="password" id="login-password" placeholder="Votre mot de passe" required>
-                        <div class="password-toggle">
-                            <i class="fas fa-eye" id="toggle-login-password"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="remember-forgot">
-                        <label class="checkbox">
-                            <input type="checkbox" id="remember-me">
-                            <span>Se souvenir de moi</span>
-                        </label>
-                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
-                    </div>
-                    
-                    <button type="submit" class="btn-login">Se connecter</button>
-                    
-                    <div class="social-login">
-                        <p>Ou connectez-vous avec</p>
-                        <div class="social-icons">
-                            <button type="button" class="social-btn google">
-                                <i class="fab fa-google"></i>
-                            </button>
-                            <button type="button" class="social-btn discord">
-                                <i class="fab fa-discord"></i>
-                            </button>
-                            <button type="button" class="social-btn twitter">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                
-                <!-- Formulaire d'inscription -->
-                <form id="register-form" class="form">
-                    <div class="input-group">
-                        <label for="register-username"><i class="fas fa-user"></i> Pseudo</label>
-                        <input type="text" id="register-username" placeholder="Choisissez un pseudo unique" required>
-                        <div class="feedback" id="username-feedback"></div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="register-email"><i class="fas fa-envelope"></i> Email</label>
-                        <input type="email" id="register-email" placeholder="Votre email" required>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="register-password"><i class="fas fa-lock"></i> Mot de passe</label>
-                        <input type="password" id="register-password" placeholder="Minimum 8 caractères" required>
-                        <div class="password-toggle">
-                            <i class="fas fa-eye" id="toggle-register-password"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="confirm-password"><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
-                        <input type="password" id="confirm-password" placeholder="Retapez votre mot de passe" required>
-                        <div class="password-toggle">
-                            <i class="fas fa-eye" id="toggle-confirm-password"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="terms">
-                        <label class="checkbox">
-                            <input type="checkbox" id="accept-terms" required>
-                            <span>J'accepte les <a href="#">conditions d'utilisation</a></span>
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="btn-register">Créer un compte</button>
-                </form>
-            </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Xolbor. Tous droits réservés.</p>
         </div>
-        
-        <div class="login-footer">
-            <p>En vous connectant, vous acceptez nos <a href="#">Conditions d'utilisation</a> et <a href="#">Politique de confidentialité</a>.</p>
-        </div>
-    </div>
-    
-    <div class="particles-container" id="particles"></div>
-    
-    <script src="auth.js"></script>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
