@@ -1,623 +1,705 @@
-// Configuration globale
-const CONFIG = {
-    API_URL: 'http://localhost:3000/api',
-    SITE_NAME: 'Xolbor',
-    VERSION: '1.0.0'
-};
+// Configuration
+const API_URL = 'http://localhost:3000/api';
+let currentUser = null;
+let authToken = null;
 
-// Gestionnaire d'authentification
-class AuthManager {
-    constructor() {
-        this.currentUser = null;
-        this.token = localStorage.getItem('xolbor_token');
-        this.init();
-    }
-
-    init() {
-        this.loadUser();
-        this.setupEventListeners();
-    }
-
-    async loadUser() {
-        if (this.token) {
-            try {
-                const response = await fetch(`${CONFIG.API_URL}/user`, {
-                    headers: {
-                        'Authorization': `Bearer ${this.token}`
-                    }
-                });
-                
-                if (response.ok) {
-                    this.currentUser = await response.json();
-                    this.updateUI();
-                } else {
-                    this.logout();
-                }
-            } catch (error) {
-                console.error('Erreur de chargement utilisateur:', error);
-                // Simulation pour la démo
-                this.simulateUser();
-            }
-        } else {
-            this.simulateUser();
-        }
-    }
-
-    simulateUser() {
-        // Simulation d'utilisateur pour la démo
-        this.currentUser = {
-            id: 1,
-            username: 'PlayerOne',
-            email: 'player@xolbor.com',
-            xuborBalance: 1500,
-            level: 42,
-            xp: 12500,
-            avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=PlayerOne',
-            createdAt: new Date().toISOString()
-        };
-        this.updateUI();
-    }
-
-    async login(email, password) {
-        try {
-            const response = await fetch(`${CONFIG.API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                this.token = data.token;
-                this.currentUser = data.user;
-                localStorage.setItem('xolbor_token', this.token);
-                this.updateUI();
-                showNotification('Connexion réussie !', 'success');
-                return true;
-            } else {
-                showNotification(data.message || 'Erreur de connexion', 'error');
-                return false;
-            }
-        } catch (error) {
-            console.error('Erreur de connexion:', error);
-            // Simulation pour la démo
-            this.simulateUser();
-            showNotification('Connexion réussie (simulation)', 'success');
-            return true;
-        }
-    }
-
-    async register(username, email, password) {
-        try {
-            const response = await fetch(`${CONFIG.API_URL}/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, email, password })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                showNotification('Inscription réussie !', 'success');
-                return true;
-            } else {
-                showNotification(data.message || 'Erreur d\'inscription', 'error');
-                return false;
-            }
-        } catch (error) {
-            console.error('Erreur d\'inscription:', error);
-            showNotification('Inscription réussie (simulation)', 'success');
-            return true;
-        }
-    }
-
-    logout() {
-        this.token = null;
-        this.currentUser = null;
-        localStorage.removeItem('xolbor_token');
-        window.location.href = 'index.html';
-    }
-
-    isLoggedIn() {
-        return !!this.currentUser;
-    }
-
-    updateUI() {
-        // Mettre à jour l'affichage de l'utilisateur
-        const userElements = document.querySelectorAll('[data-user-info]');
-        userElements.forEach(element => {
-            const prop = element.dataset.userInfo;
-            if (prop === 'username') {
-                element.textContent = this.currentUser.username;
-            } else if (prop === 'xuborBalance') {
-                element.textContent = this.currentUser.xuborBalance.toLocaleString();
-            } else if (prop === 'level') {
-                element.textContent = this.currentUser.level;
-            } else if (prop === 'xp') {
-                element.textContent = this.currentUser.xp.toLocaleString();
-            } else if (prop === 'avatar' && element.tagName === 'IMG') {
-                element.src = this.currentUser.avatar;
-            }
-        });
-
-        // Afficher/masquer les éléments selon l'état de connexion
-        const authElements = document.querySelectorAll('[data-auth-state]');
-        authElements.forEach(element => {
-            const state = element.dataset.authState;
-            if (state === 'logged-in') {
-                element.style.display = this.isLoggedIn() ? 'block' : 'none';
-            } else if (state === 'logged-out') {
-                element.style.display = this.isLoggedIn() ? 'none' : 'block';
-            }
-        });
-    }
-
-    setupEventListeners() {
-        // Gestion de la déconnexion
-        const logoutButtons = document.querySelectorAll('[data-action="logout"]');
-        logoutButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.logout();
-            });
-        });
-    }
-
-    getCurrentUser() {
-        return this.currentUser;
-    }
-}
-
-// Gestionnaire de notifications
-class NotificationManager {
-    constructor() {
-        this.container = document.getElementById('notification-container');
-        if (!this.container) {
-            this.createContainer();
-        }
-    }
-
-    createContainer() {
-        this.container = document.createElement('div');
-        this.container.id = 'notification-container';
-        this.container.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 350px;
-        `;
-        document.body.appendChild(this.container);
-    }
-
-    show(message, type = 'info', duration = 3000) {
-        const notification = document.createElement('div');
-        notification.className = `notification-toast ${type}`;
-        
-        const icon = {
-            success: 'fas fa-check-circle',
-            error: 'fas fa-exclamation-circle',
-            info: 'fas fa-info-circle',
-            warning: 'fas fa-exclamation-triangle'
-        }[type];
-
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <i class="${icon}" style="font-size: 20px;"></i>
-                <div>
-                    <strong>${this.getTitle(type)}</strong>
-                    <p style="margin: 5px 0 0 0; font-size: 0.9rem;">${message}</p>
-                </div>
-                <button class="close-notification" style="margin-left: auto; background: none; border: none; color: inherit; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        `;
-
-        this.container.appendChild(notification);
-
-        // Animation d'entrée
-        setTimeout(() => {
-            notification.style.opacity = '1';
-            notification.style.transform = 'translateX(0)';
-        }, 10);
-
-        // Fermeture automatique
-        const autoClose = setTimeout(() => {
-            this.close(notification);
-        }, duration);
-
-        // Fermeture manuelle
-        const closeBtn = notification.querySelector('.close-notification');
-        closeBtn.addEventListener('click', () => {
-            clearTimeout(autoClose);
-            this.close(notification);
-        });
-    }
-
-    getTitle(type) {
-        const titles = {
-            success: 'Succès',
-            error: 'Erreur',
-            info: 'Information',
-            warning: 'Attention'
-        };
-        return titles[type] || 'Notification';
-    }
-
-    close(notification) {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }
-}
-
-// Gestionnaire de modals
-class ModalManager {
-    constructor() {
-        this.modals = new Map();
-        this.setupEventListeners();
-    }
-
-    register(modalId, options = {}) {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-
-        const overlay = modal.closest('.modal-overlay') || this.createOverlay(modal);
-        
-        this.modals.set(modalId, { modal, overlay, options });
-
-        // Bouton de fermeture
-        const closeBtn = modal.querySelector('.close-modal');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => this.close(modalId));
-        }
-
-        // Fermeture en cliquant sur l'overlay
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay && options.closeOnOverlay !== false) {
-                this.close(modalId);
-            }
-        });
-    }
-
-    createOverlay(modal) {
-        const overlay = document.createElement('div');
-        overlay.className = 'modal-overlay';
-        modal.parentNode.insertBefore(overlay, modal);
-        overlay.appendChild(modal);
-        return overlay;
-    }
-
-    open(modalId) {
-        const modalData = this.modals.get(modalId);
-        if (!modalData) return;
-
-        const { overlay, options } = modalData;
-        
-        // Fermer les autres modals
-        this.closeAll();
-
-        // Ouvrir ce modal
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-
-        // Callback d'ouverture
-        if (options.onOpen) {
-            options.onOpen();
-        }
-    }
-
-    close(modalId) {
-        const modalData = this.modals.get(modalId);
-        if (!modalData) return;
-
-        const { overlay, options } = modalData;
-        
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-
-        // Callback de fermeture
-        if (options.onClose) {
-            options.onClose();
-        }
-    }
-
-    closeAll() {
-        this.modals.forEach(({ overlay }) => {
-            overlay.classList.remove('active');
-        });
-        document.body.style.overflow = '';
-    }
-
-    setupEventListeners() {
-        // Fermeture avec ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                this.closeAll();
-            }
-        });
-    }
-}
-
-// Gestionnaire de chargement
-class LoadingManager {
-    constructor() {
-        this.overlay = this.createOverlay();
-    }
-
-    createOverlay() {
-        const overlay = document.createElement('div');
-        overlay.id = 'loading-overlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 15, 35, 0.9);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            flex-direction: column;
-            gap: 20px;
-        `;
-
-        const spinner = document.createElement('div');
-        spinner.className = 'spinner';
-        spinner.style.cssText = `
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(108, 99, 255, 0.3);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        `;
-
-        const text = document.createElement('p');
-        text.textContent = 'Chargement...';
-        text.style.color = 'var(--text)';
-        text.style.fontFamily = 'Orbitron, sans-serif';
-
-        overlay.appendChild(spinner);
-        overlay.appendChild(text);
-        document.body.appendChild(overlay);
-
-        // Ajouter l'animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        return overlay;
-    }
-
-    show(message = 'Chargement...') {
-        const text = this.overlay.querySelector('p');
-        if (text) text.textContent = message;
-        this.overlay.style.display = 'flex';
-    }
-
-    hide() {
-        this.overlay.style.display = 'none';
-    }
-}
-
-// Utilitaires
-class Utils {
-    static debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    static throttle(func, limit) {
-        let inThrottle;
-        return function(...args) {
-            if (!inThrottle) {
-                func.apply(this, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        };
-    }
-
-    static formatNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        }
-        if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    }
-
-    static formatDate(date) {
-        return new Date(date).toLocaleDateString('fr-FR', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
-    }
-
-    static copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            showNotification('Copié dans le presse-papier', 'success');
-        }).catch(err => {
-            console.error('Erreur de copie:', err);
-            showNotification('Erreur de copie', 'error');
-        });
-    }
-}
-
-// Initialisation globale
+// Initialisation
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser les managers
-    window.authManager = new AuthManager();
-    window.notificationManager = new NotificationManager();
-    window.modalManager = new ModalManager();
-    window.loadingManager = new LoadingManager();
-    
-    // Définir les fonctions globales
-    window.showNotification = (message, type = 'info') => {
-        window.notificationManager.show(message, type);
-    };
-
-    window.showLoading = (message) => {
-        window.loadingManager.show(message);
-    };
-
-    window.hideLoading = () => {
-        window.loadingManager.hide();
-    };
-
-    // Initialiser les modals
-    document.querySelectorAll('.modal').forEach(modal => {
-        const modalId = modal.id;
-        if (modalId) {
-            window.modalManager.register(modalId);
-        }
-    });
-
-    // Gestion du menu mobile
-    const menuToggle = document.querySelector('.menu-toggle');
-    const sidebar = document.querySelector('.sidebar');
-    
-    if (menuToggle && sidebar) {
-        menuToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-        });
-    }
-
-    // Gestion des onglets
-    document.querySelectorAll('[data-tab]').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const tabId = tab.dataset.tab;
-            const container = tab.closest('.tabs-container');
-            
-            // Mettre à jour l'onglet actif
-            container.querySelectorAll('[data-tab]').forEach(t => {
-                t.classList.toggle('active', t === tab);
-            });
-
-            // Afficher le contenu correspondant
-            container.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.toggle('active', content.id === `${tabId}-tab`);
-            });
-        });
-    });
-
-    // Gestion des tooltips
-    const tooltips = document.querySelectorAll('[data-tooltip]');
-    tooltips.forEach(element => {
-        element.addEventListener('mouseenter', (e) => {
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.textContent = element.dataset.tooltip;
-            
-            Object.assign(tooltip.style, {
-                position: 'absolute',
-                background: 'var(--dark-light)',
-                color: 'var(--text)',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                fontSize: '0.85rem',
-                whiteSpace: 'nowrap',
-                zIndex: '1000',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-            });
-
-            document.body.appendChild(tooltip);
-
-            const rect = element.getBoundingClientRect();
-            tooltip.style.top = `${rect.top - tooltip.offsetHeight - 10}px`;
-            tooltip.style.left = `${rect.left + (rect.width - tooltip.offsetWidth) / 2}px`;
-
-            element._tooltip = tooltip;
-        });
-
-        element.addEventListener('mouseleave', () => {
-            if (element._tooltip) {
-                element._tooltip.remove();
-                delete element._tooltip;
-            }
-        });
-    });
-
-    // Gestion du thème
-    const themeToggle = document.querySelector('[data-theme-toggle]');
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            showNotification(`Thème ${isLight ? 'clair' : 'sombre'} activé`, 'info');
-        });
-    }
-
-    // Charger le thème sauvegardé
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-    }
-
-    console.log(`${CONFIG.SITE_NAME} v${CONFIG.VERSION} initialisé`);
+    checkAuth();
+    setupEventListeners();
 });
 
-// Fonctions d'aide globales
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'EUR'
-    }).format(amount);
+// Vérification de l'authentification
+async function checkAuth() {
+    const token = localStorage.getItem('xolbor_token');
+    
+    if (token) {
+        try {
+            const response = await fetch(`${API_URL}/verify`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                currentUser = data.user;
+                authToken = token;
+                showMainPage();
+                loadUserData();
+            } else {
+                showLoginPage();
+            }
+        } catch (error) {
+            console.error('Erreur de vérification:', error);
+            showLoginPage();
+        }
+    } else {
+        showLoginPage();
+    }
 }
 
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+// Configuration des écouteurs d'événements
+function setupEventListeners() {
+    // Login/Register
+    document.getElementById('show-register').addEventListener('click', (e) => {
+        e.preventDefault();
+        showRegisterForm();
+    });
+    
+    document.getElementById('show-login').addEventListener('click', (e) => {
+        e.preventDefault();
+        showLoginForm();
+    });
+    
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
+    document.getElementById('register-form').addEventListener('submit', handleRegister);
+    document.getElementById('guest-btn').addEventListener('click', handleGuestLogin);
+    
+    // Navigation principale
+    document.querySelectorAll('.side-nav a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = link.getAttribute('href').substring(1);
+            showSection(target);
+            
+            // Mettre à jour la navigation active
+            document.querySelectorAll('.side-nav a').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+    
+    // Marketplace
+    document.getElementById('skin-search').addEventListener('input', loadSkins);
+    document.getElementById('skin-filter').addEventListener('change', loadSkins);
+    
+    // Boutique Xubor
+    document.querySelectorAll('.buy-pack').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const amount = parseInt(e.target.dataset.amount);
+            const price = parseInt(e.target.dataset.price);
+            showPaymentModal(amount, price);
+        });
+    });
+    
+    // Modal de paiement
+    const modal = document.getElementById('payment-modal');
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        modal.classList.remove('active');
+    });
+    
+    document.getElementById('payment-form').addEventListener('submit', handleXuborPurchase);
+
+    // Modal pour ouvrir les jeux intégrés (ex: Veck.io)
+    document.querySelectorAll('.open-game').forEach(el => {
+        el.addEventListener('click', (e) => {
+            const src = el.dataset.src;
+            const title = el.querySelector('.game-info h4')?.textContent || 'Jeu';
+            openGameModal(src, title);
+        });
+    });
+
+    const gameModalCloseBtn = document.querySelector('.close-game');
+    const modalBackdrop = document.querySelector('#game-modal .modal-backdrop');
+    if (gameModalCloseBtn) gameModalCloseBtn.addEventListener('click', closeGameModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeGameModal);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeGameModal();
+    });
+    
+    // Recherche globale
+    document.getElementById('global-search').addEventListener('input', handleGlobalSearch);
+    
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    
+    // Vérification du pseudo
+    document.getElementById('register-username').addEventListener('input', checkUsernameAvailability);
+    
+    // Amis - Recherche
+    document.querySelector('.add-friend button').addEventListener('click', sendFriendRequest);
 }
 
-function validatePassword(password) {
-    return password.length >= 8;
+// Gestion de l'authentification
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            localStorage.setItem('xolbor_token', data.token);
+            localStorage.setItem('xolbor_user', JSON.stringify(data.user));
+            currentUser = data.user;
+            authToken = data.token;
+            showMainPage();
+            loadUserData();
+        } else {
+            alert(data.error || 'Identifiants incorrects');
+        }
+    } catch (error) {
+        console.error('Erreur de connexion:', error);
+        alert('Erreur de connexion au serveur');
+    }
 }
 
-function getRandomColor() {
-    const colors = ['#6C63FF', '#FF6584', '#00D4AA', '#FFB84D', '#1E90FF'];
-    return colors[Math.floor(Math.random() * colors.length)];
+async function handleRegister(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('register-username').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm').value;
+    
+    if (password !== confirmPassword) {
+        alert('Les mots de passe ne correspondent pas');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Compte créé avec succès !');
+            localStorage.setItem('xolbor_token', data.token);
+            localStorage.setItem('xolbor_user', JSON.stringify(data.user));
+            currentUser = data.user;
+            authToken = data.token;
+            showMainPage();
+            loadUserData();
+        } else {
+            alert(data.error || 'Erreur lors de l\'inscription');
+        }
+    } catch (error) {
+        console.error('Erreur d\'inscription:', error);
+        alert('Erreur de connexion au serveur');
+    }
 }
 
-// Export pour les modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        AuthManager,
-        NotificationManager,
-        ModalManager,
-        LoadingManager,
-        Utils
+async function checkUsernameAvailability() {
+    const username = document.getElementById('register-username').value;
+    const feedback = document.getElementById('username-feedback');
+    
+    if (username.length < 3) {
+        feedback.textContent = 'Minimum 3 caractères';
+        feedback.style.color = 'var(--warning)';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/check-username?username=${encodeURIComponent(username)}`);
+        const data = await response.json();
+        
+        if (data.available) {
+            feedback.textContent = '✓ Disponible';
+            feedback.style.color = 'var(--success)';
+        } else {
+            feedback.textContent = '✗ Déjà utilisé';
+            feedback.style.color = 'var(--danger)';
+        }
+    } catch (error) {
+        console.error('Erreur de vérification:', error);
+    }
+}
+
+function handleGuestLogin() {
+    // Pour les démos, créer un utilisateur temporaire
+    const guestUser = {
+        id: 'guest_' + Date.now(),
+        username: 'Invité_' + Math.floor(Math.random() * 1000),
+        xubor: 500,
+        avatar: 'default'
     };
+    
+    currentUser = guestUser;
+    showMainPage();
+    updateProfileDisplay();
+}
+
+// Gestion de la navigation
+function showLoginPage() {
+    document.getElementById('login-page').classList.add('active');
+    document.getElementById('main-page').classList.remove('active');
+    showLoginForm();
+}
+
+function showMainPage() {
+    document.getElementById('login-page').classList.remove('active');
+    document.getElementById('main-page').classList.add('active');
+    showSection('home');
+}
+
+function showLoginForm() {
+    document.getElementById('login-form').classList.remove('hidden');
+    document.getElementById('register-form').classList.add('hidden');
+}
+
+function showRegisterForm() {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('register-form').classList.remove('hidden');
+}
+
+function showSection(sectionId) {
+    // Cacher toutes les sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Afficher la section demandée
+    const targetSection = document.getElementById(sectionId + '-section');
+    if (targetSection) {
+        targetSection.classList.add('active');
+        
+        // Charger les données de la section
+        switch(sectionId) {
+            case 'home':
+                loadGames();
+                break;
+            case 'marketplace':
+                loadSkins();
+                break;
+            case 'friends-page':
+                loadFriends();
+                break;
+            case 'shop':
+                // La boutique est déjà chargée
+                break;
+        }
+    }
+}
+
+// Chargement des données utilisateur
+async function loadUserData() {
+    if (!authToken) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/profile`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            currentUser = { ...currentUser, ...data };
+            updateProfileDisplay();
+        }
+    } catch (error) {
+        console.error('Erreur chargement profil:', error);
+    }
+}
+
+function updateProfileDisplay() {
+    if (currentUser) {
+        document.getElementById('profile-username').textContent = currentUser.username;
+        document.getElementById('xubor-amount').textContent = currentUser.xubor || 0;
+        
+        // Mettre à jour l'avatar
+        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.avatar || 'default'}`;
+        document.getElementById('profile-avatar').src = avatarUrl;
+    }
+}
+
+// Chargement des jeux
+async function loadGames() {
+    try {
+        const response = await fetch(`${API_URL}/games`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayGames(data.games || []);
+        }
+    } catch (error) {
+        console.error('Erreur chargement jeux:', error);
+    }
+}
+
+function displayGames(games) {
+    const container = document.querySelector('.games-grid');
+    container.innerHTML = '';
+    
+    games.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.className = 'game-card';
+        gameCard.innerHTML = `
+            <img src="${game.image_url || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=225&fit=crop'}" alt="${game.name}">
+            <div class="game-info">
+                <h3>${game.name}</h3>
+                <p>${game.description || 'Jeu passionnant'}</p>
+                <div class="game-stats">
+                    <span><i class="fas fa-star"></i> ${game.rating || '4.5'}</span>
+                    <span><i class="fas fa-users"></i> ${game.play_count || '0'}</span>
+                </div>
+                <button class="btn btn-small">Jouer</button>
+            </div>
+        `;
+        container.appendChild(gameCard);
+    });
+}
+
+// Chargement des skins
+async function loadSkins() {
+    const search = document.getElementById('skin-search').value;
+    const rarity = document.getElementById('skin-filter').value;
+    
+    try {
+        const url = new URL(`${API_URL}/skins`);
+        if (search) url.searchParams.append('search', search);
+        if (rarity && rarity !== 'all') url.searchParams.append('rarity', rarity);
+        
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displaySkins(data.skins || []);
+        }
+    } catch (error) {
+        console.error('Erreur chargement skins:', error);
+    }
+}
+
+function displaySkins(skins) {
+    const container = document.querySelector('.skins-grid');
+    container.innerHTML = '';
+    
+    skins.forEach(skin => {
+        const skinCard = document.createElement('div');
+        skinCard.className = `skin-card ${skin.rarity}`;
+        skinCard.innerHTML = `
+            <div class="skin-image">
+                <i class="fas fa-tshirt"></i>
+            </div>
+            <div class="skin-info">
+                <h3>${skin.name}</h3>
+                <p>${skin.description || 'Skin exclusif'}</p>
+                <div class="skin-price">
+                    <span><i class="fas fa-coins"></i> ${skin.price}</span>
+                    ${skin.owned ? 
+                        '<span class="owned">✓ Possédé</span>' : 
+                        `<button class="btn btn-small buy-skin" data-id="${skin.id}" data-price="${skin.price}">Acheter</button>`
+                    }
+                </div>
+            </div>
+        `;
+        container.appendChild(skinCard);
+    });
+    
+    // Ajouter les écouteurs pour les boutons d'achat
+    document.querySelectorAll('.buy-skin').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const skinId = e.target.dataset.id;
+            const skinPrice = parseInt(e.target.dataset.price);
+            purchaseSkin(skinId, skinPrice);
+        });
+    });
+}
+
+// Achat d'un skin
+async function purchaseSkin(skinId, price) {
+    if (!confirm(`Acheter ce skin pour ${price} Xubor ?`)) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/skins/${skinId}/purchase`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Skin acheté avec succès !');
+            currentUser.xubor = data.xubor;
+            updateProfileDisplay();
+            loadSkins(); // Recharger la liste
+        } else {
+            alert(data.error || 'Erreur lors de l\'achat');
+        }
+    } catch (error) {
+        console.error('Erreur achat skin:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+// Chargement des amis
+async function loadFriends() {
+    try {
+        const response = await fetch(`${API_URL}/friends`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayFriends(data.friends || []);
+            displayFriendRequests(data.pendingRequests || []);
+        }
+    } catch (error) {
+        console.error('Erreur chargement amis:', error);
+    }
+}
+
+function displayFriends(friends) {
+    const container = document.querySelector('.friends-list');
+    container.innerHTML = '';
+    
+    if (friends.length === 0) {
+        container.innerHTML = '<p class="empty">Aucun ami pour le moment</p>';
+        return;
+    }
+    
+    friends.forEach(friend => {
+        const friendItem = document.createElement('div');
+        friendItem.className = 'friend-item';
+        friendItem.innerHTML = `
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${friend.avatar || 'user'}" alt="${friend.username}">
+            <div class="friend-info">
+                <h4>${friend.username}</h4>
+                <span class="status online">En ligne</span>
+            </div>
+            <button class="btn btn-small"><i class="fas fa-gamepad"></i> Jouer</button>
+        `;
+        container.appendChild(friendItem);
+    });
+}
+
+function displayFriendRequests(requests) {
+    const container = document.querySelector('.requests-list');
+    container.innerHTML = '';
+    
+    if (requests.length === 0) {
+        container.innerHTML = '<p class="empty">Aucune demande en attente</p>';
+        return;
+    }
+    
+    requests.forEach(request => {
+        const requestItem = document.createElement('div');
+        requestItem.className = 'friend-request';
+        requestItem.innerHTML = `
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${request.avatar || 'user'}" alt="${request.username}">
+            <div class="request-info">
+                <h4>${request.username}</h4>
+                <span>Veut être votre ami</span>
+            </div>
+            <div class="request-actions">
+                <button class="btn btn-small accept-request" data-id="${request.id}">Accepter</button>
+                <button class="btn btn-small reject-request" data-id="${request.id}">Refuser</button>
+            </div>
+        `;
+        container.appendChild(requestItem);
+    });
+    
+    // Ajouter les écouteurs pour les boutons
+    document.querySelectorAll('.accept-request').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const friendId = e.target.dataset.id;
+            acceptFriendRequest(friendId);
+        });
+    });
+}
+
+// Gestion des amis
+async function sendFriendRequest() {
+    const input = document.getElementById('friend-search');
+    const username = input.value.trim();
+    
+    if (!username) {
+        alert('Veuillez entrer un pseudo');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/friends/request`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(data.message);
+            input.value = '';
+            loadFriends(); // Recharger la liste
+        } else {
+            alert(data.error || 'Erreur lors de l\'envoi de la demande');
+        }
+    } catch (error) {
+        console.error('Erreur envoi demande ami:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+async function acceptFriendRequest(friendId) {
+    try {
+        const response = await fetch(`${API_URL}/friends/${friendId}/accept`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Demande d\'ami acceptée');
+            loadFriends(); // Recharger la liste
+        } else {
+            alert(data.error || 'Erreur lors de l\'acceptation');
+        }
+    } catch (error) {
+        console.error('Erreur acceptation demande:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+// Gestion des Xubor
+function showPaymentModal(amount, price) {
+    const modal = document.getElementById('payment-modal');
+    document.getElementById('pack-amount').textContent = amount.toLocaleString();
+    document.getElementById('pack-price').textContent = price;
+    
+    // Déterminer le nom du pack
+    let packName = '';
+    if (amount === 100) packName = 'Pack Débutant';
+    else if (amount === 800) packName = 'Pack Avancé';
+    else if (amount === 12095) packName = 'Pack Pro';
+    else if (amount === 999999) packName = 'Pack Illimité';
+    
+    document.getElementById('pack-name').textContent = packName;
+    modal.classList.add('active');
+}
+
+async function handleXuborPurchase(e) {
+    e.preventDefault();
+    
+    const amount = parseInt(document.getElementById('pack-amount').textContent.replace(/,/g, ''));
+    
+    // Simulation de paiement - en production, utiliser Stripe ou autre
+    if (!confirm(`Confirmer l'achat de ${amount} Xubor ?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/xubor/purchase`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Xubor ajoutés à votre compte !');
+            currentUser.xubor = data.xubor;
+            updateProfileDisplay();
+            document.getElementById('payment-modal').classList.remove('active');
+            document.getElementById('payment-form').reset();
+        } else {
+            alert(data.error || 'Erreur lors de l\'achat');
+        }
+    } catch (error) {
+        console.error('Erreur achat Xubor:', error);
+        alert('Erreur de connexion');
+    }
+}
+
+// Recherche globale
+function handleGlobalSearch(e) {
+    const query = e.target.value.trim();
+    
+    if (query.length >= 2) {
+        // Rechercher dans les jeux
+        fetch(`${API_URL}/games/search?q=${encodeURIComponent(query)}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Afficher les résultats (à implémenter)
+            console.log('Résultats recherche:', data.games);
+        });
+    }
+}
+
+// Déconnexion
+function handleLogout() {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+        localStorage.removeItem('xolbor_token');
+        localStorage.removeItem('xolbor_user');
+        currentUser = null;
+        authToken = null;
+        showLoginPage();
+    }
+}
+
+// Fonctions utilitaires
+function formatNumber(num) {
+    return num.toLocaleString('fr-FR');
+}
+
+function getRarityColor(rarity) {
+    const colors = {
+        common: '#94a3b8',
+        rare: '#3b82f6',
+        legendary: '#f59e0b',
+        exclusive: '#ef4444'
+    };
+    return colors[rarity] || colors.common;
+}
+
+// ===== Modal de jeu intégré =====
+function openGameModal(src, title) {
+    const modal = document.getElementById('game-modal');
+    const iframe = document.getElementById('modal-game-iframe');
+    const titleEl = document.getElementById('modal-game-title');
+    if (!modal || !iframe) return;
+    iframe.src = src;
+    titleEl.textContent = title || 'Jeu';
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGameModal() {
+    const modal = document.getElementById('game-modal');
+    const iframe = document.getElementById('modal-game-iframe');
+    if (!modal || !iframe) return;
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    iframe.src = '';
+    document.body.style.overflow = '';
 }
