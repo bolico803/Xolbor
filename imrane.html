@@ -3,2492 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor - Plateforme Gaming</title>
-    <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/controller.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Xolbor - Plateforme de Gaming Ultime</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Variables CSS */
         :root {
-            --primary: #6c5ce7;
-            --primary-dark: #5b4fcf;
-            --secondary: #00cec9;
-            --accent: #fd79a8;
-            --dark: #2d3436;
-            --light: #f9f9f9;
-            --gray: #dfe6e9;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --border-radius: 12px;
-            --transition: all 0.3s ease;
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --glass: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* Reset et styles de base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--darker);
             color: var(--light);
-            min-height: 100vh;
-            line-height: 1.6;
             overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Page de connexion */
-        #login-page {
-            display: flex;
-            flex-direction: column;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .login-header {
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-        }
-
-        .logo-container {
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 3.5rem;
-            color: var(--primary);
-            text-shadow: 0 0 15px rgba(108, 92, 231, 0.5);
-            margin-bottom: 5px;
-            letter-spacing: 2px;
-        }
-
-        .tagline {
-            font-size: 1.1rem;
-            color: var(--secondary);
-            opacity: 0.9;
-        }
-
-        .login-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .login-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab {
-            padding: 15px 30px;
-            background: none;
-            border: none;
-            color: var(--light);
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            transition: var(--transition);
-            opacity: 0.7;
-        }
-
-        .tab.active {
-            opacity: 1;
-            color: var(--primary);
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary);
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .input-with-icon {
-            position: relative;
-        }
-
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary);
-        }
-
-        .input-with-icon input {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--light);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .input-with-icon input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
-        }
-
-        .show-password {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--gray);
-            cursor: pointer;
-        }
-
-        .availability-check {
-            position: absolute;
-            right: 45px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .available {
-            color: var(--success);
-        }
-
-        .unavailable {
-            color: var(--danger);
-        }
-
-        .form-help {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.85rem;
-            color: var(--gray);
-            opacity: 0.7;
-        }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .checkbox-container input {
-            display: none;
-        }
-
-        .checkmark {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--primary);
-            border-radius: 4px;
-            margin-right: 10px;
-            position: relative;
-        }
-
-        .checkbox-container input:checked + .checkmark::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .forgot-password {
-            color: var(--secondary);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .forgot-password:hover {
-            text-decoration: underline;
-        }
+        button { cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.2s; border: none; outline: none; }
 
         .btn-primary {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 20px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white; padding: 10px 24px; border-radius: 8px; font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
         }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); color: white;
+            padding: 8px 16px; border-radius: 6px;
         }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
 
-        .demo-credentials {
-            margin-top: 25px;
-            padding: 15px;
-            background: rgba(0, 206, 201, 0.1);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.9rem;
+        input {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); color: white;
+            padding: 12px; border-radius: 6px; width: 100%; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; margin-bottom: 15px;
         }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        .terms {
-            margin-bottom: 25px;
-        }
-
-        .terms a {
-            color: var(--secondary);
-            text-decoration: none;
-        }
-
-        .login-footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .login-footer a {
-            color: var(--secondary);
-        }
-
-        .login-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .feature {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .feature:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .feature i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .feature h3 {
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-
-        .login-page-footer {
-            text-align: center;
-            margin-top: auto;
-            padding: 30px 0 20px;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--gray);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary);
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: var(--success);
-            color: white;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Page principale */
-        #main-page {
-            display: none;
-            min-height: 100vh;
-        }
-
-        /* Header principal */
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .main-header .logo {
-            font-size: 2rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .profile-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .profile-avatar:hover {
-            transform: scale(1.1);
-        }
-
-        .xubor-balance {
-            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
-            color: #333;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-btn {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            color: var(--light);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border-radius: 6px;
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(108, 92, 231, 0.2);
-            color: var(--primary);
-        }
-
-        .logout-btn {
-            padding: 8px 15px;
-            background: rgba(214, 48, 49, 0.2);
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        /* Sections principales */
-        .page-section {
-            display: none;
-            padding: 30px;
-        }
-
-        .page-section.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: var(--secondary);
-        }
-
-        /* Page d'accueil */
-        .search-bar {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            color: var(--light);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .game-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .game-image {
-            height: 180px;
-            width: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .game-info {
-            padding: 20px;
-        }
-
-        .game-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: var(--light);
-        }
-
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .play-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 0 0 12px 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .play-btn:hover {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, #4a3fc1 100%);
-        }
-
-        /* Marketplace */
-        .marketplace-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .skin-search {
-            width: 300px;
-        }
-
-        .skin-filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--light);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .skins-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
-        }
+        .hidden { display: none !important; }
+        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
 
-        .skin-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            text-align: center;
-            transition: var(--transition);
-            position: relative;
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;
+            background: var(--glass); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100; height: 70px;
         }
 
-        .skin-card.owned::after {
-            content: 'ACHETÉ';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--success);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .skin-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .skin-image {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-        }
-
-        .skin-name {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .skin-price {
-            color: var(--warning);
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .buy-btn {
-            width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, var(--success) 0%, #00a085 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .buy-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, #00a085 0%, #008b74 100%);
-        }
-
-        .buy-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .xubor-packs {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .packs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .pack-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            text-align: center;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .pack-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        .pack-card.featured {
-            border-color: var(--warning);
-            position: relative;
-        }
-
-        .pack-card.featured::before {
-            content: 'POPULAIRE';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--warning);
-            color: #333;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .pack-amount {
-            font-size: 2rem;
-            color: var(--warning);
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .pack-price {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .buy-pack-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .buy-pack-btn:hover {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, #4a3fc1 100%);
-        }
-
-        /* Page des amis */
-        .friends-container {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-        }
-
-        .friends-sidebar {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 25px;
-        }
-
-        .add-friend-container {
-            margin-bottom: 30px;
-        }
-
-        .friend-search-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--light);
-            margin-bottom: 15px;
-        }
-
-        .friend-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .friend-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: var(--transition);
-        }
-
-        .friend-item:hover {
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .friend-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .friend-info h4 {
-            margin-bottom: 5px;
-        }
-
-        .friend-info p {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .friend-actions {
-            margin-left: auto;
-            display: flex;
-            gap: 10px;
-        }
-
-        .friend-btn {
-            padding: 5px 10px;
-            background: rgba(255, 255, 255, 0.07);
-            border: none;
-            border-radius: 4px;
-            color: var(--light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .friend-btn:hover {
-            background: var(--primary);
-        }
-
-        .friend-viewer {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            text-align: center;
-        }
-
-        .friend-3d-viewer {
-            width: 100%;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: var(--border-radius);
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: var(--gray);
-        }
-
-        /* Page de profil */
-        .profile-container {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
-        }
-
-        .profile-sidebar {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            text-align: center;
-        }
-
-        .profile-avatar-large {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 5px solid var(--primary);
-            margin: 0 auto 20px;
-            transition: var(--transition);
-        }
-
-        .profile-username {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-
-        .profile-level {
-            color: var(--secondary);
-            margin-bottom: 20px;
-        }
-
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        .profile-content {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius);
-            padding: 30px;
-        }
-
-        .skins-owned {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .owned-skin {
-            text-align: center;
-        }
-
-        .owned-skin-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            background: #333;
-            cursor: pointer;
-            transition: var(--transition);
-        }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; color: white; cursor: pointer; }
+        .logo span { color: var(--primary); }
 
-        .owned-skin-img:hover {
-            transform: scale(1.1);
-        }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-item { color: #94a3b8; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .nav-item:hover, .nav-item.active { color: white; text-shadow: 0 0 8px var(--primary); }
 
-        .owned-skin-name {
-            font-size: 0.9rem;
-        }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .balance-pill { background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--primary); color: var(--secondary); font-weight: bold; }
+        .profile-pic { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--secondary); object-fit: cover; cursor: pointer; background: #222; }
 
-        /* Jeu Veck.io */
-        .game-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 1000;
-            display: none;
+        .auth-wrapper {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 70%);
         }
-
-        .game-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
+        .auth-box {
+            background: var(--glass); padding: 40px; border-radius: 16px; border: 1px solid var(--glass-border);
+            width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
+        .auth-title { font-family: 'Orbitron', sans-serif; margin-bottom: 20px; font-size: 2rem; }
+        .auth-switch { margin-top: 15px; font-size: 0.9rem; color: #94a3b8; cursor: pointer; }
+        .auth-switch:hover { text-decoration: underline; color: white; }
+        .error-msg { color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; display: none; }
 
-        .game-stats-display {
-            color: white;
-            font-size: 1.2rem;
-        }
+        .main-content { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 20px; border-left: 4px solid var(--secondary); padding-left: 15px; }
+        
+        .search-bar { margin-bottom: 30px; display: flex; gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
 
-        .close-game-btn {
-            padding: 10px 20px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
+        .card {
+            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden;
+            transition: transform 0.3s; position: relative;
         }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card-img { width: 100%; height: 150px; object-fit: cover; background-color: #222; }
+        .card-body { padding: 15px; }
+        .card-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
 
-        .close-game-btn:hover {
-            background: #c02929;
-        }
+        .owned-badge { position: absolute; top: 10px; right: 10px; background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 10; }
+        .equipped-badge { position: absolute; top: 10px; right: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 10; }
 
-        #game-canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .pack-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); padding: 20px; border-radius: 12px; text-align: center; }
+        .pack-card.featured { border: 2px solid var(--secondary); box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); }
+        .pack-amount { font-size: 2.5rem; font-weight: 900; color: var(--primary); margin: 15px 0; }
 
-        /* Modal de paiement */
+        .profile-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .profile-stats { background: var(--glass); padding: 20px; border-radius: 12px; }
+        .avatar-container { background: #000; border-radius: 12px; height: 400px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
+        
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal { background: var(--dark); border: 1px solid var(--glass-border); padding: 30px; border-radius: 12px; width: 90%; max-width: 450px; text-align: center; }
 
-        .modal {
-            background: rgba(45, 52, 54, 0.95);
-            border-radius: var(--border-radius);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: var(--dark); border-left: 4px solid var(--primary); padding: 15px 25px;
+            border-radius: 4px; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5); transform: translateX(150%); transition: transform 0.3s; z-index: 2000;
         }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: #22c55e; }
+        .toast.error { border-color: #ef4444; }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
+        #fullscreen-game {
+            position: fixed; inset: 0; background: #000; z-index: 3000; display: none;
         }
-
-        .close-modal {
-            background: none;
-            border: none;
-            color: var(--light);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .payment-method {
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .payment-method:hover, .payment-method.active {
-            background: rgba(108, 92, 231, 0.2);
-            border: 1px solid var(--primary);
-        }
-
-        .payment-form input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--light);
-        }
-
-        .payment-details {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .friends-container, .profile-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .main-header {
-                flex-wrap: wrap;
-            }
-            
-            .nav-menu {
-                order: 3;
-                width: 100%;
-                justify-content: center;
-                margin-top: 15px;
-            }
-        }
+        #fullscreen-game.active { display: block; }
 
         @media (max-width: 768px) {
-            .login-card {
-                padding: 30px 20px;
-            }
-            
-            .login-features {
-                grid-template-columns: 1fr;
-            }
-            
-            .games-grid, .skins-grid, .packs-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .games-grid, .skins-grid, .packs-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .skin-filters {
-                justify-content: center;
-            }
+            .navbar { flex-direction: column; height: auto; padding: 10px; gap: 10px; }
+            .profile-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Page de connexion -->
-    <div id="login-page">
-        <header class="login-header">
-            <div class="logo-container">
-                <h1 class="logo"><i class="fas fa-gamepad"></i> XOLBOR</h1>
-                <p class="tagline">La plateforme gaming ultime</p>
-            </div>
-        </header>
 
-        <div class="login-container">
-            <div class="login-card">
-                <div class="login-tabs">
-                    <button class="tab active" data-tab="login">Connexion</button>
-                    <button class="tab" data-tab="register">Inscription</button>
-                </div>
+    <div id="toast" class="toast"><span id="toast-msg">Message</span></div>
 
-                <div class="login-content">
-                    <!-- Formulaire de connexion -->
-                    <form id="login-form" class="auth-form active">
-                        <h2>Bienvenue sur Xolbor</h2>
-                        <p class="subtitle">Connectez-vous à votre compte</p>
-                        
-                        <div class="form-group">
-                            <label for="login-username">Pseudo</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
-                                <input type="text" id="login-username" placeholder="Entrez votre pseudo" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="login-password">Mot de passe</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" id="login-password" placeholder="Entrez votre mot de passe" required>
-                                <button type="button" class="show-password" id="show-login-password">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="form-options">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="remember-me">
-                                <span class="checkmark"></span>
-                                Se souvenir de moi
-                            </label>
-                            <a href="#" class="forgot-password">Mot de passe oublié ?</a>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary btn-login">
-                            <i class="fas fa-sign-in-alt"></i> Se connecter
-                        </button>
-                        
-                        <div class="demo-credentials">
-                            <p>Compte démo : <strong>demo</strong> / <strong>demo123</strong></p>
-                        </div>
-                    </form>
-
-                    <!-- Formulaire d'inscription -->
-                    <form id="register-form" class="auth-form">
-                        <h2>Créer un compte Xolbor</h2>
-                        <p class="subtitle">Rejoignez la communauté gaming</p>
-                        
-                        <div class="form-group">
-                            <label for="register-username">Pseudo</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
-                                <input type="text" id="register-username" placeholder="Choisissez un pseudo unique" required>
-                                <span class="availability-check" id="username-check"></span>
-                            </div>
-                            <small class="form-help">Le pseudo doit être unique et contenir entre 3 et 20 caractères.</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-email">Adresse email</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" id="register-email" placeholder="votre@email.com" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-password">Mot de passe</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" id="register-password" placeholder="Créez un mot de passe sécurisé" required>
-                                <button type="button" class="show-password" id="show-register-password">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <small class="form-help">Minimum 8 caractères avec majuscule, minuscule et chiffre.</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="confirm-password">Confirmer le mot de passe</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" id="confirm-password" placeholder="Répétez votre mot de passe" required>
-                            </div>
-                        </div>
-                        
-                        <div class="terms">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="accept-terms" required>
-                                <span class="checkmark"></span>
-                                J'accepte les <a href="#">Conditions d'utilisation</a> et la <a href="#">Politique de confidentialité</a>
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="btn-primary btn-register">
-                            <i class="fas fa-user-plus"></i> Créer mon compte
-                        </button>
-                    </form>
-                </div>
-
-                <div class="login-footer">
-                    <p>En vous connectant, vous acceptez nos <a href="#">Conditions d'utilisation</a></p>
-                </div>
-            </div>
-
-            <div class="login-features">
-                <div class="feature">
-                    <i class="fas fa-gamepad"></i>
-                    <h3>Jeux exclusifs</h3>
-                    <p>Accédez à une collection de jeux uniques</p>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-gem"></i>
-                    <h3>Marketplace</h3>
-                    <p>Plus de 100 skins uniques à collectionner</p>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-users"></i>
-                    <h3>Communauté</h3>
-                    <p>Connectez-vous avec d'autres joueurs</p>
-                </div>
-            </div>
-        </div>
-
-        <footer class="login-page-footer">
-            <p>Xolbor &copy; 2023 - Plateforme gaming sociale. Tous droits réservés.</p>
-            <div class="footer-links">
-                <a href="#">Confidentialité</a>
-                <a href="#">Conditions</a>
-                <a href="#">Support</a>
-                <a href="#">À propos</a>
-            </div>
-        </footer>
-    </div>
-
-    <!-- Page principale (après connexion) -->
-    <div id="main-page">
-        <!-- Header principal -->
-        <header class="main-header">
-            <div class="logo-container">
-                <h1 class="logo"><i class="fas fa-gamepad"></i> XOLBOR</h1>
-            </div>
-            
-            <div class="user-info">
-                <div class="xubor-balance">
-                    <i class="fas fa-gem"></i>
-                    <span id="xubor-amount">0</span> Xubor
-                </div>
-                <img id="current-avatar" src="https://img.icons8.com/color/96/000000/circled-user-male-skin-type-7.png" alt="Avatar" class="profile-avatar">
-            </div>
-            
-            <nav class="nav-menu">
-                <button class="nav-btn active" data-page="home">
-                    <i class="fas fa-home"></i> Accueil
-                </button>
-                <button class="nav-btn" data-page="marketplace">
-                    <i class="fas fa-store"></i> Marketplace
-                </button>
-                <button class="nav-btn" data-page="friends">
-                    <i class="fas fa-users"></i> Amis
-                </button>
-                <button class="nav-btn" data-page="profile">
-                    <i class="fas fa-user"></i> Profil
-                </button>
-                <button class="logout-btn" id="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
-                </button>
-            </nav>
-        </header>
-
-        <!-- Page d'accueil -->
-        <section id="home-section" class="page-section active">
-            <div class="section-header">
-                <h2 class="section-title">Jeux populaires</h2>
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Rechercher un jeu...">
-                </div>
-            </div>
-            
-            <div class="games-grid">
-                <!-- Les jeux seront ajoutés dynamiquement -->
-            </div>
-        </section>
-
-        <!-- Marketplace -->
-        <section id="marketplace-section" class="page-section">
-            <div class="section-header">
-                <h2 class="section-title">Marketplace</h2>
-                <div class="marketplace-header">
-                    <div class="skin-search">
-                        <input type="text" class="search-input" placeholder="Rechercher un skin...">
-                    </div>
-                    <button class="btn-primary" id="buy-xubor-btn">
-                        <i class="fas fa-shopping-cart"></i> Acheter des Xubor
-                    </button>
-                </div>
-            </div>
-            
-            <div class="skin-filters">
-                <button class="filter-btn active" data-filter="all">Tous</button>
-                <button class="filter-btn" data-filter="rare">Rares</button>
-                <button class="filter-btn" data-filter="epic">Épiques</button>
-                <button class="filter-btn" data-filter="legendary">Légendaires</button>
-                <button class="filter-btn" data-filter="owned">Possédés</button>
-            </div>
-            
-            <div class="skins-grid">
-                <!-- Les skins seront ajoutés dynamiquement -->
-            </div>
-            
-            <div class="xubor-packs">
-                <h3 class="section-title">Packs Xubor</h3>
-                <div class="packs-grid">
-                    <!-- Les packs seront ajoutés dynamiquement -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Page des amis -->
-        <section id="friends-section" class="page-section">
-            <div class="section-header">
-                <h2 class="section-title">Mes amis</h2>
-            </div>
-            
-            <div class="friends-container">
-                <div class="friends-sidebar">
-                    <div class="add-friend-container">
-                        <h3>Ajouter un ami</h3>
-                        <input type="text" class="friend-search-input" placeholder="Rechercher un joueur...">
-                        <button class="btn-primary" id="search-friend-btn">
-                            <i class="fas fa-search"></i> Rechercher
-                        </button>
-                    </div>
-                    
-                    <div class="friend-list">
-                        <h3>Mes amis (0)</h3>
-                        <!-- La liste d'amis sera ajoutée dynamiquement -->
-                    </div>
-                </div>
-                
-                <div class="friend-viewer">
-                    <h3>Visualiseur 3D</h3>
-                    <div class="friend-3d-viewer">
-                        <p>Sélectionnez un ami pour voir son avatar en 3D</p>
-                    </div>
-                    <div class="friend-details">
-                        <h4 id="selected-friend-name">-</h4>
-                        <p id="selected-friend-status">En ligne: Non</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Page de profil -->
-        <section id="profile-section" class="page-section">
-            <div class="section-header">
-                <h2 class="section-title">Mon profil</h2>
-            </div>
-            
-            <div class="profile-container">
-                <div class="profile-sidebar">
-                    <img id="profile-avatar-large" src="https://img.icons8.com/color/96/000000/circled-user-male-skin-type-7.png" alt="Avatar" class="profile-avatar-large">
-                    <h3 id="profile-username">Utilisateur</h3>
-                    <p class="profile-level">Niveau 1</p>
-                    
-                    <div class="profile-stats">
-                        <div class="stat-item">
-                            <div class="stat-value" id="games-played">0</div>
-                            <div class="stat-label">Jeux joués</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="friends-count">0</div>
-                            <div class="stat-label">Amis</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="skins-owned">0</div>
-                            <div class="stat-label">Skins</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value" id="total-xubor">0</div>
-                            <div class="stat-label">Xubor dépensés</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="profile-content">
-                    <h3>Mes skins</h3>
-                    <div class="skins-owned">
-                        <!-- Les skins possédés seront ajoutés dynamiquement -->
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Jeu Veck.io -->
-    <div class="game-container" id="veckio-game">
-        <div class="game-header">
-            <div class="game-stats-display">
-                <span id="player-count">0</span> joueurs en ligne
-            </div>
-            <button class="close-game-btn" id="close-game-btn">
-                <i class="fas fa-times"></i> Quitter le jeu
-            </button>
-        </div>
-        <canvas id="game-canvas"></canvas>
-    </div>
-
-    <!-- Modal de paiement -->
-    <div class="modal-overlay" id="payment-modal">
+    <div id="payment-modal" class="modal-overlay">
         <div class="modal">
-            <div class="modal-header">
-                <h3>Acheter des Xubor</h3>
-                <button class="close-modal" id="close-payment-modal">&times;</button>
-            </div>
-            
-            <div class="payment-methods">
-                <div class="payment-method active" data-method="card">
-                    <i class="fas fa-credit-card"></i>
-                    <p>Carte bancaire</p>
+            <h2 style="margin-bottom: 15px; font-family: 'Orbitron';">Paiement Sécurisé</h2>
+            <p id="payment-desc" style="color: #94a3b8; margin-bottom: 20px;">Confirmez l'achat</p>
+            <form id="payment-form" style="margin-bottom: 20px; text-align: left;">
+                <input type="text" placeholder="Numéro de carte (Simulation)" required>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="MM/AA" maxlength="5" required>
+                    <input type="text" placeholder="CVV" maxlength="3" required>
                 </div>
-                <div class="payment-method" data-method="paypal">
-                    <i class="fab fa-paypal"></i>
-                    <p>PayPal</p>
-                </div>
-                <div class="payment-method" data-method="crypto">
-                    <i class="fas fa-coins"></i>
-                    <p>Crypto</p>
-                </div>
-            </div>
-            
-            <form class="payment-form" id="payment-form">
-                <input type="text" id="card-name" placeholder="Nom sur la carte" required>
-                <input type="text" id="card-number" placeholder="Numéro de carte" required>
-                
-                <div class="payment-details">
-                    <input type="text" id="card-expiry" placeholder="MM/AA" required>
-                    <input type="text" id="card-cvc" placeholder="CVC" required>
-                </div>
-                
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-lock"></i> Payer
-                </button>
             </form>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn-primary" onclick="processPayment()">Payer</button>
+            </div>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="notification"></div>
+    <div id="fullscreen-game">
+        <button class="btn-primary" style="position: absolute; top: 20px; right: 20px; z-index: 3100;" onclick="closeGame()">Quitter X</button>
+        <iframe id="game-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <div class="app-container">
+        <nav class="navbar hidden" id="main-nav">
+            <div class="logo" onclick="navTo('home')">XOLBOR<span>.GAMES</span></div>
+            <div class="nav-links">
+                <div class="nav-item active" onclick="navTo('home')">Accueil</div>
+                <div class="nav-item" onclick="navTo('marketplace')">Skins</div>
+                <div class="nav-item" onclick="navTo('shop')">Boutique</div>
+                <div class="nav-item" onclick="navTo('friends')">Amis</div>
+                <div class="nav-item" onclick="navTo('profile')">Profil</div>
+            </div>
+            <div class="user-info">
+                <div class="balance-pill">X <span id="nav-balance">0</span></div>
+                <img id="nav-profile-img" src="" alt="" class="profile-pic" onclick="navTo('profile')">
+                <button class="btn-secondary" style="padding: 5px 10px;" onclick="logout()">Déco</button>
+            </div>
+        </nav>
+
+        <section id="view-auth" class="auth-wrapper">
+            <div class="auth-box">
+                <h1 class="auth-title" id="auth-header">Connexion</h1>
+                <form id="auth-form" onsubmit="handleAuth(event)">
+                    <input type="text" id="auth-pseudo" placeholder="Pseudo" required autocomplete="off">
+                    <input type="password" id="auth-pass" placeholder="Mot de passe" required>
+                    <div id="auth-error" class="error-msg"></div>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Entrer</button>
+                </form>
+                <div class="auth-switch" onclick="toggleAuthMode()">
+                    <span id="auth-switch-btn">Créer un compte</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-home" class="main-content hidden">
+            <h2 class="section-title">Jeux Populaires</h2>
+            <div class="search-bar">
+                <input type="text" id="game-search" placeholder="Rechercher un jeu..." oninput="filterGames()">
+            </div>
+            <div class="grid" id="games-grid"></div>
+        </section>
+
+        <section id="view-marketplace" class="main-content hidden">
+            <h2 class="section-title">Marketplace Skins</h2>
+            <div class="search-bar">
+                <input type="text" id="skin-search" placeholder="Chercher un skin..." oninput="filterSkins()">
+            </div>
+            <div class="grid" id="skins-grid"></div>
+        </section>
+
+        <section id="view-shop" class="main-content hidden">
+            <h2 class="section-title">Obtenir des Xubor</h2>
+            <div class="shop-grid">
+                <div class="pack-card">
+                    <div class="pack-amount">100</div>
+                    <div class="pack-price">10 €</div>
+                    <button class="btn-primary" onclick="initPayment(100, 10)">Acheter</button>
+                </div>
+                <div class="pack-card featured">
+                    <div class="pack-amount">800</div>
+                    <div class="pack-price">20 €</div>
+                    <button class="btn-primary" onclick="initPayment(800, 20)">Acheter</button>
+                </div>
+                <div class="pack-card">
+                    <div class="pack-amount">5000</div>
+                    <div class="pack-price">99 €</div>
+                    <button class="btn-primary" onclick="initPayment(5000, 99)">Acheter</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-friends" class="main-content hidden">
+            <h2 class="section-title">Amis</h2>
+            <div class="search-bar">
+                <input type="text" id="friend-search" placeholder="Pseudo de l'ami...">
+                <button class="btn-primary" onclick="addFriend()">Ajouter</button>
+            </div>
+            <div id="friend-list-container"></div>
+        </section>
+
+        <section id="view-profile" class="main-content hidden">
+            <h2 class="section-title">Mon Profil</h2>
+            <div class="profile-layout">
+                <div class="avatar-container" id="avatar-wrapper"></div>
+                <div class="profile-stats">
+                    <h1 id="profile-username" style="font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 10px;">User</h1>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                        <span>Solde</span>
+                        <span style="color: var(--primary); font-weight: bold;" id="profile-balance">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                        <span>Skins</span>
+                        <span id="profile-skin-count">0</span>
+                    </div>
+                    <div>
+                        <h3>Skin Actuel</h3>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                            <img id="equipped-skin-img" src="" style="width: 50px; height: 50px; border-radius: 5px; background: #333;">
+                            <span id="equipped-skin-name" style="font-weight: bold;">Base</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <script>
-        // Données de l'application
-        const APP_DATA = {
-            currentUser: null,
-            users: JSON.parse(localStorage.getItem('xolbor_users')) || [
-                { username: 'demo', password: 'demo123', email: 'demo@xolbor.com', xubor: 5000, skins: ['default'], friends: [], gamesPlayed: 12 }
-            ],
-            skins: [
-                { id: 1, name: 'Dragon Rouge', price: 1000, rarity: 'legendary', color: '#ff0000', emoji: '🐉' },
-                { id: 2, name: 'Chevalier Argent', price: 500, rarity: 'epic', color: '#c0c0c0', emoji: '🛡️' },
-                { id: 3, name: 'Mage Violet', price: 300, rarity: 'epic', color: '#8a2be2', emoji: '🔮' },
-                { id: 4, name: 'Ninja Noir', price: 200, rarity: 'rare', color: '#000000', emoji: '🥷' },
-                { id: 5, name: 'Robot Doré', price: 800, rarity: 'legendary', color: '#ffd700', emoji: '🤖' },
-                { id: 6, name: 'Pirate', price: 150, rarity: 'rare', color: '#8b4513', emoji: '🏴‍☠️' },
-                { id: 7, name: 'Astronaute', price: 400, rarity: 'epic', color: '#4169e1', emoji: '👨‍🚀' },
-                { id: 8, name: 'Sorcier Vert', price: 250, rarity: 'rare', color: '#228b22', emoji: '🧙' },
-                { id: 9, name: 'Samouraï', price: 600, rarity: 'legendary', color: '#dc143c', emoji: '🗡️' },
-                { id: 10, name: 'Fantôme', price: 350, rarity: 'epic', color: '#f0f8ff', emoji: '👻' }
-            ],
-            games: [
-                { id: 1, name: 'Veck.io', description: 'Jeu de battle royale multijoueur', players: 12450, image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-                { id: 2, name: 'Galaxy Warriors', description: 'Combat spatial en équipe', players: 8450, image: 'https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-                { id: 3, name: 'Mystic Quest', description: 'RPG fantastique en ligne', players: 9200, image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-                { id: 4, name: 'Speed Racers', description: 'Course de voitures futuristes', players: 7500, image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-                { id: 5, name: 'Zombie Survival', description: 'Survie contre les zombies', players: 11000, image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
-                { id: 6, name: 'Football Legends', description: 'Football multijoueur', players: 6800, image: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' }
-            ],
-            xuborPacks: [
-                { id: 1, amount: 100, price: 10, featured: false },
-                { id: 2, amount: 800, price: 20, featured: true },
-                { id: 3, amount: 12095, price: 234, featured: false },
-                { id: 4, amount: 99999, price: 456, featured: false, label: 'Illimités' }
-            ],
-            friends: [
-                { username: 'GamerPro', status: 'En ligne', skin: 'dragon', avatar: 'https://img.icons8.com/color/96/000000/circled-user-male-skin-type-7.png' },
-                { username: 'ShadowNinja', status: 'En jeu', skin: 'ninja', avatar: 'https://img.icons8.com/color/96/000000/circled-user-female-skin-type-7.png' },
-                { username: 'MagicQueen', status: 'En ligne', skin: 'mage', avatar: 'https://img.icons8.com/color/96/000000/circled-user-female-skin-type-5.png' }
-            ]
+        const DB_USERS = 'xolbor_users_v3';
+        const DB_SESSION = 'xolbor_session_v3';
+        let currentUser = null;
+        let isLoginMode = true;
+        let pendingPayment = null;
+        let threeScene = null;
+
+        const games = [
+            { id: 1, title: 'Veck.io', img: 'https://images.unsplash.com/photo-1542751371-adc38448a04e?w=400', url: 'https://veck.io/' },
+            { id: 2, title: 'Kour.io', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400', url: 'https://kour.io/' },
+            { id: 3, title: 'MiniBlox.io', img: 'https://images.unsplash.com/photo-1527694224018-7b9a1f3f8803?w=400', url: 'https://miniblox.io/' },
+            { id: 4, title: 'SmashKarts.io', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400', url: 'https://smashkarts.io/' },
+            { id: 5, title: 'Poxel.io', img: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400', url: 'https://poxel.io/' }
+        ];
+
+        const skins = [];
+        const rarities = ['rare', 'epic', 'legendary'];
+        const rarityColors = { 'rare': '#3b82f6', 'epic': '#a855f7', 'legendary': '#f59e0b' };
+        
+        for(let i=1; i<=20; i++) {
+            const r = rarities[Math.floor(Math.random() * rarities.length)];
+            skins.push({
+                id: i, 
+                name: `Skin ${r} #${i}`,
+                price: r === 'rare' ? 100 : r === 'epic' ? 500 : 2000,
+                rarity: r, 
+                color: rarityColors[r],
+                img: `https://picsum.photos/seed/skin${i}/200/200`,
+                threeColor: i * 0x123456 % 0xffffff
+            });
+        }
+
+        window.onload = function() {
+            checkSession();
+            renderGames();
         };
 
-        // État du jeu Veck.io
-        let veckioPlayers = 12450;
-        let gameInterval = null;
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Vérifier si l'utilisateur est déjà connecté
-            const savedUser = localStorage.getItem('xolbor_current_user');
-            if (savedUser) {
-                const user = JSON.parse(savedUser);
-                loginUser(user.username);
-            }
-            
-            initLoginPage();
-            initMainPage();
-            initGame();
-        });
-
-        // Initialisation de la page de connexion
-        function initLoginPage() {
-            // Gestion des onglets
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    
-                    // Mettre à jour les onglets actifs
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Afficher le bon formulaire
-                    document.querySelectorAll('.auth-form').forEach(form => {
-                        form.classList.remove('active');
-                    });
-                    document.getElementById(`${tabName}-form`).classList.add('active');
-                });
-            });
-
-            // Afficher/masquer les mots de passe
-            document.getElementById('show-login-password').addEventListener('click', function() {
-                const passwordInput = document.getElementById('login-password');
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+        function checkSession() {
+            const session = localStorage.getItem(DB_SESSION);
+            if(session) {
+                const userData = JSON.parse(session);
+                const users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+                const fresh = users.find(u => u.username === userData.username);
+                if(fresh) {
+                    currentUser = fresh;
+                    showApp();
                 }
-            });
-
-            document.getElementById('show-register-password').addEventListener('click', function() {
-                const passwordInput = document.getElementById('register-password');
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-
-            // Vérifier la disponibilité du pseudo
-            document.getElementById('register-username').addEventListener('input', function() {
-                const username = this.value.trim();
-                const checkElement = document.getElementById('username-check');
-                
-                if (username.length < 3) {
-                    checkElement.innerHTML = '';
-                    return;
-                }
-                
-                // Vérifier si le pseudo existe déjà
-                const userExists = APP_DATA.users.some(user => user.username.toLowerCase() === username.toLowerCase());
-                
-                if (userExists) {
-                    checkElement.innerHTML = '<i class="fas fa-times unavailable"></i> Pseudo déjà utilisé';
-                } else {
-                    checkElement.innerHTML = '<i class="fas fa-check available"></i> Pseudo disponible';
-                }
-            });
-
-            // Connexion
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('login-username').value.trim();
-                const password = document.getElementById('login-password').value;
-                const rememberMe = document.getElementById('remember-me').checked;
-                
-                // Valider les champs
-                if (!username || !password) {
-                    showNotification('Veuillez remplir tous les champs', 'error');
-                    return;
-                }
-                
-                // Trouver l'utilisateur
-                const user = APP_DATA.users.find(u => u.username === username && u.password === password);
-                
-                if (user) {
-                    // Connexion réussie
-                    loginUser(user.username);
-                    
-                    if (rememberMe) {
-                        localStorage.setItem('xolbor_current_user', JSON.stringify(user));
-                    }
-                } else {
-                    showNotification('Pseudo ou mot de passe incorrect', 'error');
-                }
-            });
-
-            // Inscription
-            document.getElementById('register-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const username = document.getElementById('register-username').value.trim();
-                const email = document.getElementById('register-email').value.trim();
-                const password = document.getElementById('register-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-                const acceptTerms = document.getElementById('accept-terms').checked;
-                
-                // Validation
-                if (!username || !email || !password || !confirmPassword) {
-                    showNotification('Veuillez remplir tous les champs', 'error');
-                    return;
-                }
-                
-                if (username.length < 3 || username.length > 20) {
-                    showNotification('Le pseudo doit contenir entre 3 et 20 caractères', 'error');
-                    return;
-                }
-                
-                // Vérifier si le pseudo existe déjà
-                const userExists = APP_DATA.users.some(user => user.username.toLowerCase() === username.toLowerCase());
-                if (userExists) {
-                    showNotification('Ce pseudo est déjà utilisé', 'error');
-                    return;
-                }
-                
-                // Validation du mot de passe
-                if (password.length < 8) {
-                    showNotification('Le mot de passe doit contenir au moins 8 caractères', 'error');
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showNotification('Les mots de passe ne correspondent pas', 'error');
-                    return;
-                }
-                
-                if (!acceptTerms) {
-                    showNotification('Vous devez accepter les conditions d\'utilisation', 'error');
-                    return;
-                }
-                
-                // Créer le nouvel utilisateur
-                const newUser = {
-                    username,
-                    email,
-                    password,
-                    xubor: 100, // Bonus de bienvenue
-                    skins: ['default'],
-                    friends: [],
-                    gamesPlayed: 0,
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Ajouter l'utilisateur
-                APP_DATA.users.push(newUser);
-                localStorage.setItem('xolbor_users', JSON.stringify(APP_DATA.users));
-                
-                // Connexion automatique
-                loginUser(username);
-                
-                showNotification('Compte créé avec succès ! Vous avez reçu 100 Xubor de bienvenue.', 'success');
-            });
-        }
-
-        // Initialisation de la page principale
-        function initMainPage() {
-            // Navigation
-            document.querySelectorAll('.nav-btn[data-page]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const page = this.getAttribute('data-page');
-                    
-                    // Mettre à jour les boutons actifs
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Afficher la bonne page
-                    document.querySelectorAll('.page-section').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    document.getElementById(`${page}-section`).classList.add('active');
-                    
-                    // Charger les données de la page
-                    if (page === 'home') loadGames();
-                    if (page === 'marketplace') loadMarketplace();
-                    if (page === 'friends') loadFriends();
-                    if (page === 'profile') loadProfile();
-                });
-            });
-
-            // Déconnexion
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                localStorage.removeItem('xolbor_current_user');
-                APP_DATA.currentUser = null;
-                
-                // Revenir à la page de connexion
-                document.getElementById('login-page').classList.remove('hidden');
-                document.getElementById('main-page').classList.add('hidden');
-                
-                showNotification('Déconnecté avec succès', 'success');
-            });
-
-            // Acheter des Xubor
-            document.getElementById('buy-xubor-btn').addEventListener('click', function() {
-                document.getElementById('payment-modal').style.display = 'flex';
-            });
-
-            // Fermer le modal de paiement
-            document.getElementById('close-payment-modal').addEventListener('click', function() {
-                document.getElementById('payment-modal').style.display = 'none';
-            });
-
-            // Gestion des méthodes de paiement
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.addEventListener('click', function() {
-                    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-
-            // Soumission du paiement
-            document.getElementById('payment-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Simuler un paiement réussi
-                setTimeout(() => {
-                    document.getElementById('payment-modal').style.display = 'none';
-                    showNotification('Paiement réussi ! Vos Xubor ont été ajoutés à votre compte.', 'success');
-                    
-                    // Ajouter des Xubor (simulation)
-                    const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-                    if (user) {
-                        user.xubor += 1000;
-                        saveUsers();
-                        updateXuborDisplay();
-                    }
-                }, 1500);
-            });
-        }
-
-        // Initialisation du jeu Veck.io
-        function initGame() {
-            // Fermer le jeu
-            document.getElementById('close-game-btn').addEventListener('click', function() {
-                document.getElementById('veckio-game').style.display = 'none';
-                
-                // Arrêter l'animation du jeu
-                if (gameInterval) {
-                    clearInterval(gameInterval);
-                    gameInterval = null;
-                }
-            });
-
-            // Canvas du jeu
-            const canvas = document.getElementById('game-canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // Ajuster la taille du canvas
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-            
-            // Simulation du jeu
-            let players = [];
-            
-            // Créer des joueurs aléatoires
-            for (let i = 0; i < 50; i++) {
-                players.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: 10 + Math.random() * 20,
-                    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-                    speedX: (Math.random() - 0.5) * 4,
-                    speedY: (Math.random() - 0.5) * 4
-                });
-            }
-            
-            // Fonction de dessin du jeu
-            function drawGame() {
-                // Effacer le canvas
-                ctx.fillStyle = 'rgba(10, 10, 20, 0.1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Dessiner la grille
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.lineWidth = 1;
-                
-                const gridSize = 50;
-                for (let x = 0; x < canvas.width; x += gridSize) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
-                    ctx.stroke();
-                }
-                
-                for (let y = 0; y < canvas.height; y += gridSize) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                    ctx.stroke();
-                }
-                
-                // Dessiner les joueurs
-                players.forEach(player => {
-                    // Mettre à jour la position
-                    player.x += player.speedX;
-                    player.y += player.speedY;
-                    
-                    // Rebondir sur les bords
-                    if (player.x < player.radius || player.x > canvas.width - player.radius) {
-                        player.speedX *= -1;
-                    }
-                    
-                    if (player.y < player.radius || player.y > canvas.height - player.radius) {
-                        player.speedY *= -1;
-                    }
-                    
-                    // Dessiner le joueur
-                    ctx.beginPath();
-                    ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = player.color;
-                    ctx.fill();
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    
-                    // Dessiner les yeux
-                    ctx.fillStyle = 'white';
-                    ctx.beginPath();
-                    ctx.arc(player.x - player.radius/3, player.y - player.radius/4, player.radius/4, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.beginPath();
-                    ctx.arc(player.x + player.radius/3, player.y - player.radius/4, player.radius/4, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Dessiner la bouche
-                    ctx.beginPath();
-                    ctx.arc(player.x, player.y + player.radius/3, player.radius/3, 0, Math.PI, false);
-                    ctx.stroke();
-                });
-                
-                // Dessiner le joueur principal
-                const mainPlayer = {
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    radius: 25
-                };
-                
-                ctx.beginPath();
-                ctx.arc(mainPlayer.x, mainPlayer.y, mainPlayer.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#6c5ce7';
-                ctx.fill();
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-                
-                // Dessiner la couronne
-                ctx.fillStyle = '#ffd700';
-                ctx.beginPath();
-                ctx.moveTo(mainPlayer.x - mainPlayer.radius, mainPlayer.y - mainPlayer.radius);
-                for (let i = 0; i < 5; i++) {
-                    const angle = (i * Math.PI * 2) / 5;
-                    const spikeX = mainPlayer.x + Math.cos(angle) * mainPlayer.radius;
-                    const spikeY = mainPlayer.y + Math.sin(angle) * mainPlayer.radius;
-                    ctx.lineTo(spikeX, spikeY);
-                }
-                ctx.closePath();
-                ctx.fill();
-                
-                // Afficher le texte
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 24px Orbitron';
-                ctx.textAlign = 'center';
-                ctx.fillText('VECK.IO', canvas.width / 2, 50);
-                
-                ctx.font = '18px Poppins';
-                ctx.fillText('Utilisez les flèches pour vous déplacer', canvas.width / 2, canvas.height - 50);
-            }
-            
-            // Contrôles du jeu
-            const keys = {};
-            window.addEventListener('keydown', (e) => keys[e.key] = true);
-            window.addEventListener('keyup', (e) => keys[e.key] = false);
-            
-            // Mettre à jour les joueurs avec les contrôles
-            function updateGame() {
-                // Déplacer le joueur principal avec les flèches
-                players[0].speedX = 0;
-                players[0].speedY = 0;
-                
-                if (keys['ArrowUp']) players[0].speedY = -3;
-                if (keys['ArrowDown']) players[0].speedY = 3;
-                if (keys['ArrowLeft']) players[0].speedX = -3;
-                if (keys['ArrowRight']) players[0].speedX = 3;
-                
-                drawGame();
-            }
-            
-            // Démarrer l'animation du jeu
-            function startGame() {
-                if (gameInterval) clearInterval(gameInterval);
-                gameInterval = setInterval(updateGame, 1000/60);
-            }
-            
-            // Exposer la fonction startGame
-            window.startVeckioGame = startGame;
-        }
-
-        // Fonction de connexion
-        function loginUser(username) {
-            APP_DATA.currentUser = username;
-            
-            // Sauvegarder l'utilisateur actuel
-            const user = APP_DATA.users.find(u => u.username === username);
-            localStorage.setItem('xolbor_current_user', JSON.stringify(user));
-            
-            // Afficher la page principale
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('main-page').classList.remove('hidden');
-            
-            // Charger les données utilisateur
-            loadUserData();
-            loadGames();
-            
-            showNotification(`Bienvenue, ${username} !`, 'success');
-        }
-
-        // Charger les données utilisateur
-        function loadUserData() {
-            if (!APP_DATA.currentUser) return;
-            
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            // Mettre à jour l'affichage des Xubor
-            updateXuborDisplay();
-            
-            // Mettre à jour l'avatar
-            const skin = user.skins[user.skins.length - 1] || 'default';
-            updateAvatar(skin);
-            
-            // Mettre à jour le nom d'utilisateur dans le header
-            document.getElementById('profile-username').textContent = user.username;
-        }
-
-        // Mettre à jour l'affichage des Xubor
-        function updateXuborDisplay() {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (user) {
-                document.getElementById('xubor-amount').textContent = user.xubor.toLocaleString();
             }
         }
 
-        // Mettre à jour l'avatar
-        function updateAvatar(skinName) {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            // Trouver le skin
-            const skin = APP_DATA.skins.find(s => s.name === skinName) || { color: '#6c5ce7', emoji: '👤' };
-            
-            // Mettre à jour l'image de l'avatar avec l'emoji du skin
-            const avatarImg = document.getElementById('current-avatar');
-            const profileAvatarImg = document.getElementById('profile-avatar-large');
-            
-            // Créer un canvas pour l'avatar
-            const canvas = document.createElement('canvas');
-            canvas.width = 96;
-            canvas.height = 96;
-            const ctx = canvas.getContext('2d');
-            
-            // Dessiner l'arrière-plan
-            ctx.fillStyle = skin.color;
-            ctx.beginPath();
-            ctx.arc(48, 48, 48, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Dessiner l'emoji
-            ctx.font = '48px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = 'white';
-            ctx.fillText(skin.emoji, 48, 48);
-            
-            // Convertir en URL de données
-            const dataUrl = canvas.toDataURL();
-            
-            // Mettre à jour les images
-            avatarImg.src = dataUrl;
-            profileAvatarImg.src = dataUrl;
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-header').innerText = isLoginMode ? 'Connexion' : 'Inscription';
+            document.getElementById('auth-switch-btn').innerText = isLoginMode ? "Créer un compte" : "Déjà un compte ? Connexion";
         }
 
-        // Charger les jeux
-        function loadGames() {
-            const gamesGrid = document.querySelector('.games-grid');
-            gamesGrid.innerHTML = '';
+        function handleAuth(e) {
+            e.preventDefault();
+            const pseudo = document.getElementById('auth-pseudo').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            const err = document.getElementById('auth-error');
+            let users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+
+            if(isLoginMode) {
+                const u = users.find(x => x.username === pseudo && x.password === pass);
+                if(u) login(u);
+                else { err.innerText = "Identifiants incorrects"; err.style.display = 'block'; }
+            } else {
+                if(users.find(x => x.username === pseudo)) { err.innerText = "Pseudo déjà pris"; err.style.display = 'block'; return; }
+                const newUser = { username: pseudo, password: pass, xubor: 500, inventory: [], equippedSkinId: 0, friends: [] };
+                users.push(newUser);
+                localStorage.setItem(DB_USERS, JSON.stringify(users));
+                login(newUser);
+            }
+        }
+
+        function login(u) {
+            currentUser = u;
+            localStorage.setItem(DB_SESSION, JSON.stringify(u));
+            showApp();
+            showToast(`Bienvenue ${u.username}`, "success");
+        }
+
+        function showApp() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            navTo('home');
+            updateUI();
+        }
+
+        function logout() {
+            localStorage.removeItem(DB_SESSION);
+            location.reload();
+        }
+
+        function navTo(id) {
+            document.querySelectorAll('.main-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.remove('hidden');
             
-            APP_DATA.games.forEach(game => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.innerHTML = `
-                    <div class="game-image" style="background-image: url('${game.image}')"></div>
-                    <div class="game-info">
-                        <h3 class="game-title">${game.name}</h3>
-                        <p>${game.description}</p>
-                        <div class="game-stats">
-                            <span><i class="fas fa-users"></i> ${game.players.toLocaleString()} joueurs</span>
+            const navItems = document.querySelectorAll('.nav-item');
+            const map = { 'home': 0, 'marketplace': 1, 'shop': 2, 'friends': 3, 'profile': 4 };
+            navItems[map[id]].classList.add('active');
+
+            if(id === 'marketplace') renderSkins();
+            if(id === 'friends') renderFriends();
+            if(id === 'profile') {
+                updateProfileView();
+                initThreeJS();
+            }
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = games.map(g => `
+                <div class="card">
+                    <img src="${g.img}" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">${g.title}</div>
+                        <button class="btn-primary" style="width:100%" onclick="openGame('${g.url}')">Jouer</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openGame(url) {
+            document.getElementById('game-iframe').src = url;
+            document.getElementById('fullscreen-game').classList.add('active');
+        }
+
+        function closeGame() {
+            document.getElementById('fullscreen-game').classList.remove('active');
+            document.getElementById('game-iframe').src = "";
+        }
+
+        function renderSkins() {
+            const grid = document.getElementById('skins-grid');
+            grid.innerHTML = skins.map(s => {
+                const isOwned = currentUser.inventory.includes(s.id);
+                const isEquipped = currentUser.equippedSkinId === s.id;
+                let action = "";
+                
+                if(isEquipped) action = `<button class="btn-secondary" disabled>Équipé</button>`;
+                else if(isOwned) action = `<button class="btn-primary" onclick="equipSkin(${s.id})">Équiper</button>`;
+                else action = `<button class="btn-primary" onclick="buySkin(${s.id})">${s.price} X</button>`;
+
+                return `
+                    <div class="card" style="border-color:${s.color}">
+                        ${isEquipped ? '<div class="equipped-badge">ACTIF</div>' : (isOwned ? '<div class="owned-badge">POSSÉDÉ</div>' : '')}
+                        <img src="${s.img}" class="card-img" style="height:120px">
+                        <div class="card-body">
+                            <div class="card-title" style="color:${s.color}">${s.name}</div>
+                            <div style="font-size:0.8rem; margin-bottom:10px">${s.rarity.toUpperCase()}</div>
+                            ${action}
                         </div>
                     </div>
-                    <button class="play-btn" data-game="${game.id}">
-                        <i class="fas fa-play"></i> Jouer
-                    </button>
                 `;
-                gamesGrid.appendChild(gameCard);
-            });
-            
-            // Ajouter les événements aux boutons "Jouer"
-            document.querySelectorAll('.play-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const gameId = parseInt(this.getAttribute('data-game'));
-                    const game = APP_DATA.games.find(g => g.id === gameId);
-                    
-                    if (game && game.name === 'Veck.io') {
-                        startVeckioGame();
-                        
-                        // Incrémenter le compteur de joueurs
-                        veckioPlayers++;
-                        document.getElementById('player-count').textContent = veckioPlayers.toLocaleString();
-                        
-                        // Afficher le jeu
-                        document.getElementById('veckio-game').style.display = 'block';
-                        
-                        // Mettre à jour le nombre de jeux joués par l'utilisateur
-                        const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-                        if (user) {
-                            user.gamesPlayed = (user.gamesPlayed || 0) + 1;
-                            saveUsers();
-                            updateProfileStats();
-                        }
-                    } else {
-                        showNotification(`Le jeu ${game?.name} sera bientôt disponible !`, 'info');
-                    }
-                });
-            });
+            }).join('');
         }
 
-        // Charger le marketplace
-        function loadMarketplace() {
-            const skinsGrid = document.querySelector('.skins-grid');
-            skinsGrid.innerHTML = '';
-            
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            APP_DATA.skins.forEach(skin => {
-                const isOwned = user.skins.includes(skin.name);
-                
-                const skinCard = document.createElement('div');
-                skinCard.className = `skin-card ${isOwned ? 'owned' : ''}`;
-                skinCard.setAttribute('data-rarity', skin.rarity);
-                skinCard.innerHTML = `
-                    <div class="skin-image" style="background-color: ${skin.color}">
-                        <span style="font-size: 3rem;">${skin.emoji}</span>
-                    </div>
-                    <h4 class="skin-name">${skin.name}</h4>
-                    <div class="skin-price">
-                        <i class="fas fa-gem"></i> ${skin.price.toLocaleString()} Xubor
-                    </div>
-                    <button class="buy-btn" data-skin-id="${skin.id}" ${isOwned || user.xubor < skin.price ? 'disabled' : ''}>
-                        ${isOwned ? 'Déjà acheté' : 'Acheter'}
-                    </button>
-                `;
-                skinsGrid.appendChild(skinCard);
-            });
-            
-            // Charger les packs Xubor
-            const packsGrid = document.querySelector('.packs-grid');
-            packsGrid.innerHTML = '';
-            
-            APP_DATA.xuborPacks.forEach(pack => {
-                const packCard = document.createElement('div');
-                packCard.className = `pack-card ${pack.featured ? 'featured' : ''}`;
-                packCard.innerHTML = `
-                    <div class="pack-amount">
-                        ${pack.label || pack.amount.toLocaleString()} Xubor
-                    </div>
-                    <div class="pack-price">${pack.price} €</div>
-                    <button class="buy-pack-btn" data-pack-id="${pack.id}">
-                        Acheter maintenant
-                    </button>
-                `;
-                packsGrid.appendChild(packCard);
-            });
-            
-            // Ajouter les événements d'achat
-            document.querySelectorAll('.buy-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const skinId = parseInt(this.getAttribute('data-skin-id'));
-                    buySkin(skinId);
-                });
-            });
-            
-            // Filtrer les skins
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const filter = this.getAttribute('data-filter');
-                    filterSkins(filter);
-                });
-            });
-            
-            // Recherche de skins
-            document.querySelector('.skin-search input').addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                filterSkinsBySearch(searchTerm);
-            });
+        function buySkin(id) {
+            const s = skins.find(x => x.id === id);
+            if(currentUser.xubor >= s.price) {
+                currentUser.xubor -= s.price;
+                currentUser.inventory.push(id);
+                save();
+                renderSkins();
+                showToast("Skin débloqué !", "success");
+            } else showToast("Xubor insuffisants", "error");
         }
 
-        // Acheter un skin
-        function buySkin(skinId) {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            const skin = APP_DATA.skins.find(s => s.id === skinId);
-            
-            if (!user || !skin) return;
-            
-            if (user.xubor < skin.price) {
-                showNotification('Fonds insuffisants ! Achetez plus de Xubor.', 'error');
-                return;
-            }
-            
-            if (user.skins.includes(skin.name)) {
-                showNotification('Vous possédez déjà ce skin !', 'error');
-                return;
-            }
-            
-            // Débiter les Xubor et ajouter le skin
-            user.xubor -= skin.price;
-            user.skins.push(skin.name);
-            
-            // Sauvegarder les données
-            saveUsers();
-            
-            // Mettre à jour l'affichage
-            updateXuborDisplay();
-            updateAvatar(skin.name);
-            loadMarketplace();
-            loadProfile();
-            
-            showNotification(`Félicitations ! Vous avez acheté le skin "${skin.name}"`, 'success');
+        function equipSkin(id) {
+            currentUser.equippedSkinId = id;
+            save();
+            renderSkins();
+            showToast("Style mis à jour", "success");
+            if(threeScene) updateAvatarColor();
         }
 
-        // Filtrer les skins
-        function filterSkins(filter) {
-            const skins = document.querySelectorAll('.skin-card');
-            
-            skins.forEach(skin => {
-                const rarity = skin.getAttribute('data-rarity');
-                const isOwned = skin.classList.contains('owned');
-                
-                let shouldShow = false;
-                
-                switch(filter) {
-                    case 'all':
-                        shouldShow = true;
-                        break;
-                    case 'rare':
-                        shouldShow = rarity === 'rare';
-                        break;
-                    case 'epic':
-                        shouldShow = rarity === 'epic';
-                        break;
-                    case 'legendary':
-                        shouldShow = rarity === 'legendary';
-                        break;
-                    case 'owned':
-                        shouldShow = isOwned;
-                        break;
-                }
-                
-                skin.style.display = shouldShow ? 'block' : 'none';
-            });
+        function save() {
+            let users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+            const idx = users.findIndex(u => u.username === currentUser.username);
+            users[idx] = currentUser;
+            localStorage.setItem(DB_USERS, JSON.stringify(users));
+            localStorage.setItem(DB_SESSION, JSON.stringify(currentUser));
+            updateUI();
         }
 
-        // Filtrer les skins par recherche
-        function filterSkinsBySearch(searchTerm) {
-            const skins = document.querySelectorAll('.skin-card');
-            
-            skins.forEach(skin => {
-                const skinName = skin.querySelector('.skin-name').textContent.toLowerCase();
-                const shouldShow = skinName.includes(searchTerm);
-                skin.style.display = shouldShow ? 'block' : 'none';
-            });
+        function updateUI() {
+            document.getElementById('nav-balance').innerText = currentUser.xubor;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            document.getElementById('nav-profile-img').src = s ? s.img : "https://picsum.photos/seed/base/100";
         }
 
-        // Charger la page des amis
-        function loadFriends() {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            const friendList = document.querySelector('.friend-list');
-            friendList.innerHTML = `<h3>Mes amis (${user.friends.length})</h3>`;
-            
-            // Ajouter les amis
-            user.friends.forEach(friendName => {
-                const friend = APP_DATA.friends.find(f => f.username === friendName) || 
-                              { username: friendName, status: 'Hors ligne', skin: 'default' };
-                
-                const friendItem = document.createElement('div');
-                friendItem.className = 'friend-item';
-                friendItem.innerHTML = `
-                    <img src="${friend.avatar || 'https://img.icons8.com/color/96/000000/circled-user-male-skin-type-7.png'}" alt="${friend.username}" class="friend-avatar">
-                    <div class="friend-info">
-                        <h4>${friend.username}</h4>
-                        <p>${friend.status}</p>
-                    </div>
-                    <div class="friend-actions">
-                        <button class="friend-btn view-friend-btn" data-friend="${friend.username}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="friend-btn remove-friend-btn" data-friend="${friend.username}">
-                            <i class="fas fa-user-minus"></i>
-                        </button>
-                    </div>
-                `;
-                friendList.appendChild(friendItem);
-            });
-            
-            // Rechercher des amis
-            document.getElementById('search-friend-btn').addEventListener('click', function() {
-                const searchInput = document.querySelector('.friend-search-input');
-                const searchTerm = searchInput.value.trim();
-                
-                if (!searchTerm) {
-                    showNotification('Veuillez entrer un nom d\'utilisateur', 'error');
-                    return;
-                }
-                
-                // Vérifier si l'utilisateur existe
-                const foundUser = APP_DATA.users.find(u => u.username.toLowerCase() === searchTerm.toLowerCase());
-                
-                if (!foundUser) {
-                    showNotification('Utilisateur non trouvé', 'error');
-                    return;
-                }
-                
-                // Vérifier si c'est l'utilisateur actuel
-                if (foundUser.username === APP_DATA.currentUser) {
-                    showNotification('Vous ne pouvez pas vous ajouter vous-même', 'error');
-                    return;
-                }
-                
-                // Vérifier si déjà ami
-                if (user.friends.includes(foundUser.username)) {
-                    showNotification('Cet utilisateur est déjà dans votre liste d\'amis', 'info');
-                    return;
-                }
-                
-                // Demander confirmation
-                if (confirm(`Voulez-vous ajouter ${foundUser.username} comme ami ?`)) {
-                    user.friends.push(foundUser.username);
-                    saveUsers();
-                    loadFriends();
-                    showNotification(`${foundUser.username} a été ajouté à vos amis`, 'success');
-                }
-            });
-            
-            // Événements pour les boutons d'amis
-            friendList.addEventListener('click', function(e) {
-                if (e.target.closest('.view-friend-btn')) {
-                    const friendName = e.target.closest('.view-friend-btn').getAttribute('data-friend');
-                    viewFriend(friendName);
-                }
-                
-                if (e.target.closest('.remove-friend-btn')) {
-                    const friendName = e.target.closest('.remove-friend-btn').getAttribute('data-friend');
-                    removeFriend(friendName);
-                }
-            });
-            
-            updateProfileStats();
+        function initPayment(amount, price) {
+            pendingPayment = { amount, price };
+            document.getElementById('payment-desc').innerText = `${amount} Xubor pour ${price} €`;
+            document.getElementById('payment-modal').classList.add('active');
         }
 
-        // Voir un ami
-        function viewFriend(friendName) {
-            const friend = APP_DATA.friends.find(f => f.username === friendName);
-            
-            if (friend) {
-                document.getElementById('selected-friend-name').textContent = friend.username;
-                document.getElementById('selected-friend-status').textContent = `Statut: ${friend.status}`;
-                
-                // Mettre à jour le visualiseur 3D
-                const viewer = document.querySelector('.friend-3d-viewer');
-                viewer.innerHTML = `
-                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <div style="font-size: 5rem; margin-bottom: 20px;">
-                            ${APP_DATA.skins.find(s => s.name === friend.skin)?.emoji || '👤'}
-                        </div>
-                        <h3>${friend.username}</h3>
-                        <p>Skin: ${friend.skin}</p>
-                    </div>
-                `;
+        function closeModal() { document.getElementById('payment-modal').classList.remove('active'); }
+
+        function processPayment() {
+            currentUser.xubor += pendingPayment.amount;
+            save();
+            closeModal();
+            showToast("Compte crédité !", "success");
+        }
+
+        function renderFriends() {
+            const container = document.getElementById('friend-list-container');
+            if(currentUser.friends.length === 0) container.innerHTML = "<p>Vous n'avez pas encore d'amis.</p>";
+            else container.innerHTML = currentUser.friends.map(f => `
+                <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:5px; border-radius:8px; display:flex; justify-content:space-between;">
+                    <span>${f}</span>
+                    <span style="color:#22c55e">En ligne</span>
+                </div>
+            `).join('');
+        }
+
+        function addFriend() {
+            const name = document.getElementById('friend-search').value.trim();
+            if(name && !currentUser.friends.includes(name)) {
+                currentUser.friends.push(name);
+                save();
+                renderFriends();
+                document.getElementById('friend-search').value = "";
             }
         }
 
-        // Supprimer un ami
-        function removeFriend(friendName) {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            if (confirm(`Voulez-vous vraiment supprimer ${friendName} de vos amis ?`)) {
-                user.friends = user.friends.filter(f => f !== friendName);
-                saveUsers();
-                loadFriends();
-                showNotification(`${friendName} a été supprimé de vos amis`, 'success');
+        function updateProfileView() {
+            document.getElementById('profile-username').innerText = currentUser.username;
+            document.getElementById('profile-balance').innerText = currentUser.xubor;
+            document.getElementById('profile-skin-count').innerText = currentUser.inventory.length;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            document.getElementById('equipped-skin-name').innerText = s ? s.name : "Base";
+            document.getElementById('equipped-skin-img').src = s ? s.img : "https://picsum.photos/seed/base/100";
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.className = `toast show ${type}`;
+            document.getElementById('toast-msg').innerText = msg;
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // --- THREE JS AVATAR ---
+        function initThreeJS() {
+            const container = document.getElementById('avatar-wrapper');
+            if(container.querySelector('canvas')) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const geometry = new THREE.IcosahedronGeometry(1.5, 0);
+            const material = new THREE.MeshPhongMaterial({ color: 0x6366f1, wireframe: true });
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            const light = new THREE.PointLight(0xffffff, 1, 100);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040));
+
+            camera.position.z = 4;
+
+            threeScene = { sphere, material };
+            updateAvatarColor();
+
+            function animate() {
+                requestAnimationFrame(animate);
+                sphere.rotation.x += 0.01;
+                sphere.rotation.y += 0.01;
+                renderer.render(scene, camera);
             }
+            animate();
         }
 
-        // Charger le profil
-        function loadProfile() {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            // Mettre à jour les statistiques
-            updateProfileStats();
-            
-            // Afficher les skins possédés
-            const skinsOwned = document.querySelector('.skins-owned');
-            skinsOwned.innerHTML = '';
-            
-            user.skins.forEach(skinName => {
-                const skin = APP_DATA.skins.find(s => s.name === skinName) || { color: '#6c5ce7', emoji: '👤' };
-                
-                const skinElement = document.createElement('div');
-                skinElement.className = 'owned-skin';
-                skinElement.innerHTML = `
-                    <div class="owned-skin-img" style="background-color: ${skin.color}" data-skin="${skinName}">
-                        <div style="font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%;">
-                            ${skin.emoji}
-                        </div>
-                    </div>
-                    <p class="owned-skin-name">${skinName}</p>
-                `;
-                skinsOwned.appendChild(skinElement);
-            });
-            
-            // Événement pour changer de skin
-            document.querySelectorAll('.owned-skin-img').forEach(img => {
-                img.addEventListener('click', function() {
-                    const skinName = this.getAttribute('data-skin');
-                    updateAvatar(skinName);
-                    showNotification(`Skin "${skinName}" équipé`, 'success');
-                });
-            });
-        }
-
-        // Mettre à jour les statistiques du profil
-        function updateProfileStats() {
-            const user = APP_DATA.users.find(u => u.username === APP_DATA.currentUser);
-            if (!user) return;
-            
-            document.getElementById('games-played').textContent = user.gamesPlayed || 0;
-            document.getElementById('friends-count').textContent = user.friends.length;
-            document.getElementById('skins-owned').textContent = user.skins.length;
-            
-            // Calculer le total des Xubor dépensés
-            let totalSpent = 0;
-            user.skins.forEach(skinName => {
-                const skin = APP_DATA.skins.find(s => s.name === skinName);
-                if (skin) totalSpent += skin.price;
-            });
-            
-            document.getElementById('total-xubor').textContent = totalSpent.toLocaleString();
-        }
-
-        // Sauvegarder les utilisateurs
-        function saveUsers() {
-            localStorage.setItem('xolbor_users', JSON.stringify(APP_DATA.users));
-        }
-
-        // Afficher une notification
-        function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            
-            // Définir la couleur selon le type
-            let backgroundColor = '#6c5ce7'; // Par défaut (info)
-            if (type === 'success') backgroundColor = '#00b894';
-            if (type === 'error') backgroundColor = '#d63031';
-            if (type === 'warning') backgroundColor = '#fdcb6e';
-            
-            notification.style.backgroundColor = backgroundColor;
-            notification.textContent = message;
-            notification.style.display = 'block';
-            
-            // Masquer la notification après 5 secondes
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
+        function updateAvatarColor() {
+            if(!threeScene) return;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            threeScene.material.color.setHex(s ? s.threeColor : 0x6366f1);
+            threeScene.material.wireframe = !s || s.rarity === 'rare';
         }
     </script>
+    <h6>Créer par Imrane❤️</h6>
 </body>
 </html>
