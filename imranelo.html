@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xolbor - Plateforme de Gaming Ultime</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --glass: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        button { cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.2s; border: none; outline: none; }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white; padding: 10px 24px; border-radius: 8px; font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--glass-border); color: white;
+            padding: 8px 16px; border-radius: 6px;
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+        input {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); color: white;
+            padding: 12px; border-radius: 6px; width: 100%; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; margin-bottom: 15px;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .hidden { display: none !important; }
+        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 30px;
+            background: var(--glass); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100; height: 70px;
+        }
+
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 900; color: white; cursor: pointer; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-item { color: #94a3b8; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; }
+        .nav-item:hover, .nav-item.active { color: white; text-shadow: 0 0 8px var(--primary); }
+
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .balance-pill { background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--primary); color: var(--secondary); font-weight: bold; }
+        .profile-pic { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--secondary); object-fit: cover; cursor: pointer; background: #222; }
+
+        .auth-wrapper {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: radial-gradient(circle at center, rgba(99,102,241,0.1) 0%, rgba(0,0,0,0) 70%);
+        }
+        .auth-box {
+            background: var(--glass); padding: 40px; border-radius: 16px; border: 1px solid var(--glass-border);
+            width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .auth-title { font-family: 'Orbitron', sans-serif; margin-bottom: 20px; font-size: 2rem; }
+        .auth-switch { margin-top: 15px; font-size: 0.9rem; color: #94a3b8; cursor: pointer; }
+        .auth-switch:hover { text-decoration: underline; color: white; }
+        .error-msg { color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; display: none; }
+
+        .main-content { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 20px; border-left: 4px solid var(--secondary); padding-left: 15px; }
+        
+        .search-bar { margin-bottom: 30px; display: flex; gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+
+        .card {
+            background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden;
+            transition: transform 0.3s; position: relative;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .card-img { width: 100%; height: 150px; object-fit: cover; background-color: #222; }
+        .card-body { padding: 15px; }
+        .card-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
+
+        .owned-badge { position: absolute; top: 10px; right: 10px; background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 10; }
+        .equipped-badge { position: absolute; top: 10px; right: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; z-index: 10; }
+
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .pack-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border: 1px solid var(--glass-border); padding: 20px; border-radius: 12px; text-align: center; }
+        .pack-card.featured { border: 2px solid var(--secondary); box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); }
+        .pack-amount { font-size: 2.5rem; font-weight: 900; color: var(--primary); margin: 15px 0; }
+
+        .profile-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .profile-stats { background: var(--glass); padding: 20px; border-radius: 12px; }
+        .avatar-container { background: #000; border-radius: 12px; height: 400px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal { background: var(--dark); border: 1px solid var(--glass-border); padding: 30px; border-radius: 12px; width: 90%; max-width: 450px; text-align: center; }
+
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: var(--dark); border-left: 4px solid var(--primary); padding: 15px 25px;
+            border-radius: 4px; box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5); transform: translateX(150%); transition: transform 0.3s; z-index: 2000;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: #22c55e; }
+        .toast.error { border-color: #ef4444; }
+
+        #fullscreen-game {
+            position: fixed; inset: 0; background: #000; z-index: 3000; display: none;
+        }
+        #fullscreen-game.active { display: block; }
+        
+        .footer-credits { text-align: center; padding: 20px; font-size: 0.8rem; color: #475569; }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast"><span id="toast-msg">Message</span></div>
+
+    <!-- Modal de Paiement -->
+    <div id="payment-modal" class="modal-overlay">
+        <div class="modal">
+            <h2 style="margin-bottom: 15px; font-family: 'Orbitron';">Paiement Sécurisé</h2>
+            <p id="payment-desc" style="color: #94a3b8; margin-bottom: 20px;">Confirmez l'achat</p>
+            <form id="payment-form" style="margin-bottom: 20px; text-align: left;" onsubmit="event.preventDefault()">
+                <input type="text" placeholder="Numéro de carte (16 chiffres)" required>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="MM/AA" maxlength="5" required>
+                    <input type="text" placeholder="CVV" maxlength="3" required>
+                </div>
+            </form>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+                <button class="btn-primary" onclick="processPayment()">Payer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mode Jeu Fullscreen -->
+    <div id="fullscreen-game">
+        <button class="btn-primary" style="position: absolute; top: 20px; right: 20px; z-index: 3100;" onclick="closeGame()">Quitter X</button>
+        <iframe id="game-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="navbar hidden" id="main-nav">
+            <div class="logo" onclick="navTo('home')">XOLBOR<span>.GAMES</span></div>
+            <div class="nav-links">
+                <div class="nav-item active" onclick="navTo('home')">Accueil</div>
+                <div class="nav-item" onclick="navTo('marketplace')">Skins</div>
+                <div class="nav-item" onclick="navTo('shop')">Boutique</div>
+                <div class="nav-item" onclick="navTo('friends')">Amis</div>
+                <div class="nav-item" onclick="navTo('profile')">Profil</div>
+            </div>
+            <div class="user-info">
+                <div class="balance-pill">X <span id="nav-balance">0</span></div>
+                <img id="nav-profile-img" src="" alt="" class="profile-pic" onclick="navTo('profile')">
+                <button class="btn-secondary" style="padding: 5px 10px;" onclick="logout()">Déco</button>
+            </div>
+        </nav>
+
+        <!-- Vue Authentification -->
+        <section id="view-auth" class="auth-wrapper">
+            <div class="auth-box">
+                <h1 class="auth-title" id="auth-header">Connexion</h1>
+                <form id="auth-form" onsubmit="handleAuth(event)">
+                    <input type="text" id="auth-pseudo" placeholder="Pseudo" required autocomplete="off">
+                    <input type="password" id="auth-pass" placeholder="Mot de passe" required>
+                    <div id="auth-error" class="error-msg"></div>
+                    <button type="submit" class="btn-primary" style="width: 100%;">Entrer</button>
+                </form>
+                <div class="auth-switch" onclick="toggleAuthMode()">
+                    <span id="auth-switch-btn">Créer un compte</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vue Accueil Jeux -->
+        <section id="view-home" class="main-content hidden">
+            <h2 class="section-title">Jeux Populaires</h2>
+            <div class="grid" id="games-grid"></div>
+        </section>
+
+        <!-- Vue Boutique Skins -->
+        <section id="view-marketplace" class="main-content hidden">
+            <h2 class="section-title">Marketplace Skins</h2>
+            <div class="grid" id="skins-grid"></div>
+        </section>
+
+        <!-- Vue Boutique Monnaie -->
+        <section id="view-shop" class="main-content hidden">
+            <h2 class="section-title">Obtenir des Xubor</h2>
+            <div class="shop-grid">
+                <div class="pack-card">
+                    <div class="pack-amount">100</div>
+                    <div class="pack-price">10 €</div>
+                    <button class="btn-primary" onclick="initPayment(100, 10)">Acheter</button>
+                </div>
+                <div class="pack-card featured">
+                    <div class="pack-amount">800</div>
+                    <div class="pack-price">20 €</div>
+                    <button class="btn-primary" onclick="initPayment(800, 20)">Acheter</button>
+                </div>
+                <div class="pack-card">
+                    <div class="pack-amount">5000</div>
+                    <div class="pack-price">99 €</div>
+                    <button class="btn-primary" onclick="initPayment(5000, 99)">Acheter</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vue Amis -->
+        <section id="view-friends" class="main-content hidden">
+            <h2 class="section-title">Amis</h2>
+            <div class="search-bar">
+                <input type="text" id="friend-search" placeholder="Pseudo de l'ami...">
+                <button class="btn-primary" onclick="addFriend()">Ajouter</button>
+            </div>
+            <div id="friend-list-container"></div>
+        </section>
+
+        <!-- Vue Profil -->
+        <section id="view-profile" class="main-content hidden">
+            <h2 class="section-title">Mon Profil</h2>
+            <div class="profile-layout">
+                <div class="avatar-container" id="avatar-wrapper"></div>
+                <div class="profile-stats">
+                    <h1 id="profile-username" style="font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 10px;">User</h1>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                        <span>Solde</span>
+                        <span style="color: var(--primary); font-weight: bold;" id="profile-balance">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                        <span>Skins</span>
+                        <span id="profile-skin-count">0</span>
+                    </div>
+                    <div>
+                        <h3>Skin Actuel</h3>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                            <img id="equipped-skin-img" src="" style="width: 50px; height: 50px; border-radius: 5px; background: #333;">
+                            <span id="equipped-skin-name" style="font-weight: bold;">Base</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-credits">
+            Créé par Imrane ❤️
+        </footer>
+    </div>
+
+    <script>
+        const DB_USERS = 'xolbor_users_v4'; // Incrémenté pour forcer le refresh
+        const DB_SESSION = 'xolbor_session_v4';
+        let currentUser = null;
+        let isLoginMode = true;
+        let pendingPayment = null;
+        let threeScene = null;
+
+        const games = [
+            { id: 1, title: 'Veck.io', img: 'https://images.unsplash.com/photo-1542751371-adc38448a04e?w=400', url: 'https://veck.io/' },
+            { id: 2, title: 'Kour.io', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400', url: 'https://kour.io/' },
+            { id: 3, title: 'MiniBlox.io', img: 'https://images.unsplash.com/photo-1527694224018-7b9a1f3f8803?w=400', url: 'https://miniblox.io/' },
+            { id: 4, title: 'SmashKarts.io', img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400', url: 'https://smashkarts.io/' },
+            { id: 5, title: 'Poxel.io', img: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400', url: 'https://poxel.io/' }
+        ];
+
+        const skins = [];
+        const rarities = ['rare', 'epic', 'legendary'];
+        const rarityColors = { 'rare': '#3b82f6', 'epic': '#a855f7', 'legendary': '#f59e0b' };
+        
+        // Génération de skins fictifs
+        for(let i=1; i<=20; i++) {
+            const r = rarities[Math.floor(Math.random() * rarities.length)];
+            skins.push({
+                id: i, 
+                name: `Skin ${r} #${i}`,
+                price: r === 'rare' ? 100 : r === 'epic' ? 500 : 2000,
+                rarity: r, 
+                color: rarityColors[r],
+                img: `https://picsum.photos/seed/skin${i}/200/200`,
+                threeColor: i * 0x123456 % 0xffffff
+            });
+        }
+
+        window.onload = function() {
+            checkSession();
+            renderGames();
+        };
+
+        function checkSession() {
+            const session = localStorage.getItem(DB_SESSION);
+            if(session) {
+                const userData = JSON.parse(session);
+                const users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+                const fresh = users.find(u => u.username === userData.username);
+                if(fresh) {
+                    currentUser = fresh;
+                    showApp();
+                }
+            }
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-header').innerText = isLoginMode ? 'Connexion' : 'Inscription';
+            document.getElementById('auth-switch-btn').innerText = isLoginMode ? "Créer un compte" : "Déjà un compte ? Connexion";
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const pseudo = document.getElementById('auth-pseudo').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            const err = document.getElementById('auth-error');
+            let users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+
+            if(isLoginMode) {
+                const u = users.find(x => x.username === pseudo && x.password === pass);
+                if(u) login(u);
+                else { err.innerText = "Identifiants incorrects"; err.style.display = 'block'; }
+            } else {
+                if(users.find(x => x.username === pseudo)) { err.innerText = "Pseudo déjà pris"; err.style.display = 'block'; return; }
+                
+                // --- MODIFICATION ICI : Xubor mis à 0 pour les nouveaux comptes ---
+                const newUser = { 
+                    username: pseudo, 
+                    password: pass, 
+                    xubor: 0, 
+                    inventory: [], 
+                    equippedSkinId: 0, 
+                    friends: [] 
+                };
+                
+                users.push(newUser);
+                localStorage.setItem(DB_USERS, JSON.stringify(users));
+                login(newUser);
+            }
+        }
+
+        function login(u) {
+            currentUser = u;
+            localStorage.setItem(DB_SESSION, JSON.stringify(u));
+            showApp();
+            showToast(`Bienvenue ${u.username}`, "success");
+        }
+
+        function showApp() {
+            document.getElementById('view-auth').classList.add('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            navTo('home');
+            updateUI();
+        }
+
+        function logout() {
+            localStorage.removeItem(DB_SESSION);
+            location.reload();
+        }
+
+        function navTo(id) {
+            document.querySelectorAll('.main-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.remove('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            const map = { 'home': 0, 'marketplace': 1, 'shop': 2, 'friends': 3, 'profile': 4 };
+            navItems[map[id]].classList.add('active');
+
+            if(id === 'marketplace') renderSkins();
+            if(id === 'friends') renderFriends();
+            if(id === 'profile') {
+                updateProfileView();
+                initThreeJS();
+            }
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = games.map(g => `
+                <div class="card">
+                    <img src="${g.img}" class="card-img">
+                    <div class="card-body">
+                        <div class="card-title">${g.title}</div>
+                        <button class="btn-primary" style="width:100%" onclick="openGame('${g.url}')">Jouer</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openGame(url) {
+            document.getElementById('game-iframe').src = url;
+            document.getElementById('fullscreen-game').classList.add('active');
+        }
+
+        function closeGame() {
+            document.getElementById('fullscreen-game').classList.remove('active');
+            document.getElementById('game-iframe').src = "";
+        }
+
+        function renderSkins() {
+            const grid = document.getElementById('skins-grid');
+            grid.innerHTML = skins.map(s => {
+                const isOwned = currentUser.inventory.includes(s.id);
+                const isEquipped = currentUser.equippedSkinId === s.id;
+                let action = "";
+                
+                if(isEquipped) action = `<button class="btn-secondary" disabled>Équipé</button>`;
+                else if(isOwned) action = `<button class="btn-primary" onclick="equipSkin(${s.id})">Équiper</button>`;
+                else action = `<button class="btn-primary" onclick="buySkin(${s.id})">${s.price} X</button>`;
+
+                return `
+                    <div class="card" style="border-color:${s.color}">
+                        ${isEquipped ? '<div class="equipped-badge">ACTIF</div>' : (isOwned ? '<div class="owned-badge">POSSÉDÉ</div>' : '')}
+                        <img src="${s.img}" class="card-img" style="height:120px">
+                        <div class="card-body">
+                            <div class="card-title" style="color:${s.color}">${s.name}</div>
+                            <div style="font-size:0.8rem; margin-bottom:10px">${s.rarity.toUpperCase()}</div>
+                            ${action}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buySkin(id) {
+            const s = skins.find(x => x.id === id);
+            if(currentUser.xubor >= s.price) {
+                currentUser.xubor -= s.price;
+                currentUser.inventory.push(id);
+                save();
+                renderSkins();
+                showToast("Skin débloqué !", "success");
+            } else {
+                showToast("Xubor insuffisants", "error");
+            }
+        }
+
+        function equipSkin(id) {
+            currentUser.equippedSkinId = id;
+            save();
+            renderSkins();
+            showToast("Style mis à jour", "success");
+            if(threeScene) updateAvatarColor();
+        }
+
+        function save() {
+            let users = JSON.parse(localStorage.getItem(DB_USERS) || '[]');
+            const idx = users.findIndex(u => u.username === currentUser.username);
+            users[idx] = currentUser;
+            localStorage.setItem(DB_USERS, JSON.stringify(users));
+            localStorage.setItem(DB_SESSION, JSON.stringify(currentUser));
+            updateUI();
+        }
+
+        function updateUI() {
+            document.getElementById('nav-balance').innerText = currentUser.xubor;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            document.getElementById('nav-profile-img').src = s ? s.img : "https://picsum.photos/seed/base/100";
+        }
+
+        function initPayment(amount, price) {
+            pendingPayment = { amount, price };
+            document.getElementById('payment-desc').innerText = `${amount} Xubor pour ${price} €`;
+            document.getElementById('payment-modal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('payment-modal').classList.remove('active'); }
+
+        function processPayment() {
+            currentUser.xubor += pendingPayment.amount;
+            save();
+            closeModal();
+            showToast("Compte crédité !", "success");
+        }
+
+        function renderFriends() {
+            const container = document.getElementById('friend-list-container');
+            if(currentUser.friends.length === 0) container.innerHTML = "<p>Vous n'avez pas encore d'amis.</p>";
+            else container.innerHTML = currentUser.friends.map(f => `
+                <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:5px; border-radius:8px; display:flex; justify-content:space-between;">
+                    <span>${f}</span>
+                    <span style="color:#22c55e">En ligne</span>
+                </div>
+            `).join('');
+        }
+
+        function addFriend() {
+            const name = document.getElementById('friend-search').value.trim();
+            if(name && !currentUser.friends.includes(name)) {
+                currentUser.friends.push(name);
+                save();
+                renderFriends();
+                document.getElementById('friend-search').value = "";
+                showToast(`${name} ajouté`, "success");
+            }
+        }
+
+        function updateProfileView() {
+            document.getElementById('profile-username').innerText = currentUser.username;
+            document.getElementById('profile-balance').innerText = currentUser.xubor;
+            document.getElementById('profile-skin-count').innerText = currentUser.inventory.length;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            document.getElementById('equipped-skin-name').innerText = s ? s.name : "Base";
+            document.getElementById('equipped-skin-img').src = s ? s.img : "https://picsum.photos/seed/base/100";
+        }
+
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.className = `toast show ${type}`;
+            document.getElementById('toast-msg').innerText = msg;
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // --- GESTION DE L'AVATAR 3D ---
+        function initThreeJS() {
+            const container = document.getElementById('avatar-wrapper');
+            if(container.querySelector('canvas')) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const geometry = new THREE.IcosahedronGeometry(1.5, 0);
+            const material = new THREE.MeshPhongMaterial({ color: 0x6366f1, wireframe: true });
+            const sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            const light = new THREE.PointLight(0xffffff, 1, 100);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0x404040));
+
+            camera.position.z = 4;
+
+            threeScene = { sphere, material };
+            updateAvatarColor();
+
+            function animate() {
+                requestAnimationFrame(animate);
+                sphere.rotation.x += 0.01;
+                sphere.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            // Ajustement si redimensionnement
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        function updateAvatarColor() {
+            if(!threeScene) return;
+            const s = skins.find(x => x.id === currentUser.equippedSkinId);
+            threeScene.material.color.setHex(s ? s.threeColor : 0x6366f1);
+            threeScene.material.wireframe = !s || s.rarity === 'rare';
+        }
+    </script>
+</body>
+</html>
+
