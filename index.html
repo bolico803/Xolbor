@@ -1,773 +1,104 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor - Jeux & Marketplace</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>L'Oréal Skin Genius | Analyse de Peau IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="https://api.dicebear.com/7.x/shapes/svg?seed=Xolbor&backgroundColor=6366f1">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <!-- Page de connexion -->
-    <div id="login-page" class="page active">
-        <div class="login-container">
-            <div class="logo-animation">
-                <div class="logo">
-                    <i class="fas fa-gamepad"></i>
-                    <h1>XOLBOR</h1>
-                    <p>Plateforme de jeux premium</p>
-                </div>
-            </div>
-            
-            <div class="auth-forms">
-                <form id="login-form" class="auth-form active">
-                    <h2><i class="fas fa-sign-in-alt"></i> Connexion</h2>
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="login-username" placeholder="Pseudo" required>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" placeholder="Mot de passe" required>
-                        <button type="button" class="show-password" data-target="login-password">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> Se connecter
-                    </button>
-                    <div class="form-footer">
-                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
-                        <p>Pas de compte ? <a href="#" id="show-register" class="switch-link">S'inscrire</a></p>
-                    </div>
-                </form>
-                
-                <form id="register-form" class="auth-form">
-                    <h2><i class="fas fa-user-plus"></i> Inscription</h2>
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="register-username" placeholder="Choisir un pseudo" required>
-                        <div class="feedback" id="username-feedback"></div>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="register-email" placeholder="Email" required>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="register-password" placeholder="Mot de passe" required>
-                        <button type="button" class="show-password" data-target="register-password">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="register-confirm" placeholder="Confirmer le mot de passe" required>
-                        <button type="button" class="show-password" data-target="register-confirm">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> Créer un compte
-                    </button>
-                    <div class="form-footer">
-                        <p>Déjà un compte ? <a href="#" id="show-login" class="switch-link">Se connecter</a></p>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="guest-login">
-                <div class="divider">
-                    <span>OU</span>
-                </div>
-                <button id="guest-btn" class="btn btn-secondary">
-                    <i class="fas fa-user-clock"></i> Continuer en invité
-                </button>
-                <p class="guest-note">Accès limité aux fonctionnalités</p>
-            </div>
-            
-            <div class="login-footer">
-                <p>En vous connectant, vous acceptez nos <a href="#">Conditions d'utilisation</a></p>
-            </div>
-        </div>
-        
-        <!-- Particules de fond -->
-        <div class="particles"></div>
-    </div>
 
-    <!-- Page principale -->
-    <div id="main-page" class="page">
-        <!-- Barre de navigation -->
-        <nav class="navbar">
-            <div class="nav-left">
-                <div class="logo-small">
-                    <i class="fas fa-gamepad"></i>
-                    <span>XOLBOR</span>
-                </div>
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="global-search" placeholder="Rechercher des jeux, skins, amis...">
-                </div>
-            </div>
-            
-            <div class="nav-center">
-                <div class="nav-links">
-                    <a href="#home" class="nav-link active">
-                        <i class="fas fa-home"></i>
-                        <span>Accueil</span>
-                    </a>
-                    <a href="#games" class="nav-link">
-                        <i class="fas fa-gamepad"></i>
-                        <span>Jeux</span>
-                    </a>
-                    <a href="#marketplace" class="nav-link">
-                        <i class="fas fa-store"></i>
-                        <span>Marketplace</span>
-                    </a>
-                    <a href="#friends" class="nav-link">
-                        <i class="fas fa-users"></i>
-                        <span>Amis</span>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="nav-right">
-                <div class="currency-display">
-                    <i class="fas fa-coins"></i>
-                    <span id="xubor-amount">0</span>
-                    <span class="currency-name">Xubor</span>
-                </div>
-                
-                <button class="btn-add-xubor" title="Acheter des Xubor">
-                    <i class="fas fa-plus"></i>
-                </button>
-                
-                <div class="notifications">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-count">3</span>
-                </div>
-                
-                <div class="profile-menu">
-                    <div class="profile-avatar">
-                        <img id="profile-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Avatar">
-                        <span class="online-status"></span>
-                    </div>
-                    <div class="profile-info">
-                        <span id="profile-username" class="username">Utilisateur</span>
-                        <span class="user-level">Niveau 1</span>
-                    </div>
-                    <i class="fas fa-chevron-down"></i>
-                    
-                    <div class="dropdown">
-                        <a href="#profile" class="dropdown-item">
-                            <i class="fas fa-user"></i>
-                            <span>Mon profil</span>
-                        </a>
-                        <a href="#inventory" class="dropdown-item">
-                            <i class="fas fa-tshirt"></i>
-                            <span>Mon inventaire</span>
-                        </a>
-                        <a href="#settings" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            <span>Paramètres</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" id="logout-btn" class="dropdown-item">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Déconnexion</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Menu mobile -->
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
+    <!-- API Key Modal -->
+
+
+    <!-- Main Application -->
+    <header class="app-header glass-effect">
+        <div class="logo">L'ORÉAL <span class="sub-logo">PARIS</span></div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Skin Genius</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#">Conseils</a></li>
+            </ul>
         </nav>
+    </header>
 
-        <!-- Contenu principal -->
-        <div class="main-content">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <div class="sidebar-header">
-                    <h3>Navigation</h3>
-                </div>
-                <nav class="side-nav">
-                    <a href="#home" class="side-nav-item active">
-                        <i class="fas fa-home"></i>
-                        <span>Accueil</span>
-                    </a>
-                    <a href="#games" class="side-nav-item">
-                        <i class="fas fa-gamepad"></i>
-                        <span>Jeux</span>
-                        <span class="badge">12</span>
-                    </a>
-                    <a href="#marketplace" class="side-nav-item">
-                        <i class="fas fa-store"></i>
-                        <span>Marketplace</span>
-                        <span class="badge new">Nouveau</span>
-                    </a>
-                    <a href="#friends" class="side-nav-item">
-                        <i class="fas fa-users"></i>
-                        <span>Amis</span>
-                        <span class="badge">3</span>
-                    </a>
-                    <a href="#inventory" class="side-nav-item">
-                        <i class="fas fa-tshirt"></i>
-                        <span>Inventaire</span>
-                    </a>
-                    <a href="#shop" class="side-nav-item">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Boutique Xubor</span>
-                    </a>
-                    <a href="#leaderboard" class="side-nav-item">
-                        <i class="fas fa-trophy"></i>
-                        <span>Classement</span>
-                    </a>
-                    <a href="#events" class="side-nav-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Événements</span>
-                        <span class="badge hot">🔥</span>
-                    </a>
-                </nav>
-                
-                <div class="sidebar-footer">
-                    <div class="user-stats">
-                        <div class="stat">
-                            <i class="fas fa-clock"></i>
-                            <span>45h jouées</span>
-                        </div>
-                        <div class="stat">
-                            <i class="fas fa-trophy"></i>
-                            <span>12 succès</span>
-                        </div>
-                    </div>
-                    <button class="btn-premium">
-                        <i class="fas fa-crown"></i>
-                        Pass Premium
-                    </button>
-                </div>
-            </aside>
+    <main>
+        <!-- Hero / Scan Section -->
+        <section id="scan-section" class="hero-section">
+            <div class="hero-content">
+                <h1 class="animate-up">Votre Peau, <br><em>Décryptée par l'IA</em></h1>
+                <p class="animate-up delay-1">Une analyse dermatologique de précision pour une routine sur-mesure.</p>
 
-            <!-- Contenu dynamique -->
-            <main class="content">
-                <!-- Section Accueil -->
-                <section id="home-section" class="content-section active">
-                    <div class="welcome-banner">
-                        <div class="welcome-content">
-                            <h1>Bienvenue, <span id="welcome-username">Joueur</span> ! 👋</h1>
-                            <p>Explorez des jeux incroyables, personnalisez votre avatar et rejoignez la communauté</p>
-                            <div class="welcome-actions">
-                                <button class="btn btn-primary">
-                                    <i class="fas fa-rocket"></i> Découvrir les jeux
-                                </button>
-                                <button class="btn btn-secondary">
-                                    <i class="fas fa-gift"></i> Réclamer un bonus
-                                </button>
-                            </div>
-                        </div>
-                        <div class="welcome-image">
-                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=300&fit=crop" alt="Jeux Xolbor">
-                        </div>
+                <div class="scan-container animate-up delay-2">
+                    <div class="video-wrapper">
+                        <video id="webcam" autoplay playsinline muted></video>
+                        <canvas id="canvas" style="display:none;"></canvas>
+                        <div class="scan-overlay"></div>
                     </div>
-                    
-                    <div class="dashboard-grid">
-                        <!-- Stats rapides -->
-                        <div class="dashboard-card stats-card">
-                            <h3><i class="fas fa-chart-line"></i> Mes statistiques</h3>
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <div class="stat-value" id="total-xubor">0</div>
-                                    <div class="stat-label">Xubor</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" id="total-skins">0</div>
-                                    <div class="stat-label">Skins</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" id="total-friends">0</div>
-                                    <div class="stat-label">Amis</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value" id="total-games">0</div>
-                                    <div class="stat-label">Jeux joués</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Jeux populaires -->
-                        <div class="dashboard-card featured-games">
-                            <div class="card-header">
-                                <h3><i class="fas fa-fire"></i> Jeux populaires</h3>
-                                <a href="#games" class="see-all">Voir tout →</a>
-                            </div>
-                            <div class="games-carousel">
-                                <div class="game-slide open-game" data-src="https://veck.io/" role="button" aria-label="Ouvrir Veck.io dans la page">
-                                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a04e?w=400&h=225&fit=crop" alt="Veck.io">
-                                    <div class="game-info">
-                                        <h4>Veck.io</h4>
-                                        <p>Jeu intégré — clique pour ouvrir</p>
-                                        <div class="game-rating">
-                                            <i class="fas fa-star"></i> 4.5
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="game-slide open-game" data-src="https://poxel.io/" role="button" aria-label="Ouvrir Poxel.io dans la page">
-                                    <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=225&fit=crop" alt="Poxel.io">
-                                    <div class="game-info">
-                                        <h4>Poxel.io</h4>
-                                        <p>Jeu intégré — clique pour ouvrir</p>
-                                        <div class="game-rating">
-                                            <i class="fas fa-star"></i> 4.4
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="game-slide open-game" data-src="https://kour.io/" role="button" aria-label="Ouvrir Kour.io dans la page">
-                                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=225&fit=crop" alt="Kour.io">
-                                    <div class="game-info">
-                                        <h4>Kour.io</h4>
-                                        <p>Jeu intégré — clique pour ouvrir</p>
-                                        <div class="game-rating">
-                                            <i class="fas fa-star"></i> 4.3
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="game-slide open-game" data-src="https://miniblox.io/" role="button" aria-label="Ouvrir MiniBlox.io dans la page">
-                                    <img src="https://images.unsplash.com/photo-1527694224018-7b9a1f3f8803?w=400&h=225&fit=crop" alt="MiniBlox.io">
-                                    <div class="game-info">
-                                        <h4>MiniBlox.io</h4>
-                                        <p>Jeu intégré — clique pour ouvrir</p>
-                                        <div class="game-rating">
-                                            <i class="fas fa-star"></i> 4.2
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="game-slide open-game" data-src="https://smashkarts.io/" role="button" aria-label="Ouvrir SmashKarts.io dans la page">
-                                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=225&fit=crop" alt="SmashKarts.io">
-                                    <div class="game-info">
-                                        <h4>SmashKarts.io</h4>
-                                        <p>Jeu intégré — clique pour ouvrir</p>
-                                        <div class="game-rating">
-                                            <i class="fas fa-star"></i> 4.6
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Amis en ligne -->
-                        <div class="dashboard-card friends-online">
-                            <div class="card-header">
-                                <h3><i class="fas fa-user-friends"></i> Amis en ligne</h3>
-                                <span class="online-count">3</span>
-                            </div>
-                            <div class="friends-list">
-                                <!-- Chargé dynamiquement -->
-                            </div>
-                        </div>
-                        
-                        <!-- Marketplace -->
-                        <div class="dashboard-card marketplace-preview">
-                            <div class="card-header">
-                                <h3><i class="fas fa-gem"></i> Skins du moment</h3>
-                                <a href="#marketplace" class="see-all">Voir plus →</a>
-                            </div>
-                            <div class="skins-preview">
-                                <!-- Chargé dynamiquement -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
-                <!-- Section Marketplace -->
-                <section id="marketplace-section" class="content-section">
-                    <div class="section-header">
-                        <h1><i class="fas fa-store"></i> Marketplace</h1>
-                        <p>Découvrez +100 skins exclusifs</p>
-                    </div>
-                    
-                    <div class="marketplace-tools">
-                        <div class="search-container">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="skin-search" placeholder="Rechercher un skin...">
-                            <button class="btn btn-small">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="marketplace-filters">
-                            <select id="skin-filter" class="filter-select">
-                                <option value="all">Tous les skins</option>
-                                <option value="common">Communs</option>
-                                <option value="rare">Rares</option>
-                                <option value="legendary">Légendaires</option>
-                                <option value="exclusive">Exclusifs</option>
-                            </select>
-                            
-                            <select id="category-filter" class="filter-select">
-                                <option value="all">Toutes catégories</option>
-                                <option value="personnages">Personnages</option>
-                                <option value="animaux">Animaux</option>
-                                <option value="futuriste">Futuriste</option>
-                                <option value="historique">Historique</option>
-                            </select>
-                            
-                            <select id="price-filter" class="filter-select">
-                                <option value="all">Tous prix</option>
-                                <option value="0-500">0-500 Xubor</option>
-                                <option value="500-1000">500-1000 Xubor</option>
-                                <option value="1000+">1000+ Xubor</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="skins-grid" id="skins-container">
-                        <!-- Chargé dynamiquement -->
-                    </div>
-                    
-                    <div class="pagination">
-                        <button class="pagination-btn" disabled>
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <div class="page-numbers">
-                            <span class="page-number active">1</span>
-                            <span class="page-number">2</span>
-                            <span class="page-number">3</span>
-                            <span class="page-number">...</span>
-                            <span class="page-number">10</span>
-                        </div>
-                        <button class="pagination-btn">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Section Amis -->
-                <section id="friends-section" class="content-section">
-                    <div class="section-header">
-                        <h1><i class="fas fa-users"></i> Amis</h1>
-                        <p>Connectez-vous avec d'autres joueurs</p>
-                    </div>
-                    
-                    <div class="friends-management">
-                        <div class="add-friend-card">
-                            <h3><i class="fas fa-user-plus"></i> Ajouter un ami</h3>
-                            <div class="add-friend-form">
-                                <input type="text" id="friend-search-input" placeholder="Rechercher par pseudo...">
-                                <button id="search-friend-btn" class="btn btn-primary">
-                                    <i class="fas fa-search"></i> Rechercher
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="friend-stats">
-                            <div class="stat-card">
-                                <i class="fas fa-user-friends"></i>
-                                <div>
-                                    <div class="stat-number" id="total-friends-count">0</div>
-                                    <div class="stat-label">Amis</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <i class="fas fa-user-clock"></i>
-                                <div>
-                                    <div class="stat-number" id="online-friends-count">0</div>
-                                    <div class="stat-label">En ligne</div>
-                                </div>
-                            </div>
-                            <div class="stat-card">
-                                <i class="fas fa-envelope"></i>
-                                <div>
-                                    <div class="stat-number" id="pending-requests-count">0</div>
-                                    <div class="stat-label>Demandes</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="friends-tabs">
-                        <button class="tab-btn active" data-tab="all-friends">Tous les amis</button>
-                        <button class="tab-btn" data-tab="online-friends">En ligne</button>
-                        <button class="tab-btn" data-tab="pending-requests">
-                            Demandes
-                            <span class="tab-badge" id="requests-badge">0</span>
-                        </button>
-                    </div>
-                    
-                    <div class="friends-container">
-                        <div class="friends-list-container" id="all-friends-tab">
-                            <!-- Chargé dynamiquement -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Section Boutique Xubor -->
-                <section id="shop-section" class="content-section">
-                    <div class="section-header">
-                        <h1><i class="fas fa-shopping-cart"></i> Boutique Xubor</h1>
-                        <p>Rechargez votre compte pour débloquer du contenu exclusif</p>
-                    </div>
-                    
-                    <div class="current-balance">
-                        <div class="balance-card">
-                            <i class="fas fa-wallet"></i>
-                            <div>
-                                <div class="balance-label">Solde actuel</div>
-                                <div class="balance-amount">
-                                    <i class="fas fa-coins"></i>
-                                    <span id="current-xubor">0</span> Xubor
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="xubor-packs">
-                        <div class="pack-card">
-                            <div class="pack-badge popular">Populaire</div>
-                            <div class="pack-header">
-                                <i class="fas fa-gem"></i>
-                                <h3>Pack Débutant</h3>
-                            </div>
-                            <div class="pack-amount">100 Xubor</div>
-                            <div class="pack-price">
-                                <span class="currency">€</span>
-                                <span class="price">10</span>
-                            </div>
-                            <button class="btn btn-primary buy-pack" data-amount="100" data-price="10">
-                                <i class="fas fa-shopping-cart"></i> Acheter maintenant
-                            </button>
-                            <div class="pack-perks">
-                                <p><i class="fas fa-check"></i> Idéal pour commencer</p>
-                            </div>
-                        </div>
-                        
-                        <div class="pack-card featured">
-                            <div class="pack-badge best-value">Meilleure valeur</div>
-                            <div class="pack-header">
-                                <i class="fas fa-crown"></i>
-                                <h3>Pack Avancé</h3>
-                            </div>
-                            <div class="pack-amount">800 Xubor</div>
-                            <div class="pack-price">
-                                <span class="currency">€</span>
-                                <span class="price">20</span>
-                                <span class="price-save">Économisez 20%</span>
-                            </div>
-                            <button class="btn btn-primary buy-pack" data-amount="800" data-price="20">
-                                <i class="fas fa-shopping-cart"></i> Acheter maintenant
-                            </button>
-                            <div class="pack-perks">
-                                <p><i class="fas fa-check"></i> +50 Xubor bonus</p>
-                                <p><i class="fas fa-check"></i> Skin exclusif offert</p>
-                            </div>
-                        </div>
-                        
-                        <div class="pack-card">
-                            <div class="pack-badge pro">Pro</div>
-                            <div class="pack-header">
-                                <i class="fas fa-rocket"></i>
-                                <h3>Pack Pro</h3>
-                            </div>
-                            <div class="pack-amount">12,095 Xubor</div>
-                            <div class="pack-price">
-                                <span class="currency">€</span>
-                                <span class="price">234</span>
-                            </div>
-                            <button class="btn btn-primary buy-pack" data-amount="12095" data-price="234">
-                                <i class="fas fa-shopping-cart"></i> Acheter maintenant
-                            </button>
-                            <div class="pack-perks">
-                                <p><i class="fas fa-check"></i> Accès VIP</p>
-                                <p><i class="fas fa-check"></i> Support prioritaire</p>
-                            </div>
-                        </div>
-                        
-                        <div class="pack-card legendary">
-                            <div class="pack-badge legendary-badge">Légendaire</div>
-                            <div class="pack-header">
-                                <i class="fas fa-infinity"></i>
-                                <h3>Pack Illimité</h3>
-                            </div>
-                            <div class="pack-amount">Xubor Illimités</div>
-                            <div class="pack-price">
-                                <span class="currency">€</span>
-                                <span class="price">456</span>
-                            </div>
-                            <button class="btn btn-primary buy-pack" data-amount="999999" data-price="456">
-                                <i class="fas fa-shopping-cart"></i> Acheter maintenant
-                            </button>
-                            <div class="pack-perks">
-                                <p><i class="fas fa-check"></i> Tous les futurs skins</p>
-                                <p><i class="fas fa-check"></i> Statut Légendaire</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-section">
-                        <h3><i class="fas fa-shield-alt"></i> Paiement sécurisé</h3>
-                        <div class="payment-methods">
-                            <div class="payment-method" data-method="card">
-                                <i class="fas fa-credit-card"></i>
-                                <span>Carte bancaire</span>
-                            </div>
-                            <div class="payment-method" data-method="paypal">
-                                <i class="fab fa-paypal"></i>
-                                <span>PayPal</span>
-                            </div>
-                            <div class="payment-method" data-method="apple">
-                                <i class="fab fa-apple-pay"></i>
-                                <span>Apple Pay</span>
-                            </div>
-                            <div class="payment-method" data-method="google">
-                                <i class="fab fa-google-pay"></i>
-                                <span>Google Pay</span>
-                            </div>
-                        </div>
-                        
-                        <div class="security-info">
-                            <i class="fas fa-lock"></i>
-                            <span>Transactions 100% sécurisées - SSL 256-bit</span>
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
-
-        <!-- Footer -->
-        <footer class="main-footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Xolbor</h4>
-                    <p>La plateforme de jeux ultime</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-discord"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Navigation</h4>
-                    <a href="#games">Jeux</a>
-                    <a href="#marketplace">Marketplace</a>
-                    <a href="#friends">Amis</a>
-                    <a href="#shop">Boutique</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <a href="#help">Centre d'aide</a>
-                    <a href="#contact">Contact</a>
-                    <a href="#terms">Conditions</a>
-                    <a href="#privacy">Confidentialité</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Nouveautés</h4>
-                    <p>Abonnez-vous à notre newsletter</p>
-                    <div class="newsletter">
-                        <input type="email" placeholder="Votre email">
-                        <button class="btn btn-small">S'inscrire</button>
+                    <div class="scan-controls">
+                        <button id="start-camera" class="btn-secondary"><i class="fa-solid fa-camera"></i> Activer la
+                            caméra</button>
+                        <button id="capture-photo" class="btn-primary hidden"><i class="fa-solid fa-circle"></i>
+                            Analyser</button>
+                        <input type="file" id="file-upload" accept="image/*" hidden>
+                        <button id="upload-btn" class="btn-text">Ou importer une photo</button>
                     </div>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>© 2024 Xolbor. Tous droits réservés.</p>
-            </div>
-        </footer>
-    </div>
+        </section>
 
-    <!-- Modal de paiement -->
-    <div id="payment-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-shopping-cart"></i> Achat de Xubor</h2>
-            
-            <div class="payment-details">
-                <div class="detail-item">
-                    <span>Pack:</span>
-                    <strong id="pack-name">Pack Débutant</strong>
-                </div>
-                <div class="detail-item">
-                    <span>Montant:</span>
-                    <strong id="pack-amount">100</strong> Xubor
-                </div>
-                <div class="detail-item">
-                    <span>Prix:</span>
-                    <strong id="pack-price">10</strong> €
-                </div>
+        <!-- Loading / Analysis State -->
+        <section id="loading-section" class="hidden">
+            <div class="loader-container">
+                <div class="spinner"></div>
+                <h3>Analyse de votre peau en cours...</h3>
+                <p id="loading-text">Détection des imperfections...</p>
             </div>
-            
-            <div class="payment-tabs">
-                <button class="payment-tab active" data-tab="card">Carte bancaire</button>
-                <button class="payment-tab" data-tab="paypal">PayPal</button>
-            </div>
-            
-            <form id="payment-form" class="payment-form active" data-method="card">
-                <div class="input-group">
-                    <label for="card-number">
-                        <i class="fas fa-credit-card"></i> Numéro de carte
-                    </label>
-                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
-                </div>
-                
-                <div class="card-details">
-                    <div class="input-group">
-                        <label for="expiry-date">Date d'expiration</label>
-                        <input type="text" id="expiry-date" placeholder="MM/AA" maxlength="5">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="cvc">CVC</label>
-                        <input type="password" id="cvc" placeholder="123" maxlength="3">
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden">
+            <div class="container">
+                <div class="analysis-summary">
+                    <h2>Votre Bilan de Peau</h2>
+                    <div class="score-card">
+                        <div class="score-circle">
+                            <span id="skin-score">85</span>
+                            <span class="label">Score</span>
+                        </div>
+                        <div class="details">
+                            <h3>Points clés identifiés</h3>
+                            <ul id="skin-issues-list">
+                                <!-- JS will populate this -->
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="input-group">
-                    <label for="card-name">Nom sur la carte</label>
-                    <input type="text" id="card-name" placeholder="John Doe">
+
+                <div class="recommendations">
+                    <h2>Votre Routine Recommandée</h2>
+                    <div class="products-grid" id="products-grid">
+                        <!-- JS will populate product cards here -->
+                    </div>
                 </div>
-                
-                <button type="submit" class="btn btn-primary btn-pay">
-                    <i class="fas fa-lock"></i> Payer maintenant
-                </button>
-            </form>
-            
-            <form id="paypal-form" class="payment-form" data-method="paypal">
-                <div class="paypal-info">
-                    <i class="fab fa-paypal"></i>
-                    <p>Vous serez redirigé vers PayPal pour compléter votre paiement</p>
-                </div>
-                <button type="submit" class="btn btn-primary btn-pay">
-                    <i class="fab fa-paypal"></i> Payer avec PayPal
-                </button>
-            </form>
-            
-            <div class="payment-security">
-                <i class="fas fa-shield-alt"></i>
-                <span>Paiement sécurisé - Vos données sont protégées</span>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal de jeu intégré -->
-    <div id="game-modal" class="game-modal" aria-hidden="true" role="dialog" aria-label="Jeu intégré">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <button class="close-modal close-game" aria-label="Fermer la fenêtre du jeu">&times;</button>
-            <div class="modal-header">
-                <h3 id="modal-game-title">Jeu</h3>
+                <button id="reset-btn" class="btn-secondary">Nouvelle Analyse</button>
             </div>
-            <div class="modal-body">
-                <iframe id="modal-game-iframe" src="" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- Modal de notification -->
-    <div class="notification-container"></div>"
-
-    <script src="script.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
+
 </html>
