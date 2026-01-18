@@ -1,14 +1,18 @@
 {
-  "name": "skin-genius-ai",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^5.0.0"
-  }
+    "name": "parlegpt",
+    "version": "1.0.0",
+    "description": "Assistant IA ParleGPT",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.21.0",
+        "axios": "^1.13.2",
+        "body-parser": "^1.20.2",
+        "cheerio": "^1.1.2",
+        "cors": "^2.8.5",
+        "duck-duck-scrape": "^2.2.7",
+        "express": "^4.18.2"
+    }
 }

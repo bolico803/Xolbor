@@ -1,393 +1,110 @@
 const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const path = require('path');
-const { User, Skin, Friend, Game } = require('./database');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const axios = require('axios');
+const { search } = require('duck-duck-scrape');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || 'xolbor_secret_key_2024';
+const port = 3000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+app.use(bodyParser.json());
+app.use(express.static('templates'));
 
-// Middleware d'authentification
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+// Configuration
+const SYSTEM_INSTRUCTION =
+    "Tu es ParleGPT, une IA créée par Imrane Bouadass. " +
+    "Tu es cool, détendu, et tu aimes utiliser des emojis. " +
+    "Ton style d'écriture est moderne et agréable. " +
+    "Tu as accès à internet via des recherches. " +
+    "Si l'utilisateur pose une question d'actualité ou de faits, utilise le contexte fourni. " +
+    "Ne mentionne pas que tu es un modèle 'OpenAI' ou autre, tu es ParleGPT. " +
+    "Parle toujours en Français par défaut.";
 
-    if (!token) {
-        return res.status(401).json({ error: 'Token manquant' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ error: 'Token invalide' });
-        }
-        req.user = user;
-        next();
-    });
-};
-
-// Routes publiques
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
 });
 
-// Vérification de la disponibilité du pseudo
-app.get('/api/check-username', async (req, res) => {
-    const { username } = req.query;
-    
-    if (!username || username.length < 3) {
-        return res.json({ available: false });
-    }
-    
-    User.checkUsernameExists(username, (err, exists) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        res.json({ available: !exists });
-    });
-});
+// Helper: Determine if search is likely needed
+function needsSearch(query) {
+    const triggers = ['qui', 'quoi', 'ou', 'comment', 'pourquoi', 'quand', 'météo', 'heure', 'actu', 'news', 'dernier', 'cherche', 'trouve', 'donne moi'];
+    const lower = query.toLowerCase();
+    return triggers.some(t => lower.includes(t)) || query.endsWith('?');
+}
 
-// Inscription
-app.post('/api/register', async (req, res) => {
-    const { username, email, password } = req.body;
+app.post('/chat', async (req, res) => {
+    try {
+        const { message, useSearch } = req.body;
 
-    // Validation
-    if (!username || !email || !password) {
-        return res.status(400).json({ error: 'Tous les champs sont requis' });
-    }
-
-    if (username.length < 3) {
-        return res.status(400).json({ error: 'Le pseudo doit faire au moins 3 caractères' });
-    }
-
-    if (password.length < 6) {
-        return res.status(400).json({ error: 'Le mot de passe doit faire au moins 6 caractères' });
-    }
-
-    // Vérifier si l'utilisateur existe déjà
-    User.findByUsername(username, (err, existingUser) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
+        if (!message) {
+            return res.status(400).json({ error: 'Message requis' });
         }
 
-        if (existingUser) {
-            return res.status(400).json({ error: 'Ce pseudo est déjà utilisé' });
-        }
+        let context = "";
 
-        User.findByEmail(email, (err, existingEmail) => {
-            if (err) {
-                return res.status(500).json({ error: 'Erreur serveur' });
-            }
+        // 1. Web Search Step
+        // Perform search if manual toggle is ON OR if specific keywords/question detected
+        if (useSearch || needsSearch(message)) {
+            console.log(`Searching for: ${message} (Manual: ${useSearch})`);
+            try {
+                const searchResults = await search(message, { safeSearch: 0 }); // safeSearch: 0 (Strict), 1 (Moderate), 2 (Off) - let's use Moderate (1) usually, but library might use different mapping. strict=0, moderate=-1, off=-2 in some libs. duck-duck-scrape uses: safe: 1 (moderate).
 
-            if (existingEmail) {
-                return res.status(400).json({ error: 'Cet email est déjà utilisé' });
-            }
+                if (searchResults && searchResults.results && searchResults.results.length > 0) {
+                    const topResults = searchResults.results.slice(0, 3).map(r =>
+                        `- [${r.title}](${r.url}): ${r.description}`
+                    ).join('\n');
 
-            // Créer l'utilisateur
-            User.create(username, email, password, (err, user) => {
-                if (err) {
-                    return res.status(500).json({ error: 'Erreur lors de la création du compte' });
+                    context = `\n\n[CONTEXTE WEB RECENT pour aider à répondre]:\n${topResults}\n`;
                 }
+            } catch (searchErr) {
+                console.error("Search failed:", searchErr.message);
+                // Continue without search context
+            }
+        }
 
-                // Générer le token JWT
-                const token = jwt.sign(
-                    { id: user.id, username: user.username },
-                    JWT_SECRET,
-                    { expiresIn: '7d' }
-                );
+        // 2. AI Generation Step (Pollinations.ai)
+        // We use their POST endpoint for chat
+        const messages = [
+            { role: 'system', content: SYSTEM_INSTRUCTION + context },
+            { role: 'user', content: message }
+        ];
 
-                res.status(201).json({
-                    message: 'Compte créé avec succès',
-                    token,
-                    user: {
-                        id: user.id,
-                        username: user.username,
-                        email: user.email,
-                        xubor: 100, // Bonus de bienvenue
-                        avatar: 'default'
-                    }
-                });
-            });
+        console.log("Sending to AI...");
+        const response = await axios.post('https://text.pollinations.ai/', {
+            messages: messages,
+            model: 'openai', // Maps to GPT-4o-mini usually, very good and free
+            jsonMode: false
+        }, {
+            headers: { 'Content-Type': 'application/json' }
         });
-    });
-});
 
-// Connexion
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
+        // The response from pollinations might be raw text or specific format depending on endpoint
+        // text.pollinations.ai usually returns raw text string if we just enable it?
+        // Let's check typical usage. POST returns the text content directly usually.
+        // Wait, Pollinations.ai docs say:
+        // POST / with body { messages, model } -> returns the assistant response text.
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Pseudo et mot de passe requis' });
+        let aiText = "";
+        if (typeof response.data === 'string') {
+            aiText = response.data;
+        } else if (response.data && response.data.choices) {
+            // Sometimes it mimics OpenAI format
+            aiText = response.data.choices[0].message.content;
+        } else {
+            // Fallback
+            aiText = JSON.stringify(response.data);
+        }
+
+        res.json({ response: aiText });
+
+    } catch (error) {
+        console.error("Server Error:", error.message);
+        res.status(500).json({ error: "Oups, mon cerveau a buggé... " + error.message });
     }
-
-    User.findByUsername(username, async (err, user) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-
-        if (!user) {
-            return res.status(401).json({ error: 'Identifiants incorrects' });
-        }
-
-        // Vérifier le mot de passe
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Identifiants incorrects' });
-        }
-
-        // Générer le token JWT
-        const token = jwt.sign(
-            { id: user.id, username: user.username },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-        );
-
-        res.json({
-            token,
-            user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                xubor: user.xubor,
-                avatar: user.avatar
-            }
-        });
-    });
 });
 
-// Vérification du token
-app.get('/api/verify', authenticateToken, (req, res) => {
-    User.findById(req.user.id, (err, user) => {
-        if (err || !user) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé' });
-        }
-        res.json({ user });
-    });
-});
-
-// Routes protégées
-// Récupérer le profil utilisateur
-app.get('/api/profile', authenticateToken, (req, res) => {
-    User.findById(req.user.id, (err, user) => {
-        if (err || !user) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé' });
-        }
-        
-        // Récupérer les skins de l'utilisateur
-        Skin.getUserSkins(req.user.id, (err, skins) => {
-            if (err) {
-                skins = [];
-            }
-            
-            res.json({ ...user, skins });
-        });
-    });
-});
-
-// Mettre à jour l'avatar
-app.put('/api/profile/avatar', authenticateToken, (req, res) => {
-    const { avatar } = req.body;
-    
-    if (!avatar) {
-        return res.status(400).json({ error: 'Avatar requis' });
-    }
-    
-    User.updateAvatar(req.user.id, avatar, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur lors de la mise à jour' });
-        }
-        
-        res.json({ message: 'Avatar mis à jour', avatar });
-    });
-});
-
-// Marketplace - Liste des skins
-app.get('/api/skins', authenticateToken, (req, res) => {
-    const { rarity, search } = req.query;
-    
-    Skin.getAll({ rarity, search }, (err, skins) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        
-        // Vérifier quels skins sont déjà possédés
-        Skin.getUserSkins(req.user.id, (err, userSkins) => {
-            const userSkinIds = userSkins ? userSkins.map(skin => skin.id) : [];
-            
-            const skinsWithOwnership = skins.map(skin => ({
-                ...skin,
-                owned: userSkinIds.includes(skin.id)
-            }));
-            
-            res.json({ skins: skinsWithOwnership });
-        });
-    });
-});
-
-// Acheter un skin
-app.post('/api/skins/:id/purchase', authenticateToken, (req, res) => {
-    const skinId = parseInt(req.params.id);
-    
-    Skin.purchase(req.user.id, skinId, (err, result) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
-        
-        // Récupérer le nouveau solde
-        User.findById(req.user.id, (err, user) => {
-            if (err) {
-                return res.status(500).json({ error: 'Erreur serveur' });
-            }
-            
-            res.json({ 
-                success: true, 
-                message: 'Skin acheté avec succès',
-                xubor: user.xubor 
-            });
-        });
-    });
-});
-
-// Liste des jeux
-app.get('/api/games', authenticateToken, (req, res) => {
-    Game.getAll((err, games) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        res.json({ games });
-    });
-});
-
-// Rechercher des jeux
-app.get('/api/games/search', authenticateToken, (req, res) => {
-    const { q } = req.query;
-    
-    if (!q || q.trim().length < 2) {
-        return res.json({ games: [] });
-    }
-    
-    Game.search(q, (err, games) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        res.json({ games });
-    });
-});
-
-// Amis - Envoyer une demande
-app.post('/api/friends/request', authenticateToken, (req, res) => {
-    const { username } = req.body;
-    
-    if (!username) {
-        return res.status(400).json({ error: 'Pseudo requis' });
-    }
-    
-    Friend.sendRequest(req.user.id, username, (err, result) => {
-        if (err) {
-            return res.status(400).json({ error: err.message });
-        }
-        
-        res.json({ 
-            success: true, 
-            message: `Demande d'ami envoyée à ${username}` 
-        });
-    });
-});
-
-// Amis - Liste
-app.get('/api/friends', authenticateToken, (req, res) => {
-    Friend.getFriends(req.user.id, (err, friends) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        
-        Friend.getPendingRequests(req.user.id, (err, pendingRequests) => {
-            if (err) {
-                pendingRequests = [];
-            }
-            
-            res.json({ friends, pendingRequests });
-        });
-    });
-});
-
-// Amis - Accepter une demande
-app.post('/api/friends/:id/accept', authenticateToken, (req, res) => {
-    const friendId = parseInt(req.params.id);
-    
-    Friend.acceptRequest(req.user.id, friendId, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        
-        res.json({ success: true, message: 'Demande d\'ami acceptée' });
-    });
-});
-
-// Acheter des Xubor (simulé)
-app.post('/api/xubor/purchase', authenticateToken, (req, res) => {
-    const { amount } = req.body;
-    
-    if (!amount || amount <= 0) {
-        return res.status(400).json({ error: 'Montant invalide' });
-    }
-    
-    User.updateXubor(req.user.id, amount, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Erreur serveur' });
-        }
-        
-        // Enregistrer la transaction
-        const db = require('./database').db;
-        db.run(
-            'INSERT INTO transactions (user_id, amount, type, description) VALUES (?, ?, ?, ?)',
-            [req.user.id, amount, 'purchase', `Achat de ${amount} Xubor`],
-            (err) => {
-                if (err) {
-                    console.error('Erreur enregistrement transaction:', err);
-                }
-                
-                // Récupérer le nouveau solde
-                User.findById(req.user.id, (err, user) => {
-                    if (err) {
-                        return res.status(500).json({ error: 'Erreur serveur' });
-                    }
-                    
-                    res.json({ 
-                        success: true, 
-                        message: `${amount} Xubor ajoutés à votre compte`,
-                        xubor: user.xubor 
-                    });
-                });
-            }
-        );
-    });
-});
-
-// Historique des transactions
-app.get('/api/transactions', authenticateToken, (req, res) => {
-    const db = require('./database').db;
-    
-    db.all(
-        'SELECT * FROM transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT 50',
-        [req.user.id],
-        (err, transactions) => {
-            if (err) {
-                return res.status(500).json({ error: 'Erreur serveur' });
-            }
-            
-            res.json({ transactions });
-        }
-    );
-});
-
-// Démarrer le serveur
-app.listen(PORT, () => {
-    console.log(`Serveur Xolbor démarré sur http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`ParleGPT server running at http://localhost:${port}`);
 });
