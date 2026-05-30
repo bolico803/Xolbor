@@ -1,73 +1,212 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xolbor Quantum Browser</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍄 Super Mario Enhanced - Jouer en ligne</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Press Start 2P',monospace;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      padding:20px;
+    }
+    .container {
+      text-align:center;
+      background:rgba(0,0,0,0.8);
+      padding:40px;
+      border-radius:20px;
+      border:4px solid #ffd700;
+      max-width:600px;
+      box-shadow:0 0 20px rgba(255,215,0,0.5);
+    }
+    h1 {
+      font-size:48px;
+      margin-bottom:20px;
+      text-shadow:4px 4px 0 #000;
+      color:#ffd700;
+      animation:bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform:translateY(0); }
+      50% { transform:translateY(-20px); }
+    }
+    .description {
+      font-size:14px;
+      margin-bottom:30px;
+      line-height:1.8;
+      color:#ccc;
+    }
+    .features {
+      background:rgba(255,215,0,0.1);
+      padding:20px;
+      border-radius:10px;
+      margin-bottom:30px;
+      text-align:left;
+      font-size:11px;
+    }
+    .feature-item {
+      margin:10px 0;
+      display:flex;
+      align-items:center;
+    }
+    .feature-item:before {
+      content:'✓';
+      color:#00ff00;
+      font-weight:bold;
+      margin-right:10px;
+      font-size:16px;
+    }
+    .button-group {
+      display:flex;
+      gap:15px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom:30px;
+    }
+    .btn {
+      padding:15px 30px;
+      font-size:14px;
+      font-family:'Press Start 2P',monospace;
+      border:3px solid #fff;
+      border-radius:10px;
+      cursor:pointer;
+      transition:all 0.3s;
+      font-weight:bold;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn-primary {
+      background:#e94560;
+      color:#fff;
+    }
+    .btn-primary:hover {
+      background:#ff6b7a;
+      transform:scale(1.05);
+      box-shadow:0 0 20px rgba(233,69,96,0.8);
+    }
+    .btn-secondary {
+      background:#0f3460;
+      color:#00d4ff;
+      border-color:#00d4ff;
+    }
+    .btn-secondary:hover {
+      background:#00d4ff;
+      color:#0f3460;
+      transform:scale(1.05);
+    }
+    .info-box {
+      background:rgba(0,212,255,0.1);
+      border:2px solid #00d4ff;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:20px;
+      font-size:12px;
+      text-align:left;
+    }
+    .info-box h3 {
+      color:#00d4ff;
+      margin-bottom:10px;
+      font-size:13px;
+    }
+    .stats {
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-bottom:20px;
+      font-size:11px;
+    }
+    .stat-box {
+      background:#16213e;
+      border:2px solid #ffd700;
+      padding:15px;
+      border-radius:8px;
+      color:#ffd700;
+    }
+    .stat-number {
+      font-size:24px;
+      font-weight:bold;
+      margin-bottom:5px;
+    }
+    .stat-label {
+      font-size:9px;
+      color:#ccc;
+    }
+    footer {
+      margin-top:40px;
+      font-size:10px;
+      color:#888;
+      text-align:center;
+    }
+    @media (max-width:768px) {
+      .container { padding:20px; }
+      h1 { font-size:32px; }
+      .button-group { flex-direction:column; }
+      .btn { width:100%; }
+      .stats { grid-template-columns:1fr; }
+    }
+  </style>
 </head>
-
 <body>
-    <div class="browser-container">
-        <!-- Toolbar -->
-        <header class="toolbar">
-            <div class="nav-buttons">
-                <button id="back-btn" title="Retour">
-                    <i data-lucide="arrow-left"></i>
-                </button>
-                <button id="forward-btn" title="Suivant">
-                    <i data-lucide="arrow-right"></i>
-                </button>
-                <button id="reload-btn" title="Actualiser">
-                    <i data-lucide="refresh-cw"></i>
-                </button>
-                <button id="home-btn" title="Accueil">
-                    <i data-lucide="home"></i>
-                </button>
-            </div>
-
-            <div class="url-bar-container">
-                <i data-lucide="lock" style="width: 14px; opacity: 0.5;"></i>
-                <input type="text" id="url-input" placeholder="Rechercher ou saisir une adresse web" value="xolbor.ma">
-            </div>
-
-            <div class="menu-buttons">
-                <button id="bookmark-btn" title="Ajouter aux favoris">
-                    <i data-lucide="star"></i>
-                </button>
-                <button id="history-btn" title="Historique">
-                    <i data-lucide="history"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Bookmarks Bar -->
-        <div class="bookmarks-bar">
-            <div class="bookmark" data-url="xolbor.ma">
-                <i data-lucide="shield-check" style="width: 12px;"></i> Xolbor.ma
-            </div>
-            <div class="bookmark" data-url="xolbor.com">
-                <i data-lucide="globe" style="width: 12px;"></i> Xolbor.com
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <main class="browser-content">
-            <div id="loader" class="loader hidden"></div>
-            <iframe id="browser-iframe" src="http://localhost:5173"></iframe>
-        </main>
+  <div class="container">
+    <h1>🍄 MARIO ENHANCED</h1>
+    
+    <p class="description">
+      Le jeu Mario classique réinventé avec physique moderne, multijoueur et C++!
+    </p>
+    
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-number">8</div>
+        <div class="stat-label">NIVEAUX</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">4</div>
+        <div class="stat-label">MULTIJOUEUR</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number">60</div>
+        <div class="stat-label">FPS</div>
+      </div>
     </div>
-
-    <script src="main.js"></script>
-    <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-    </script>
+    
+    <div class="features">
+      <div class="feature-item">8 niveaux avec difficulté progressive</div>
+      <div class="feature-item">Mode multijoueur en temps réel</div>
+      <div class="feature-item">Physique optimisée avec C++ (WASM)</div>
+      <div class="feature-item">Collecte de pièces et power-ups</div>
+      <div class="feature-item">Système de classement global</div>
+      <div class="feature-item">Sauvegarde/Chargement de partie</div>
+      <div class="feature-item">Responsive (Desktop & Mobile)</div>
+      <div class="feature-item">Contrôles clavier et tactiles</div>
+    </div>
+    
+    <div class="info-box">
+      <h3>📖 COMMENT JOUER</h3>
+      <p>Utilisez les flèches pour bouger et Espace/Haut pour sauter.<br>Sautez sur les ennemis pour les vaincre!</p>
+    </div>
+    
+    <div class="button-group">
+      <a href="mario/index.html" class="btn btn-primary">▶ JOUER MAINTENANT</a>
+      <a href="https://github.com/bolico803/Xolbor/tree/mario-enhanced" class="btn btn-secondary" target="_blank">💻 CODE SOURCE</a>
+    </div>
+    
+    <div class="info-box">
+      <h3>🎮 CONTRÔLES</h3>
+      <p>⬅️ Flèche Gauche  |  ➡️ Flèche Droite<br>⬆️ Flèche Haut / ESPACE = Sauter</p>
+    </div>
+  </div>
+  
+  <footer>
+    <p>🍄 Super Mario Enhanced | Créé avec ❤️ par bolico803</p>
+    <p>© 2026 | Open Source | <a href="https://github.com/bolico803/Xolbor" style="color:#00d4ff;text-decoration:none;">GitHub</a></p>
+  </footer>
 </body>
-
 </html>
