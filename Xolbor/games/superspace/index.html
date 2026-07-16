@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperSpace - Xolbor Native Game</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #020617;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        #score {
+            font-size: 24px;
+            color: #f59e0b;
+            text-shadow: 0 0 10px #f59e0b;
+        }
+
+        .leaderboard {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="ui">
+        <h2>SuperSpace</h2>
+        <div id="score">Score: 0</div>
+    </div>
+    <div class="leaderboard" id="leaderboard">
+        <h3>Leaderboard</h3>
+        <ol id="leaderboard-list"></ol>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Socket logic
+        const socket = io();
+        let myId = null;
+        let players = {};
+        let bullets = [];
+        let stars = [];
+
+        // Generate stars background
+        for (let i = 0; i < 100; i++) {
+            stars.push({
+                x: Math.random() * 2000,
+                y: Math.random() * 2000,
+                size: Math.random() * 2,
+                speed: Math.random() * 0.5 + 0.1
+            });
+        }
+
+        const username = localStorage.getItem('xolbor_user') ? JSON.parse(localStorage.getItem('xolbor_user')).username : 'Guest_' + Math.floor(Math.random() * 1000);
+        socket.emit('superspace-join', { username });
+
+        socket.on('superspace-init', (data) => {
+            myId = data.id;
+            players = data.players;
+        });
+
+        socket.on('superspace-update', (data) => {
+            players = data.players;
+            bullets = data.bullets;
+            updateLeaderboard();
+        });
+
+        const keys = {};
+        window.addEventListener('keydown', e => { keys[e.key] = true; });
+        window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+        let lastShot = 0;
+        window.addEventListener('mousedown', (e) => {
+            if (Date.now() - lastShot > 200) {
+                // Calculate angle from center
+                const angle = Math.atan2(e.clientY - height / 2, e.clientX - width / 2);
+                socket.emit('superspace-shoot', { angle });
+                lastShot = Date.now();
+            }
+        });
+
+        function updateLeaderboard() {
+            const list = document.getElementById('leaderboard-list');
+            const sorted = Object.values(players).sort((a, b) => b.score - a.score).slice(0, 5);
+            list.innerHTML = sorted.map(p => `<li>${p.username}: ${p.score}</li>`).join('');
+
+            if (players[myId]) {
+                document.getElementById('score').innerText = `Score: ${players[myId].score}`;
+            }
+        }
+
+        function drawShip(x, y, radius, color, isMe) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Glow
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = color;
+
+            // Simple triangle ship pointing up initially
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.moveTo(0, -radius);
+            ctx.lineTo(radius, radius);
+            ctx.lineTo(-radius, radius);
+            ctx.closePath();
+            ctx.fill();
+
+            if (isMe) {
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        function loop() {
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, width, height);
+
+            if (!players[myId]) return requestAnimationFrame(loop);
+            const me = players[myId];
+
+            // Send movement
+            let dx = 0, dy = 0;
+            if (keys['w'] || keys['z'] || keys['ArrowUp']) dy = -1;
+            if (keys['s'] || keys['ArrowDown']) dy = 1;
+            if (keys['a'] || keys['q'] || keys['ArrowLeft']) dx = -1;
+            if (keys['d'] || keys['ArrowRight']) dx = 1;
+
+            if (dx !== 0 || dy !== 0) {
+                socket.emit('superspace-move', { dx, dy });
+            }
+
+            // Camera follow
+            const camX = width / 2 - me.x;
+            const camY = height / 2 - me.y;
+
+            ctx.save();
+            ctx.translate(camX, camY);
+
+            // Draw Stars
+            ctx.fillStyle = '#fff';
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Grid
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let i = 0; i <= 2000; i += 100) {
+                ctx.moveTo(i, 0); ctx.lineTo(i, 2000);
+                ctx.moveTo(0, i); ctx.lineTo(2000, i);
+            }
+            ctx.stroke();
+
+            // Draw Bullets
+            bullets.forEach(b => {
+                ctx.fillStyle = '#ef4444';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // Draw Players
+            for (let id in players) {
+                const p = players[id];
+                drawShip(p.x, p.y, 15, p.color, id === myId);
+
+                // Name
+                ctx.fillStyle = '#fff';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(p.username, p.x, p.y - 25);
+
+                // Health bar
+                ctx.fillStyle = 'red';
+                ctx.fillRect(p.x - 15, p.y + 20, 30, 4);
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(p.x - 15, p.y + 20, 30 * (p.health / 100), 4);
+            }
+
+            ctx.restore();
+
+            requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+    </script>
+</body>
+
+</html>

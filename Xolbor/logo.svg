@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <!-- Fond noir -->
+    <rect width="512" height="512" fill="#000000" rx="120" ry="120"/> <!-- Added rounded corners for App Icon style -->
+    
+    <!-- Définition des dégradés -->
+    <defs>
+        <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+        </linearGradient>
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Texte stylisé XOLBOR -->
+    <g transform="translate(256, 256) scale(1.2)" filter="url(#glow)">
+        <!-- Le X Stylisé -->
+        <path d="M-100 -120 L -20 -20 M 100 -120 L 20 -20 M -100 120 L -20 20 M 100 120 L 20 20" 
+              stroke="url(#neonGradient)" stroke-width="40" stroke-linecap="round" />
+        
+        <!-- Centre Robotique -->
+        <rect x="-30" y="-30" width="60" height="60" rx="10" fill="url(#neonGradient)" />
+        <circle cx="0" cy="0" r="15" fill="#000000" />
+    </g>
+    
+    <!-- Texte XOLBOR en bas -->
+    <text x="50%" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="80" fill="url(#neonGradient)" filter="url(#glow)">XOLBOR</text>
+</svg>

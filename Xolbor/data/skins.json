@@ -1,0 +1,362 @@
+[
+  {
+    "id": 1,
+    "name": "Skin rare #1",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin1/200/200",
+    "threeColor": "0x123456"
+  },
+  {
+    "id": 2,
+    "name": "Skin epic #2",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin2/200/200",
+    "threeColor": "0x654321"
+  },
+  {
+    "id": 3,
+    "name": "Skin legendary #3",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin3/200/200",
+    "threeColor": "0xabcdef"
+  },
+  {
+    "id": 4,
+    "name": "Skin rare #4",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin4/200/200",
+    "threeColor": "0x224466"
+  },
+  {
+    "id": 5,
+    "name": "Skin epic #5",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin5/200/200",
+    "threeColor": "0x445566"
+  },
+  {
+    "id": 6,
+    "name": "Skin legendary #6",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin6/200/200",
+    "threeColor": "0x778899"
+  },
+  {
+    "id": 7,
+    "name": "Skin rare #7",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin7/200/200",
+    "threeColor": "0x112233"
+  },
+  {
+    "id": 8,
+    "name": "Skin epic #8",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin8/200/200",
+    "threeColor": "0x334455"
+  },
+  {
+    "id": 9,
+    "name": "Skin legendary #9",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin9/200/200",
+    "threeColor": "0x556677"
+  },
+  {
+    "id": 10,
+    "name": "Skin rare #10",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin10/200/200",
+    "threeColor": "0x8899aa"
+  },
+  {
+    "id": 11,
+    "name": "Skin epic #11",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin11/200/200",
+    "threeColor": "0xaabbcc"
+  },
+  {
+    "id": 12,
+    "name": "Skin legendary #12",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin12/200/200",
+    "threeColor": "0xccdde0"
+  },
+  {
+    "id": 13,
+    "name": "Skin rare #13",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin13/200/200",
+    "threeColor": "0xddccbb"
+  },
+  {
+    "id": 14,
+    "name": "Skin epic #14",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin14/200/200",
+    "threeColor": "0xeeff11"
+  },
+  {
+    "id": 15,
+    "name": "Skin legendary #15",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin15/200/200",
+    "threeColor": "0x112244"
+  },
+  {
+    "id": 16,
+    "name": "Skin rare #16",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin16/200/200",
+    "threeColor": "0x334466"
+  },
+  {
+    "id": 17,
+    "name": "Skin epic #17",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin17/200/200",
+    "threeColor": "0x556688"
+  },
+  {
+    "id": 18,
+    "name": "Skin legendary #18",
+    "price": 2000,
+    "rarity": "legendary",
+    "color": "#f59e0b",
+    "img": "https://picsum.photos/seed/skin18/200/200",
+    "threeColor": "0x7788aa"
+  },
+  {
+    "id": 19,
+    "name": "Skin rare #19",
+    "price": 100,
+    "rarity": "rare",
+    "color": "#3b82f6",
+    "img": "https://picsum.photos/seed/skin19/200/200",
+    "threeColor": "0x99aabb"
+  },
+  {
+    "id": 20,
+    "name": "Skin epic #20",
+    "price": 500,
+    "rarity": "epic",
+    "color": "#a855f7",
+    "img": "https://picsum.photos/seed/skin20/200/200",
+    "threeColor": "0xbbccdd"
+  },
+  {
+    "id": 21,
+    "name": "🔥 Phoenix Ascendant",
+    "price": 1500,
+    "rarity": "epic",
+    "color": "#ff6b00",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=phoenix",
+    "threeColor": "0xff6b00"
+  },
+  {
+    "id": 22,
+    "name": "❄️ Frost Sovereign",
+    "price": 1500,
+    "rarity": "epic",
+    "color": "#00d9ff",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=frost",
+    "threeColor": "0x00d9ff"
+  },
+  {
+    "id": 23,
+    "name": "⚡ Thunder God",
+    "price": 1500,
+    "rarity": "epic",
+    "color": "#ffd700",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=thunder",
+    "threeColor": "0xffd700"
+  },
+  {
+    "id": 24,
+    "name": "💀 Shadow Reaper",
+    "price": 1500,
+    "rarity": "epic",
+    "color": "#1a1a2e",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=shadow",
+    "threeColor": "0x1a1a2e"
+  },
+  {
+    "id": 25,
+    "name": "🌙 Lunar Whisper",
+    "price": 2500,
+    "rarity": "legendary",
+    "color": "#e0d5ff",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=lunar",
+    "threeColor": "0xe0d5ff"
+  },
+  {
+    "id": 26,
+    "name": "👑 Royal Monarch",
+    "price": 2500,
+    "rarity": "legendary",
+    "color": "#ffd700",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=monarch",
+    "threeColor": "0xffd700"
+  },
+  {
+    "id": 27,
+    "name": "🌊 Ocean Titan",
+    "price": 2500,
+    "rarity": "legendary",
+    "color": "#0088cc",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=ocean",
+    "threeColor": "0x0088cc"
+  },
+  {
+    "id": 28,
+    "name": "🌲 Forest Guardian",
+    "price": 2500,
+    "rarity": "legendary",
+    "color": "#2d5016",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=forest",
+    "threeColor": "0x2d5016"
+  },
+  {
+    "id": 29,
+    "name": "♻️ Cyber Nova",
+    "price": 3000,
+    "rarity": "legendary",
+    "color": "#00ff00",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=cyber",
+    "threeColor": "0x00ff00"
+  },
+  {
+    "id": 30,
+    "name": "✨ Cosmic Entity",
+    "price": 3000,
+    "rarity": "legendary",
+    "color": "#ff00ff",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=cosmic",
+    "threeColor": "0xff00ff"
+  },
+  {
+    "id": 31,
+    "name": "🎭 Jester's Gambit",
+    "price": 750,
+    "rarity": "rare",
+    "color": "#ff1493",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=jester",
+    "threeColor": "0xff1493"
+  },
+  {
+    "id": 32,
+    "name": "🏛️ Ancient Sage",
+    "price": 800,
+    "rarity": "rare",
+    "color": "#8b6f47",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=sage",
+    "threeColor": "0x8b6f47"
+  },
+  {
+    "id": 33,
+    "name": "🎨 Neon Pulse",
+    "price": 1200,
+    "rarity": "epic",
+    "color": "#00ffff",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=neon",
+    "threeColor": "0x00ffff"
+  },
+  {
+    "id": 34,
+    "name": "🌹 Infernal Rose",
+    "price": 1800,
+    "rarity": "epic",
+    "color": "#ff0040",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=rose",
+    "threeColor": "0xff0040"
+  },
+  {
+    "id": 35,
+    "name": "💎 Diamond Rogue",
+    "price": 3500,
+    "rarity": "legendary",
+    "color": "#b9f2ff",
+    "img": "https://api.dicebear.com/7.x/avataaars/svg?seed=diamond",
+    "threeColor": "0xb9f2ff"
+  },
+  {
+    "id": 36,
+    "name": "Xolbor Crown Hero",
+    "price": 3000,
+    "rarity": "legendary",
+    "color": "#facc15",
+    "img": "/images/avatars/xolbor-crown-hero.png",
+    "threeColor": "0xfacc15"
+  },
+  {
+    "id": 37,
+    "name": "Viking Warlord",
+    "price": 2500,
+    "rarity": "legendary",
+    "color": "#b45309",
+    "img": "/images/avatars/viking-warlord.jpg",
+    "threeColor": "0xb45309"
+  },
+  {
+    "id": 38,
+    "name": "Neon Pulse Rider",
+    "price": 2200,
+    "rarity": "epic",
+    "color": "#ec4899",
+    "img": "/images/avatars/neon-pulse-rider.jpg",
+    "threeColor": "0xec4899"
+  },
+  {
+    "id": 39,
+    "name": "Street King",
+    "price": 1800,
+    "rarity": "epic",
+    "color": "#64748b",
+    "img": "/images/avatars/street-king.jpg",
+    "threeColor": "0x64748b"
+  },
+  {
+    "id": 40,
+    "name": "Midnight Hoodie",
+    "price": 1200,
+    "rarity": "rare",
+    "color": "#7c3aed",
+    "img": "/images/avatars/midnight-hoodie.jpg",
+    "threeColor": "0x7c3aed"
+  }
+]

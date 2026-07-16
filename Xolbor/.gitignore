@@ -1,0 +1,15 @@
+node_modules/
+.env
+*.log
+pm2.log
+logs/
+.DS_Store
+data/*.json
+!data/games.json
+!data/skins.json
+dist/
+build/
+!games/
+!games/**
+.idea/
+.vscode/

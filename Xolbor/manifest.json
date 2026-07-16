@@ -1,0 +1,23 @@
+{
+    "name": "Xolbor - Plateforme de Gaming Ultime",
+    "short_name": "Xolbor",
+    "description": "Plateforme de gaming ultime avec skins et amis.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#020617",
+    "theme_color": "#6366f1",
+    "icons": [
+        {
+            "src": "favicon-removebg-preview.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "favicon-removebg-preview.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
