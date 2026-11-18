@@ -18,6 +18,10 @@ test('Render configuration: friends, messages and two authenticated multiplayer 
   let ready=false;
   for(let n=0;n<100;n++){try{ready=(await fetch(base+'/health/ready')).ok;if(ready)break;}catch{}await new Promise(r=>setTimeout(r,50));}
   assert.ok(ready,logs);
+  for(const asset of [...require('../lib/profile-avatars').PROFILE_AVATARS.map(a=>a.model),'/games/capture-catastrophe/assets/brainrot-map.glb']){
+    const res=await fetch(base+asset);assert.equal(res.status,200,asset);
+    assert.equal(Buffer.from(await res.arrayBuffer()).subarray(0,4).toString(),'glTF',asset);
+  }
   async function api(route,body,cookie){const res=await fetch(base+route,{method:body?'POST':'GET',headers:{'Content-Type':'application/json',...(cookie?{cookie}:{})},...(body?{body:JSON.stringify(body)}:{})});const data=await res.json();return {status:res.status,data,cookie:res.headers.get('set-cookie')?.split(';')[0]};}
   const a=await api('/api/register',{username:'PlayerOne',password:'TestPassword12345'});
   const b=await api('/api/register',{username:'PlayerTwo',password:'TestPassword12345'});
