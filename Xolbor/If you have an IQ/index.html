@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>One Line Mind</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:#0d0d12; --surface:#15151e; --surface2:#1c1c28; --surface3:#232332;
+    --border:#28283a; --border2:#333348;
+    --text:#eae6f4; --text-dim:#6e6a84; --text-mid:#a8a4bc;
+    --accent:#c4acf8; --accent2:#88cef0; --accent3:#f0aac4;
+    --gold:#f0d070; --success:#78f0a8;
+    --locked:#2e2e44; --locked-text:#484864;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    height:100dvh; display:flex; flex-direction:column; align-items:center; overflow:hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 15%,rgba(196,172,248,.05) 0%,transparent 55%),
+      radial-gradient(ellipse 60% 70% at 85% 85%,rgba(136,206,240,.04) 0%,transparent 55%);
+    pointer-events:none; z-index:0;
+  }
+  .orb { position:fixed; border-radius:50%; filter:blur(70px); opacity:.07; pointer-events:none; z-index:0; animation:floatOrb linear infinite; }
+  .orb1 { width:320px;height:320px;background:var(--accent);top:-120px;left:-120px;animation-duration:28s; }
+  .orb2 { width:220px;height:220px;background:var(--accent2);bottom:-90px;right:-90px;animation-duration:34s;animation-delay:-12s; }
+  .orb3 { width:180px;height:180px;background:var(--accent3);top:55%;left:75%;animation-duration:22s;animation-delay:-6s; }
+  @keyframes floatOrb {
+    0%   { transform:translate(0,0) scale(1); }
+    33%  { transform:translate(35px,-25px) scale(1.08); }
+    66%  { transform:translate(-18px,18px) scale(.94); }
+    100% { transform:translate(0,0) scale(1); }
+  }
+
+  /* SCREENS */
+  .screen { position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s,transform .4s; }
+  .screen.hidden { opacity:0;pointer-events:none;transform:scale(.97); }
+
+  /* ─── MENU ─── */
+  #menuScreen { gap:26px; }
+  .logo-wrap { text-align:center; }
+  .logo-title {
+    font-family:'DM Serif Display',serif; font-size:clamp(2.6rem,8vw,4.8rem);
+    letter-spacing:-.02em; line-height:1;
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--accent3) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    filter:drop-shadow(0 0 28px rgba(196,172,248,.38));
+  }
+  .logo-sub { margin-top:8px;color:var(--text-dim);font-size:.8rem;letter-spacing:.28em;text-transform:uppercase;font-weight:300; }
+
+  .tier-grid { display:flex;flex-direction:column;gap:10px;width:300px; }
+  .tier-btn {
+    background:var(--surface);border:1px solid var(--border);border-radius:16px;
+    padding:15px 18px;cursor:pointer;transition:all .22s;text-align:left;
+    position:relative;overflow:hidden;display:flex;align-items:center;gap:13px;
+  }
+  .tier-btn.locked { cursor:not-allowed; opacity:.52; }
+  .tier-btn.locked:hover { transform:none;box-shadow:none;border-color:var(--border); }
+  .tier-btn:not(.locked):hover { border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(196,172,248,.13); }
+  .tier-btn:not(.locked):active { transform:translateY(0); }
+  .tier-icon { font-size:1.4rem;line-height:1;flex-shrink:0; }
+  .tier-body { flex:1;min-width:0; }
+  .tier-name { font-size:.93rem;font-weight:500; }
+  .tier-desc { font-size:.72rem;color:var(--text-dim);margin-top:3px;font-weight:300; }
+  .tier-lock { font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--locked-text);background:var(--locked);border-radius:8px;padding:3px 8px;flex-shrink:0; }
+  .tier-easy .tier-name  { color:var(--success); }
+  .tier-med  .tier-name  { color:var(--gold); }
+  .tier-hard .tier-name  { color:var(--accent3); }
+  .tier-exp  .tier-name  { color:var(--accent); }
+
+  .stats-row { display:flex;gap:22px; }
+  .stat-item { text-align:center;color:var(--text-dim);font-size:.73rem;letter-spacing:.1em; }
+  .stat-val { font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--accent);display:block; }
+
+  /* ─── GAME ─── */
+  #gameScreen { justify-content:space-between;padding:0; }
+  .top-bar { width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;z-index:20;flex-shrink:0; }
+  .level-info { display:flex;flex-direction:column; }
+  .level-label { font-size:.67rem;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase; }
+  .level-num { font-family:'DM Serif Display',serif;font-size:1.65rem;line-height:1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .stage-counter { font-size:.7rem;color:var(--text-mid);margin-top:1px; }
+
+  .top-center { display:flex;flex-direction:column;align-items:center;gap:1px; }
+  .timer-big { font-family:'DM Serif Display',serif;font-size:1.55rem;line-height:1;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:.02em; }
+  .timer-cs { font-size:.65em;color:var(--text-dim); }
+  .timer-label { font-size:.58rem;color:var(--text-dim);letter-spacing:.18em;text-transform:uppercase; }
+
+  .top-actions { display:flex;gap:8px; }
+  .icon-btn { width:38px;height:38px;background:var(--surface);border:1px solid var(--border);border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .18s;color:var(--text-dim); }
+  .icon-btn:hover { border-color:var(--accent);color:var(--accent);transform:scale(1.06); }
+  .icon-btn:active { transform:scale(.94); }
+
+  #canvasWrap { flex:1;display:flex;align-items:center;justify-content:center;width:100%;position:relative;overflow:hidden; }
+  #gameCanvas { display:block;cursor:crosshair;touch-action:none; }
+
+  .diff-badge { position:absolute;top:10px;right:14px;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid; }
+  .diff-easy   { color:var(--success); border-color:rgba(120,240,168,.3); background:rgba(120,240,168,.07); }
+  .diff-medium { color:var(--gold);    border-color:rgba(240,208,112,.3); background:rgba(240,208,112,.07); }
+  .diff-hard   { color:var(--accent3); border-color:rgba(240,170,196,.3); background:rgba(240,170,196,.07); }
+  .diff-expert { color:var(--accent);  border-color:rgba(196,172,248,.3); background:rgba(196,172,248,.07); }
+
+  /* Stage dots */
+  .stage-strip { position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;align-items:center; }
+  .stage-dot { width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all .3s; }
+  .stage-dot.done    { background:var(--accent);box-shadow:0 0 6px var(--accent); }
+  .stage-dot.current { background:var(--text-mid);transform:scale(1.4); }
+
+  .bottom-bar { width:100%;padding:10px 18px 18px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;z-index:20; }
+  .progress-track { width:100%;height:3px;background:var(--border);border-radius:3px;overflow:hidden; }
+  .progress-fill { height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 8px var(--accent); }
+  .bottom-row { display:flex;gap:10px;align-items:center;justify-content:space-between; }
+  .stop-btn { background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:.05em; }
+  .stop-btn:hover { border-color:var(--accent3);color:var(--accent3); }
+
+  /* Flash + label */
+  #solveFlash { position:fixed;inset:0;z-index:60;background:rgba(196,172,248,.08);opacity:0;pointer-events:none;transition:opacity .12s; }
+  #solveFlash.flash { opacity:1; }
+  #nextStageLabel { position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.75);z-index:55;pointer-events:none;opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);text-align:center; }
+  #nextStageLabel.show { opacity:1;transform:translate(-50%,-50%) scale(1); }
+  .nsl-title { font-family:'DM Serif Display',serif;font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .nsl-sub { font-size:.76rem;color:var(--text-dim);margin-top:4px;letter-spacing:.15em;text-transform:uppercase; }
+
+  /* ─── RESULTS ─── */
+  #resultsScreen { gap:0;padding:20px;overflow-y:auto;justify-content:flex-start;padding-top:40px; }
+  .results-header { text-align:center;margin-bottom:20px;width:100%; }
+  .results-title { font-family:'DM Serif Display',serif;font-size:2.3rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .results-sub { color:var(--text-dim);font-size:.8rem;margin-top:5px;letter-spacing:.1em; }
+
+  .rank-card { background:linear-gradient(135deg,rgba(196,172,248,.09),rgba(136,206,240,.06));border:1px solid rgba(196,172,248,.22);border-radius:20px;padding:20px 26px;text-align:center;margin-bottom:18px;box-shadow:0 0 40px rgba(196,172,248,.08);width:100%;max-width:340px; }
+  .rank-label { font-size:.68rem;color:var(--text-dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px; }
+  .rank-value { font-family:'DM Serif Display',serif;font-size:2.8rem;line-height:1;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .rank-name { font-size:.95rem;font-weight:500;color:var(--text);margin-top:3px; }
+  .rank-desc { font-size:.74rem;color:var(--text-dim);margin-top:2px; }
+
+  .results-stats { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;width:100%;max-width:340px; }
+  .rs-card { background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px; }
+  .rs-val { font-family:'DM Serif Display',serif;font-size:1.55rem;color:var(--accent); }
+  .rs-lbl { font-size:.66rem;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase;margin-top:2px; }
+
+  .stage-history { width:100%;max-width:340px;margin-bottom:18px; }
+  .sh-title { font-size:.68rem;color:var(--text-dim);letter-spacing:.18em;text-transform:uppercase;margin-bottom:9px; }
+  .sh-row { display:flex;align-items:center;gap:10px;padding:7px 11px;background:var(--surface);border-radius:10px;margin-bottom:5px;font-size:.8rem; }
+  .sh-num { color:var(--text-dim);font-size:.7rem;min-width:22px; }
+  .sh-diff { font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;min-width:48px; }
+  .sh-time { color:var(--text-mid);font-variant-numeric:tabular-nums;margin-left:auto;font-size:.76rem; }
+  .sh-stars { font-size:.76rem; }
+
+  .results-btns { display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;padding-bottom:20px; }
+  .results-play-again { background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:14px;padding:14px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;color:#0d0d12;cursor:pointer;transition:all .22s;letter-spacing:.04em; }
+  .results-play-again:hover { transform:translateY(-2px);box-shadow:0 8px 25px rgba(196,172,248,.35); }
+  .results-menu { background:none;border:1px solid var(--border);border-radius:14px;padding:12px;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text-dim);cursor:pointer;transition:all .2s;letter-spacing:.04em; }
+  .results-menu:hover { border-color:var(--accent);color:var(--accent); }
+
+  /* Misc */
+  .hint-chip { position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:9px 16px;font-size:.79rem;color:var(--text-dim);opacity:0;pointer-events:none;transition:all .3s;z-index:30;white-space:nowrap; }
+  .hint-chip.visible { opacity:1;transform:translateX(-50%) translateY(0); }
+  .toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 18px;font-size:.79rem;color:var(--text);opacity:0;z-index:100;transition:all .3s;pointer-events:none; }
+  .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+  #particleCanvas { position:fixed;inset:0;pointer-events:none;z-index:40; }
+
+  @media (max-height:620px) { .top-bar { padding:7px 14px 5px; } .bottom-bar { padding:5px 14px 10px; } .timer-big { font-size:1.25rem; } }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<canvas id="particleCanvas"></canvas>
+<div id="solveFlash"></div>
+<div id="nextStageLabel">
+  <div class="nsl-title" id="nslTitle">Stage Clear</div>
+  <div class="nsl-sub"   id="nslSub">Next stage…</div>
+</div>
+
+<!-- ════ MENU ════ -->
+<div class="screen" id="menuScreen">
+  <div class="logo-wrap">
+    <div class="logo-title">One Line Mind</div>
+    <div class="logo-sub">draw · connect · clear</div>
+  </div>
+
+  <div class="tier-grid">
+    <button class="tier-btn tier-easy" onclick="pickTier('easy')">
+      <span class="tier-icon">○</span>
+      <div class="tier-body">
+        <div class="tier-name">Easy</div>
+        <div class="tier-desc">3–5 dots · warm-up · always unlocked</div>
+      </div>
+    </button>
+
+    <button class="tier-btn tier-med locked" id="tierMedBtn" onclick="tryPickTier('medium')">
+      <span class="tier-icon">◈</span>
+      <div class="tier-body">
+        <div class="tier-name">Medium</div>
+        <div class="tier-desc">8–12 dots · dense traps · real challenge</div>
+      </div>
+      <span class="tier-lock" id="tierMedLock">🔒 0/5 Easy</span>
+    </button>
+
+    <button class="tier-btn tier-hard locked" id="tierHardBtn" onclick="tryPickTier('hard')">
+      <span class="tier-icon">◉</span>
+      <div class="tier-body">
+        <div class="tier-name">Hard</div>
+        <div class="tier-desc">13–18 dots · brutal dead-ends</div>
+      </div>
+      <span class="tier-lock" id="tierHardLock">🔒 0/10 Medium</span>
+    </button>
+
+    <button class="tier-btn tier-exp locked" id="tierExpBtn" onclick="tryPickTier('expert')">
+      <span class="tier-icon">✦</span>
+      <div class="tier-body">
+        <div class="tier-name">Expert</div>
+        <div class="tier-desc">20–26 dots · near-impossible density</div>
+      </div>
+      <span class="tier-lock" id="tierExpLock">🔒 0/10 Hard</span>
+    </button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-item"><span class="stat-val" id="statEasy">0</span>Easy</div>
+    <div class="stat-item"><span class="stat-val" id="statMedium">0</span>Medium</div>
+    <div class="stat-item"><span class="stat-val" id="statHard">0</span>Hard</div>
+    <div class="stat-item"><span class="stat-val" id="statExpert">0</span>Expert</div>
+  </div>
+</div>
+
+<!-- ════ GAME ════ -->
+<div class="screen hidden" id="gameScreen">
+  <div class="top-bar">
+    <div class="level-info">
+      <span class="level-label" id="tierLabel">Easy</span>
+      <span class="level-num"   id="stageNum">1</span>
+      <span class="stage-counter" id="stageCounter">Stage 1</span>
+    </div>
+    <div class="top-center">
+      <div class="timer-big" id="timerBig">0<span class="timer-cs">.00</span></div>
+      <div class="timer-label">elapsed</div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" onclick="showHint()" title="Hint">💡</button>
+      <button class="icon-btn" onclick="restartStage()" title="Restart">↺</button>
+      <button class="icon-btn" onclick="confirmStop()" title="End">⏹</button>
+    </div>
+  </div>
+
+  <div id="canvasWrap">
+    <canvas id="gameCanvas"></canvas>
+    <span class="diff-badge" id="diffBadge">Easy</span>
+    <div class="stage-strip" id="stageStrip"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="bottom-row">
+      <button class="stop-btn" onclick="confirmStop()">End Session</button>
+      <button class="icon-btn" onclick="shareSession()" title="Share">⤴</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ RESULTS ════ -->
+<div class="screen hidden" id="resultsScreen">
+  <div class="results-header">
+    <div class="results-title">Session Over</div>
+    <div class="results-sub" id="resultsSub">Here's how you did</div>
+  </div>
+  <div class="rank-card">
+    <div class="rank-label">Your Rank</div>
+    <div class="rank-value" id="rankEmoji">🧠</div>
+    <div class="rank-name"  id="rankName">Mind Master</div>
+    <div class="rank-desc"  id="rankDesc">Exceptional focus</div>
+  </div>
+  <div class="results-stats">
+    <div class="rs-card"><div class="rs-val" id="rsTotalStages">0</div><div class="rs-lbl">Stages</div></div>
+    <div class="rs-card"><div class="rs-val" id="rsBestTime">–</div><div class="rs-lbl">Best Stage</div></div>
+    <div class="rs-card"><div class="rs-val" id="rsAvgTime">–</div><div class="rs-lbl">Avg Time</div></div>
+    <div class="rs-card"><div class="rs-val" id="rsPerfect">0</div><div class="rs-lbl">Perfect ★★★</div></div>
+  </div>
+  <div class="stage-history">
+    <div class="sh-title">Stage Breakdown</div>
+    <div id="shList"></div>
+  </div>
+  <div class="results-btns">
+    <button class="results-play-again" onclick="playAgain()">Play Again ↻</button>
+    <button class="results-menu"       onclick="goMenu()">Back to Menu</button>
+  </div>
+</div>
+
+<div class="hint-chip" id="hintChip">💡 Try a corner dot</div>
+<div class="toast"     id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  ONE LINE MIND  v3 — Engine
+// ══════════════════════════════════════════════════
+
+// ── Seeded RNG ──────────────────────────────────
+class SeededRNG {
+  constructor(seed){ this.s = seed >>> 0; }
+  next(){ this.s=(Math.imul(1664525,this.s)+1013904223)>>>0; return this.s/0xFFFFFFFF; }
+  int(a,b){ return Math.floor(this.next()*(b-a+1))+a; }
+  shuffle(arr){
+    const a=[...arr];
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(this.next()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    return a;
+  }
+}
+
+// ── Puzzle Generator ─────────────────────────────
+// Approach: build the SOLUTION PATH first via a random walk on a grid
+// (always succeeds), then scatter decoy edges around it.
+// This guarantees the exact nodeCount is always produced with a valid solution.
+class PuzzleGenerator {
+  constructor(rng){ this.rng=rng; }
+
+  generate(cfg){
+    // Try several times to meet quality thresholds
+    for(let t=0;t<12;t++){
+      const relax = t>=8;
+      const p = this._build(cfg, relax);
+      if(p) return p;
+    }
+    // Last-resort: build with no quality filter
+    return this._build({...cfg, minComplexity:0, minTurns:0, decoyDensity:0.2}, true);
+  }
+
+  _build(cfg, relaxed){
+    const{nodeCount, decoyDensity, minComplexity, minTurns} = cfg;
+    const rng = this.rng;
+
+    // 1. Random walk on integer grid — this IS the solution path
+    //    path[i] = {r,c}, solution order = [0, 1, 2, ..., n-1]
+    const path = this._randomWalk(nodeCount, rng);
+    if(!path || path.length !== nodeCount) return null;
+
+    // 2. Solution is simply indices in walk order
+    const solution = path.map((_,i)=>i);
+
+    // 3. Mandatory edges: consecutive pairs along the walk
+    const solEdges = new Set();
+    for(let i=0;i<nodeCount-1;i++) solEdges.add(i+'-'+(i+1));
+
+    // 4. ALL grid-adjacent edges between any two nodes
+    const adjEdges = this._adjacencyEdges(path, nodeCount);
+
+    // 5. Decoy edges = adjacency edges not in solution, shuffled and sliced
+    const decoys = rng.shuffle([...adjEdges].filter(e=>!solEdges.has(e)));
+    const decoyCount = Math.round(decoys.length * decoyDensity);
+    const edges = new Set([...solEdges, ...decoys.slice(0, decoyCount)]);
+
+    // 6. Quality gate
+    const complexity = this._complexity(solution, path);
+    const turns      = this._turns(solution, path);
+    if(!relaxed && (complexity < minComplexity || turns < minTurns)) return null;
+
+    const nodes = path.map((p,i)=>({id:i, r:p.r, c:p.c, px:0, py:0}));
+    return { nodes, edges, solution, nodeCount, complexity, turns };
+  }
+
+  // Random walk: visit exactly n distinct grid cells using cardinal+diagonal steps
+  _randomWalk(n, rng){
+    const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+    for(let attempt=0; attempt<300; attempt++){
+      const visited = new Set();
+      const startR = n + rng.int(-2,2);
+      const startC = n + rng.int(-2,2);
+      const path = [{r:startR,c:startC}];
+      visited.add(startR+','+startC);
+      let stuck = false;
+      for(let step=1; step<n && !stuck; step++){
+        const cur = path[step-1];
+        const dirs = rng.shuffle(DIRS);
+        let moved = false;
+        for(const [dr,dc] of dirs){
+          const nr=cur.r+dr, nc=cur.c+dc, key=nr+','+nc;
+          if(!visited.has(key)){
+            path.push({r:nr,c:nc}); visited.add(key); moved=true; break;
+          }
+        }
+        if(!moved) stuck=true;
+      }
+      if(!stuck && path.length===n){
+        const minR=Math.min(...path.map(p=>p.r));
+        const minC=Math.min(...path.map(p=>p.c));
+        return path.map(p=>({r:p.r-minR, c:p.c-minC}));
+      }
+    }
+    return null;
+  }
+
+  // All grid-adjacent pairs (any two nodes whose cells are 1 step apart)
+  _adjacencyEdges(path, n){
+    const edges = new Set();
+    const lookup = new Map();
+    path.forEach((p,i)=>lookup.set(p.r+','+p.c, i));
+    const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+    path.forEach((p,i)=>{
+      DIRS.forEach(([dr,dc])=>{
+        const j = lookup.get((p.r+dr)+','+(p.c+dc));
+        if(j!==undefined && j!==i) edges.add(Math.min(i,j)+'-'+Math.max(i,j));
+      });
+    });
+    return edges;
+  }
+
+  _complexity(sol,pos){
+    let s=0;
+    for(let i=1;i<sol.length;i++){
+      const a=pos[sol[i-1]],b=pos[sol[i]];
+      s+=Math.max(Math.abs(a.r-b.r),Math.abs(a.c-b.c));
+    }
+    return s;
+  }
+  _turns(sol,pos){
+    let t=0;
+    for(let i=1;i<sol.length-1;i++){
+      const p=pos[sol[i-1]],c=pos[sol[i]],nx=pos[sol[i+1]];
+      if((c.r-p.r)!==(nx.r-c.r)||(c.c-p.c)!==(nx.c-c.c)) t++;
+    }
+    return t;
+  }
+}
+
+
+// ── Tier definitions ─────────────────────────────
+const TIERS = {
+  easy: {
+    label:'Easy', cls:'diff-easy', unlockSrc:null, unlockCount:0,
+    stages:[
+      {nodeCount:3, decoyDensity:.00, minComplexity:1, minTurns:0},
+      {nodeCount:4, decoyDensity:.10, minComplexity:2, minTurns:1},
+      {nodeCount:4, decoyDensity:.15, minComplexity:2, minTurns:1},
+      {nodeCount:5, decoyDensity:.20, minComplexity:3, minTurns:2},
+      {nodeCount:5, decoyDensity:.25, minComplexity:3, minTurns:2},
+    ],
+  },
+  medium: {
+    label:'Medium', cls:'diff-medium', unlockSrc:'easy', unlockCount:5,
+    stages:[
+      {nodeCount:8,  decoyDensity:.40, minComplexity:4, minTurns:3},
+      {nodeCount:9,  decoyDensity:.45, minComplexity:5, minTurns:4},
+      {nodeCount:10, decoyDensity:.50, minComplexity:6, minTurns:4},
+      {nodeCount:11, decoyDensity:.55, minComplexity:7, minTurns:5},
+      {nodeCount:12, decoyDensity:.60, minComplexity:8, minTurns:5},
+    ],
+  },
+  hard: {
+    label:'Hard', cls:'diff-hard', unlockSrc:'medium', unlockCount:10,
+    stages:[
+      {nodeCount:14, decoyDensity:.65, minComplexity:10, minTurns:7},
+      {nodeCount:15, decoyDensity:.68, minComplexity:11, minTurns:8},
+      {nodeCount:16, decoyDensity:.70, minComplexity:12, minTurns:8},
+      {nodeCount:17, decoyDensity:.72, minComplexity:13, minTurns:9},
+      {nodeCount:18, decoyDensity:.75, minComplexity:14, minTurns:9},
+    ],
+  },
+  expert: {
+    label:'Expert', cls:'diff-expert', unlockSrc:'hard', unlockCount:10,
+    stages:[
+      {nodeCount:20, decoyDensity:.78, minComplexity:16, minTurns:11},
+      {nodeCount:22, decoyDensity:.80, minComplexity:18, minTurns:12},
+      {nodeCount:24, decoyDensity:.82, minComplexity:20, minTurns:13},
+      {nodeCount:25, decoyDensity:.84, minComplexity:22, minTurns:14},
+      {nodeCount:26, decoyDensity:.86, minComplexity:24, minTurns:15},
+    ],
+  },
+};
+
+// ── Ranks ────────────────────────────────────────
+const RANKS=[
+  {min:0, emoji:'🌱',name:'Seedling',   desc:'Just getting started'},
+  {min:3, emoji:'✏️', name:'Sketcher',   desc:'Finding the flow'},
+  {min:6, emoji:'🔗',name:'Linker',     desc:'Connecting dots smoothly'},
+  {min:10,emoji:'🧩',name:'Solver',     desc:'Puzzles bend to your will'},
+  {min:15,emoji:'⚡',name:'Quickmind',  desc:'Sharp and relentless'},
+  {min:20,emoji:'🌀',name:'Flow State', desc:'Effortless clarity'},
+  {min:30,emoji:'🧠',name:'Mind Master',desc:'Exceptional focus'},
+  {min:50,emoji:'✦', name:'Transcended',desc:'Beyond human limits'},
+];
+
+// ── State ────────────────────────────────────────
+const S={
+  tier:'easy', stageIndex:0,
+  stagesCompleted:0, stageTimes:[], stageDiffs:[], stageStars:[],
+  puzzle:null, drawing:false,
+  path:[], drawnEdges:new Set(),
+  lastNode:-1, hoveredNode:-1,
+  solved:false, mistakes:0,
+  stageStart:0, timerRAF:null,
+  hintEdge:null, hintTimer:null,
+  particles:[],
+  solved_easy:0, solved_medium:0, solved_hard:0, solved_expert:0,
+};
+
+// ── Canvas ───────────────────────────────────────
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+const pCanvas=document.getElementById('particleCanvas');
+const pCtx=pCanvas.getContext('2d');
+
+function resizeCanvas(){
+  const wrap=document.getElementById('canvasWrap');
+  const sz=Math.min(wrap.clientWidth,wrap.clientHeight,520);
+  canvas.width=canvas.height=sz;
+  canvas.style.width=canvas.style.height=sz+'px';
+  pCanvas.width=window.innerWidth; pCanvas.height=window.innerHeight;
+  if(S.puzzle){positionNodes();draw();}
+}
+window.addEventListener('resize',resizeCanvas);
+
+// ── Persistence ──────────────────────────────────
+function loadPersist(){
+  S.solved_easy   = +localStorage.getItem('olm2_easy')   ||0;
+  S.solved_medium = +localStorage.getItem('olm2_medium') ||0;
+  S.solved_hard   = +localStorage.getItem('olm2_hard')   ||0;
+  S.solved_expert = +localStorage.getItem('olm2_expert') ||0;
+}
+function savePersist(){
+  localStorage.setItem('olm2_easy',   S.solved_easy);
+  localStorage.setItem('olm2_medium', S.solved_medium);
+  localStorage.setItem('olm2_hard',   S.solved_hard);
+  localStorage.setItem('olm2_expert', S.solved_expert);
+}
+
+// ── Lock UI ──────────────────────────────────────
+function isUnlocked(tier){
+  const cfg=TIERS[tier];
+  if(!cfg.unlockSrc) return true;
+  return S['solved_'+cfg.unlockSrc] >= cfg.unlockCount;
+}
+
+function refreshLockUI(){
+  const pairs=[
+    ['medium','tierMedBtn','tierMedLock'],
+    ['hard',  'tierHardBtn','tierHardLock'],
+    ['expert','tierExpBtn','tierExpLock'],
+  ];
+  pairs.forEach(([tier,btnId,lockId])=>{
+    const cfg=TIERS[tier];
+    const have=S['solved_'+cfg.unlockSrc]||0;
+    const need=cfg.unlockCount;
+    const ul=isUnlocked(tier);
+    const btn=document.getElementById(btnId);
+    const lck=document.getElementById(lockId);
+    btn.classList.toggle('locked',!ul);
+    if(ul){ lck.style.display='none'; }
+    else { lck.style.display=''; lck.textContent=`🔒 ${have}/${need} ${cfg.unlockSrc.charAt(0).toUpperCase()+cfg.unlockSrc.slice(1)}`; }
+  });
+  ['easy','medium','hard','expert'].forEach(t=>{
+    document.getElementById('stat'+t.charAt(0).toUpperCase()+t.slice(1)).textContent=S['solved_'+t];
+  });
+}
+
+function tryPickTier(tier){
+  if(!isUnlocked(tier)){
+    const cfg=TIERS[tier];
+    const have=S['solved_'+cfg.unlockSrc]||0;
+    const need=cfg.unlockCount;
+    showToast(`🔒 Solve ${need-have} more ${cfg.unlockSrc} stage${need-have!==1?'s':''} to unlock`);
+    return;
+  }
+  pickTier(tier);
+}
+
+// ── Session Start ─────────────────────────────────
+function pickTier(tier){
+  S.tier=tier; S.stageIndex=0;
+  S.stagesCompleted=0; S.stageTimes=[]; S.stageDiffs=[]; S.stageStars=[];
+  S.mistakes=0;
+
+  document.getElementById('tierLabel').textContent=TIERS[tier].label;
+  document.getElementById('menuScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+  buildStrip();
+  setTimeout(()=>{resizeCanvas();loadStage();},80);
+}
+
+function buildStrip(){
+  const strip=document.getElementById('stageStrip');
+  strip.innerHTML='';
+  TIERS[S.tier].stages.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='stage-dot'+(i===0?' current':'');
+    d.id='sd'+i; strip.appendChild(d);
+  });
+}
+function updateStrip(){
+  TIERS[S.tier].stages.forEach((_,i)=>{
+    const d=document.getElementById('sd'+i);
+    if(d) d.className='stage-dot'+(i<S.stageIndex?' done':i===S.stageIndex?' current':'');
+  });
+}
+
+// ── Stage Loading ────────────────────────────────
+let rng=new SeededRNG(Date.now());
+
+function loadStage(){
+  const stages=TIERS[S.tier].stages;
+  const cfg=stages[S.stageIndex % stages.length];
+  rng=new SeededRNG((Date.now()*31 + Math.floor(Math.random()*999983)) ^ (S.stageIndex*7919) ^ (S.stagesCompleted*1013));
+  const gen=new PuzzleGenerator(rng);
+  S.puzzle=gen.generate(cfg);
+
+  S.path=[]; S.drawnEdges=new Set();
+  S.lastNode=-1; S.hoveredNode=-1;
+  S.solved=false; S.drawing=false;
+  S.mistakes=0; S.hintEdge=null;
+  S.stageStart=0;
+
+  document.getElementById('stageNum').textContent=S.stageIndex+1;
+  document.getElementById('stageCounter').textContent='Stage '+(S.stagesCompleted+1)+' total';
+  const badge=document.getElementById('diffBadge');
+  badge.textContent=TIERS[S.tier].label;
+  badge.className='diff-badge '+TIERS[S.tier].cls;
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('timerBig').innerHTML='0<span class="timer-cs">.00</span>';
+
+  updateStrip();
+  positionNodes();
+  draw();
+}
+
+// ── Node Positioning ──────────────────────────────
+function positionNodes(){
+  if(!S.puzzle) return;
+  const{nodes}=S.puzzle;
+  const sz=canvas.width, pad=sz*.12, u=sz-pad*2;
+  const maxR=Math.max(...nodes.map(n=>n.r)), maxC=Math.max(...nodes.map(n=>n.c));
+  const sR=maxR>0?u/maxR:u, sC=maxC>0?u/maxC:u, step=Math.min(sR,sC);
+  const ox=(u-step*maxC)/2, oy=(u-step*maxR)/2;
+  nodes.forEach(n=>{ n.px=pad+ox+n.c*step; n.py=pad+oy+n.r*step; });
+}
+function nodeR(){ return Math.max(9,Math.min(18,canvas.width/(S.puzzle?.nodeCount*1.65+4))); }
+
+// ── Timer ────────────────────────────────────────
+function startClock(){
+  if(S.stageStart) return;
+  S.stageStart=Date.now();
+  tickClock();
+}
+function tickClock(){
+  if(!S.stageStart||S.solved) return;
+  const ms=Date.now()-S.stageStart;
+  document.getElementById('timerBig').innerHTML=fmtTimer(ms);
+  S.timerRAF=requestAnimationFrame(tickClock);
+}
+function stopClock(){ cancelAnimationFrame(S.timerRAF); S.timerRAF=null; }
+
+function fmtTimer(ms){
+  const cs=Math.floor(ms/10), s=Math.floor(cs/100)%60, m=Math.floor(cs/6000), c=cs%100;
+  const main=m>0?`${m}:${String(s).padStart(2,'0')}`:String(s);
+  return main+'<span class="timer-cs">.'+String(c).padStart(2,'0')+'</span>';
+}
+function fmtMs(ms){
+  const cs=Math.floor(ms/10), s=Math.floor(cs/100)%60, m=Math.floor(cs/6000), c=cs%100;
+  if(m>0) return `${m}:${String(s).padStart(2,'0')}.${String(c).padStart(2,'0')}`;
+  return `${s}.${String(c).padStart(2,'0')}s`;
+}
+
+// ── Draw ─────────────────────────────────────────
+const COL={
+  line:'#c4acf8', lineGlow:'rgba(196,172,248,.33)',
+  dot:'#1c1c28', dotBorder:'#c4acf8',
+  hint:'rgba(136,206,240,.75)', edge:'rgba(196,172,248,.10)',
+};
+
+function draw(){
+  if(!S.puzzle) return;
+  const{nodes,edges}=S.puzzle; const r=nodeR();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Faint possible edges
+  ctx.save();
+  ctx.strokeStyle=COL.edge; ctx.lineWidth=1.5; ctx.setLineDash([4,7]);
+  edges.forEach(e=>{
+    const[a,b]=e.split('-').map(Number);
+    ctx.beginPath(); ctx.moveTo(nodes[a].px,nodes[a].py); ctx.lineTo(nodes[b].px,nodes[b].py); ctx.stroke();
+  });
+  ctx.setLineDash([]); ctx.restore();
+
+  // Hint
+  if(S.hintEdge){
+    const[a,b]=S.hintEdge.split('-').map(Number);
+    ctx.save(); ctx.strokeStyle=COL.hint; ctx.lineWidth=4;
+    ctx.shadowColor=COL.hint; ctx.shadowBlur=14; ctx.setLineDash([8,6]);
+    ctx.beginPath(); ctx.moveTo(nodes[a].px,nodes[a].py); ctx.lineTo(nodes[b].px,nodes[b].py); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+  }
+
+  // Drawn path
+  if(S.path.length>1){
+    const sc=S.solved;
+    ctx.save(); ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle=sc?'rgba(120,240,168,.4)':COL.lineGlow;
+    ctx.lineWidth=r*1.7; ctx.filter='blur(7px)'; _drawPath(); ctx.filter='none';
+    ctx.strokeStyle=sc?'#78f0a8':COL.line; ctx.lineWidth=r*.72;
+    ctx.shadowColor=sc?'#78f0a8':COL.line; ctx.shadowBlur=sc?22:10;
+    _drawPath(); ctx.restore();
+  }
+
+  // Nodes
+  nodes.forEach((node,i)=>{
+    const vis=S.path.includes(i), isLast=i===S.lastNode, hov=S.hoveredNode===i;
+    ctx.save();
+    const sc=hov&&!vis?1.22:isLast?1.1:1;
+    ctx.translate(node.px,node.py); ctx.scale(sc,sc);
+    if(!vis&&!S.solved){
+      ctx.beginPath(); ctx.arc(0,0,r*1.5,0,Math.PI*2);
+      ctx.fillStyle='rgba(196,172,248,.06)'; ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2);
+    if(S.solved){ ctx.fillStyle='#78f0a8'; ctx.shadowColor='#78f0a8'; ctx.shadowBlur=22; }
+    else if(vis){ ctx.fillStyle=COL.dotBorder; ctx.shadowColor=COL.dotBorder; ctx.shadowBlur=14; }
+    else { ctx.fillStyle=COL.dot; ctx.shadowBlur=0; }
+    ctx.fill();
+    ctx.strokeStyle=S.solved?'#78f0a8':COL.dotBorder;
+    ctx.lineWidth=vis||S.solved?2:1.5; ctx.globalAlpha=vis||S.solved?1:.5;
+    ctx.stroke(); ctx.globalAlpha=1;
+    if(vis&&!S.solved){ ctx.beginPath(); ctx.arc(0,0,r*.32,0,Math.PI*2); ctx.fillStyle='#0d0d12'; ctx.fill(); }
+    ctx.restore();
+  });
+
+  document.getElementById('progressFill').style.width=(S.puzzle?S.path.length/S.puzzle.nodeCount*100:0)+'%';
+}
+function _drawPath(){
+  const{nodes}=S.puzzle;
+  ctx.beginPath(); ctx.moveTo(nodes[S.path[0]].px,nodes[S.path[0]].py);
+  for(let i=1;i<S.path.length;i++) ctx.lineTo(nodes[S.path[i]].px,nodes[S.path[i]].py);
+  ctx.stroke();
+}
+
+// ── Input ────────────────────────────────────────
+function getPos(evt){
+  const rect=canvas.getBoundingClientRect(), sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+  let x,y;
+  if(evt.touches){x=(evt.touches[0].clientX-rect.left)*sx;y=(evt.touches[0].clientY-rect.top)*sy;}
+  else{x=(evt.clientX-rect.left)*sx;y=(evt.clientY-rect.top)*sy;}
+  return{x,y};
+}
+function nearest(x,y){
+  if(!S.puzzle) return -1;
+  const hit=nodeR()*2.1; let best=-1,bd=Infinity;
+  S.puzzle.nodes.forEach((n,i)=>{const d=Math.hypot(n.px-x,n.py-y);if(d<hit&&d<bd){best=i;bd=d;}});
+  return best;
+}
+
+function onDown(evt){
+  if(S.solved) return;
+  evt.preventDefault();
+  const p=getPos(evt), node=nearest(p.x,p.y);
+  if(node<0) return;
+  startClock();
+  S.drawing=true; S.path=[node]; S.drawnEdges=new Set(); S.lastNode=node;
+  draw();
+}
+function onMove(evt){
+  if(!S.puzzle) return;
+  evt.preventDefault();
+  const p=getPos(evt);
+  if(!S.drawing&&evt.type==='mousemove'){
+    const n=nearest(p.x,p.y);
+    if(S.hoveredNode!==n){S.hoveredNode=n;draw();}
+    return;
+  }
+  if(!S.drawing) return;
+  const node=nearest(p.x,p.y);
+  if(node<0||node===S.lastNode) return;
+  const prev=S.path.indexOf(node);
+  // backtrack
+  if(prev>=0&&prev===S.path.length-2){
+    const rem=S.path.pop();
+    S.drawnEdges.delete(Math.min(rem,S.lastNode)+'-'+Math.max(rem,S.lastNode));
+    S.lastNode=S.path[S.path.length-1];
+    draw(); return;
+  }
+  if(prev>=0){S.mistakes++;return;}
+  const ek=Math.min(S.lastNode,node)+'-'+Math.max(S.lastNode,node);
+  if(!S.puzzle.edges.has(ek)||S.drawnEdges.has(ek)){S.mistakes++;return;}
+  S.drawnEdges.add(ek); S.path.push(node); S.lastNode=node;
+  if(S.path.length===S.puzzle.nodeCount) onSolve();
+  draw();
+}
+function onUp(){S.drawing=false;}
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('mouseup',   onUp);
+canvas.addEventListener('mouseleave',onUp);
+canvas.addEventListener('touchstart',onDown,{passive:false});
+canvas.addEventListener('touchmove', onMove,{passive:false});
+canvas.addEventListener('touchend',  onUp);
+
+// ── Solve ─────────────────────────────────────────
+function onSolve(){
+  S.solved=true; S.drawing=false;
+  stopClock();
+  const ms=S.stageStart?Date.now()-S.stageStart:0;
+  const stars=calcStars(ms,S.mistakes);
+  S.stageTimes.push(ms); S.stageDiffs.push(TIERS[S.tier].label); S.stageStars.push(stars);
+  S.stagesCompleted++;
+  S['solved_'+S.tier]++;
+  savePersist();
+  draw(); playCompletionSound(); spawnParticles(); flashScreen();
+
+  const isLast=S.stageIndex>=TIERS[S.tier].stages.length-1;
+  if(isLast){
+    showNSL('Tier Complete! 🎉','Showing results…');
+    setTimeout(()=>{hideNSL();showResults();},1800);
+  } else {
+    showNSL('Stage Clear ✓','Next stage…');
+    setTimeout(()=>{hideNSL();S.stageIndex++;loadStage();},1000);
+  }
+}
+
+function calcStars(ms,mistakes){
+  const s=ms/1000;
+  if(s<15&&mistakes===0) return 3;
+  if(s<60&&mistakes<=2)  return 2;
+  return 1;
+}
+function flashScreen(){
+  const f=document.getElementById('solveFlash');
+  f.classList.add('flash'); setTimeout(()=>f.classList.remove('flash'),180);
+}
+function showNSL(title,sub){
+  document.getElementById('nslTitle').textContent=title;
+  document.getElementById('nslSub').textContent=sub;
+  document.getElementById('nextStageLabel').classList.add('show');
+}
+function hideNSL(){ document.getElementById('nextStageLabel').classList.remove('show'); }
+
+// ── Results ───────────────────────────────────────
+function showResults(){
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.remove('hidden');
+
+  const total=S.stagesCompleted, times=S.stageTimes;
+  const best=times.length?Math.min(...times):0;
+  const avg=times.length?times.reduce((a,b)=>a+b,0)/times.length:0;
+  const perfect=S.stageStars.filter(s=>s===3).length;
+
+  let rank=RANKS[0];
+  for(const r of RANKS){if(total>=r.min) rank=r;}
+
+  document.getElementById('rankEmoji').textContent=rank.emoji;
+  document.getElementById('rankName').textContent=rank.name;
+  document.getElementById('rankDesc').textContent=rank.desc;
+  document.getElementById('resultsSub').textContent=`${TIERS[S.tier].label} Tier · ${total} stage${total!==1?'s':''} cleared`;
+  document.getElementById('rsTotalStages').textContent=total;
+  document.getElementById('rsBestTime').textContent=times.length?fmtMs(best):'–';
+  document.getElementById('rsAvgTime').textContent=times.length?fmtMs(avg):'–';
+  document.getElementById('rsPerfect').textContent=perfect;
+
+  const list=document.getElementById('shList'); list.innerHTML='';
+  S.stageTimes.forEach((ms,i)=>{
+    const stars=S.stageStars[i], diff=S.stageDiffs[i];
+    const row=document.createElement('div'); row.className='sh-row';
+    row.innerHTML=`<span class="sh-num">#${i+1}</span><span class="sh-diff">${diff}</span><span class="sh-stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span><span class="sh-time">${fmtMs(ms)}</span>`;
+    list.appendChild(row);
+  });
+  refreshLockUI();
+}
+
+function playAgain(){ document.getElementById('resultsScreen').classList.add('hidden'); pickTier(S.tier); }
+
+function goMenu(){
+  stopClock(); hideNSL();
+  ['resultsScreen','gameScreen'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('menuScreen').classList.remove('hidden');
+  refreshLockUI();
+}
+
+// ── Controls ──────────────────────────────────────
+function restartStage(){
+  stopClock();
+  S.path=[]; S.drawnEdges=new Set(); S.lastNode=-1; S.drawing=false;
+  S.stageStart=0; S.solved=false; S.mistakes=0; S.hintEdge=null;
+  document.getElementById('progressFill').style.width='0%';
+  document.getElementById('timerBig').innerHTML='0<span class="timer-cs">.00</span>';
+  draw();
+}
+
+function confirmStop(){
+  if(S.stagesCompleted===0){goMenu();return;}
+  stopClock();hideNSL();showResults();
+}
+
+// ── Hint ──────────────────────────────────────────
+function showHint(){
+  if(!S.puzzle||S.solved) return;
+  if(S.path.length===0){showHintChip('Start from any dot');return;}
+  const sol=S.puzzle.solution; let found=false;
+  for(let i=0;i<sol.length-1;i++){
+    if(sol[i]===S.lastNode&&!S.path.includes(sol[i+1])){
+      S.hintEdge=Math.min(S.lastNode,sol[i+1])+'-'+Math.max(S.lastNode,sol[i+1]);
+      draw(); clearTimeout(S.hintTimer);
+      S.hintTimer=setTimeout(()=>{S.hintEdge=null;draw();},2800);
+      found=true; break;
+    }
+  }
+  if(!found) showHintChip('Try restarting — you may be off-path');
+}
+function showHintChip(msg){
+  const c=document.getElementById('hintChip');
+  c.textContent='💡 '+msg; c.classList.add('visible');
+  setTimeout(()=>c.classList.remove('visible'),3000);
+}
+
+// ── Share ─────────────────────────────────────────
+function shareSession(){
+  const url=window.location.href.split('?')[0];
+  const txt=`One Line Mind — ${S.stagesCompleted} ${TIERS[S.tier].label} stages! Beat me? ${url}`;
+  if(navigator.share) navigator.share({title:'One Line Mind',text:txt,url}).catch(()=>{});
+  else navigator.clipboard.writeText(txt).then(()=>showToast('Copied!')).catch(()=>showToast(url));
+}
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── Particles ─────────────────────────────────────
+function spawnParticles(){
+  const cx=pCanvas.width/2, cy=pCanvas.height/2;
+  const cols=['#c4acf8','#88cef0','#f0aac4','#78f0a8','#f0d070'];
+  for(let i=0;i<55;i++){
+    const a=Math.random()*Math.PI*2, sp=1.5+Math.random()*4;
+    S.particles.push({x:cx,y:cy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.8,
+      r:2+Math.random()*4,color:cols[Math.floor(Math.random()*cols.length)],
+      alpha:1,decay:.013+Math.random()*.014});
+  }
+  requestAnimationFrame(animPart);
+}
+function animPart(){
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+  S.particles=S.particles.filter(p=>p.alpha>.01);
+  S.particles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=.11; p.alpha-=p.decay;
+    pCtx.save(); pCtx.globalAlpha=p.alpha;
+    pCtx.beginPath(); pCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    pCtx.fillStyle=p.color; pCtx.shadowColor=p.color; pCtx.shadowBlur=6; pCtx.fill(); pCtx.restore();
+  });
+  if(S.particles.length>0) requestAnimationFrame(animPart);
+  else pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
+}
+
+// ── Audio ─────────────────────────────────────────
+let audioCtx=null;
+function getAudio(){ if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+function playTone(freq,dur,gain=.09){
+  try{
+    const ac=getAudio(),o=ac.createOscillator(),g=ac.createGain();
+    o.connect(g); g.connect(ac.destination); o.type='sine';
+    o.frequency.setValueAtTime(freq,ac.currentTime);
+    g.gain.setValueAtTime(0,ac.currentTime);
+    g.gain.linearRampToValueAtTime(gain,ac.currentTime+.01);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);
+    o.start(ac.currentTime); o.stop(ac.currentTime+dur);
+  }catch(e){}
+}
+function playCompletionSound(){
+  [523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,.35,.09),i*80));
+  setTimeout(()=>playTone(1047,.65,.07),350);
+}
+
+// ── Init ──────────────────────────────────────────
+loadPersist();
+refreshLockUI();
+resizeCanvas();
+</script>
+</body>
+</html>

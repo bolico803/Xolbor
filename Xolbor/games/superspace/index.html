@@ -125,7 +125,7 @@
         function updateLeaderboard() {
             const list = document.getElementById('leaderboard-list');
             const sorted = Object.values(players).sort((a, b) => b.score - a.score).slice(0, 5);
-            list.innerHTML = sorted.map(p => `<li>${p.username}: ${p.score}</li>`).join('');
+            list.innerHTML = sorted.map(p => `<li>${String(p.username).replace(/[^a-zA-Z0-9_ -]/g, "")}: ${p.score}</li>`).join('');
 
             if (players[myId]) {
                 document.getElementById('score').innerText = `Score: ${players[myId].score}`;

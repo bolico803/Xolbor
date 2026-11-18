@@ -1,10 +1,12 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('node:crypto');
 const bodyParser = require('body-parser');
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeSecretKey ? require('stripe')(stripeSecretKey) : null;
 
 const http = require('http');
 const { Server } = require("socket.io");
@@ -16,19 +18,37 @@ const PAYPAL_API = 'https://api-m.sandbox.paypal.com'; // Use https://api-m.payp
 const PUBLIC_ORIGIN = process.env.PUBLIC_ORIGIN || 'https://xolbor.ma';
 const PUBLIC_WWW_ORIGIN = process.env.PUBLIC_WWW_ORIGIN || 'https://www.xolbor.ma';
 const LOCAL_ORIGIN = `http://127.0.0.1:${process.env.PORT || 5897}`;
+const ON_RENDER = process.env.RENDER === 'true';
+if (ON_RENDER && !process.env.DATABASE_PATH) {
+    throw new Error('Render : configurez DATABASE_PATH sur le disque persistant et migrez les comptes avant la publication.');
+}
 
 const app = express();
-app.set('trust proxy', 1);
+app.set('trust proxy', (process.env.TRUST_PROXY ?? (ON_RENDER ? '1' : '0')) === '1' ? 1 : false);
+const allowedOrigins = new Set([PUBLIC_ORIGIN, PUBLIC_WWW_ORIGIN, LOCAL_ORIGIN, `http://localhost:${process.env.PORT || 5897}`]);
+if (ON_RENDER && process.env.RENDER_EXTERNAL_URL) {
+    const renderOrigin = new URL(process.env.RENDER_EXTERNAL_URL);
+    if (renderOrigin.protocol === 'https:' && renderOrigin.hostname.endsWith('.onrender.com')) allowedOrigins.add(renderOrigin.origin);
+}
+const lanAddress=process.env.XOLBOR_LAN_ADDRESS;
+if(lanAddress && Object.values(require('os').networkInterfaces()).flat().some(i=>i && i.family==='IPv4' && !i.internal && i.address===lanAddress)) allowedOrigins.add(`http://${lanAddress}:${process.env.PORT || 5897}`);
+require('./lib/security').protect(app, allowedOrigins);
+app.use((req,res,next) => {
+  let pathname; try { pathname=decodeURIComponent(req.path).replace(/\\/g,'/'); } catch { return res.sendStatus(400); }
+  if (pathname.split('/').some(x => x.startsWith('.') || ['data','server','node_modules','lib','tests','scripts','docs','deploy'].includes(x)) || /(?:server\.js|package(?:-lock)?\.json|\.env|\.bak|\.sqlite|\.log|\.zip$)/i.test(pathname)) return res.sendStatus(404);
+  next();
+});
+app.use('/api/instatock', (_req,res) => res.status(503).json({error:'Service Instatock séparé : configuration requise.'}));
 const server = http.createServer(app);
+server.headersTimeout = 15000;
+server.requestTimeout = 30000;
+server.keepAliveTimeout = 5000;
+let shuttingDown = false;
 const io = new Server(server, {
+    maxHttpBufferSize: 16384,
+    allowRequest: (req, callback) => callback(null, !req.headers.origin || allowedOrigins.has(req.headers.origin)),
     cors: {
         origin: (origin, callback) => {
-            const allowedOrigins = new Set([
-                PUBLIC_ORIGIN,
-                PUBLIC_WWW_ORIGIN,
-                LOCAL_ORIGIN,
-                'http://localhost:5897'
-            ]);
             if (!origin || allowedOrigins.has(origin)) return callback(null, true);
             return callback(null, false);
         },
@@ -67,6 +87,16 @@ app.use('/Instatock', express.static(path.join(__dirname, 'Instatock')));
 
 const PORT = process.env.PORT || 5897;
 const DATA_DIR = path.join(__dirname, 'data');
+const { Store } = require('./lib/store');
+const store = new Store(process.env.DATABASE_PATH || path.join(__dirname, 'runtime', 'xolbor.sqlite'));
+store.seed(DATA_DIR);
+app.get('/health/live', (_req,res) => res.status(200).json({status:'alive'}));
+app.get('/health/ready', (_req,res) => {
+    if (shuttingDown) return res.status(503).json({status:'draining'});
+    try { store.db.prepare('SELECT 1 AS ok').get(); return res.status(200).json({status:'ready'}); }
+    catch { return res.status(503).json({status:'database-unavailable'}); }
+});
+const auth = require('./lib/security').sessions(store);
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const SKINS_FILE = path.join(DATA_DIR, 'skins.json');
 const TOURNAMENTS_FILE = path.join(DATA_DIR, 'tournaments.json');
@@ -79,18 +109,8 @@ const BOUNTIES_FILE = path.join(DATA_DIR, 'bounties.json');
 
 // --- HELPERS FOR NEW FEATURES ---
 
-const readJsonFile = (filePath, defaultVal = []) => {
-    if (!fs.existsSync(filePath)) return defaultVal;
-    try {
-        return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    } catch (e) {
-        return defaultVal;
-    }
-};
-
-const writeJsonFile = (filePath, data) => {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-};
+const readJsonFile = (filePath, defaultVal = []) => store.read(path.basename(filePath, '.json'), defaultVal);
+const writeJsonFile = (filePath, data) => store.write(path.basename(filePath, '.json'), data);
 
 // --- NEXUS HUB STATE ---
 const nexusState = { players: {} };
@@ -101,6 +121,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`[SOCKET] User disconnected: ${socket.id}`);
+        delete superSpaceState.players[socket.id];
         // Emit to nexus that a player has left if they were in the nexus
         if (nexusState.players[socket.id]) {
             delete nexusState.players[socket.id];
@@ -233,7 +254,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendEmail = async (to, subject, html) => {
-    if (!to || !to.includes('@')) return;
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !to || !to.includes('@')) return;
     try {
         await transporter.sendMail({
             from: '"Xolbor Admin" <no-reply@xolbor.ma>',
@@ -277,7 +298,16 @@ const staticOptions = {
     }
 };
 
-app.use(express.static(path.join(__dirname, '/'), staticOptions));
+for (const folder of ['images','vendor','games','Superfight','Superplat','SuperSpace','rpg_grande','PaytoDelet','If you have an IQ','site_defis_impossibles','xolbor-studio','public']) {
+    app.use('/'+folder, express.static(path.join(__dirname, folder), {...staticOptions, dotfiles:'deny'}));
+}
+for (const file of ['sw.js','manifest.json','logo.svg','favicon.png','favicon-removebg-preview.png','avatarxolbor.png','3D Tennis.html','Tunnel Runner 3D.html']) {
+    app.get('/'+file, (_req,res) => res.sendFile(path.join(__dirname,file)));
+}
+app.get('/', (_req,res) => res.sendFile(path.join(__dirname,'public','home.html')));
+app.get('/play', (_req,res) => res.sendFile(path.join(__dirname,'public','lobby.html')));
+app.get('/hub', (_req,res) => res.sendFile(path.join(__dirname,'public','hub.html')));
+
 
 const existingPath = (candidates) => {
     return candidates.find(candidate => fs.existsSync(candidate)) || candidates[0];
@@ -334,40 +364,22 @@ app.get(['/games/felnas-journey-ex', '/games/felnas-journey-ex/'], (req, res) =>
     res.sendFile(path.join(__dirname, felnaFile));
 });
 
-app.use(bodyParser.json());
+const paymentModule = require('./lib/payments');
+const paymentService = paymentModule.installPayments({app,store,auth});
+app.use(bodyParser.json({limit:'32kb'}));
+paymentModule.installPaymentApi({app,store,auth,payments:paymentService});
+const notifications = require('./lib/notifications').installNotifications({app,store,auth,io});
+require('./lib/platform-api').installApi({app, store, auth, io, notifications});
+const realtime = require('./lib/realtime').installRealtime({app, store, auth, io});
+require('./lib/catastrophe-realtime').installCatastrophe({io,auth,store});
+
 
 // Helper: Read Users
-const readUsers = () => {
-    if (!fs.existsSync(USERS_FILE)) return [];
-    try {
-        return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
-    } catch (e) {
-        return [];
-    }
-};
-
-// Helper: Write Users
-const writeUsers = (users) => {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
-};
-
-// Helper: Get User by Session
-const getUserBySession = (req) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return null;
-    const token = authHeader.split(' ')[1];
-    const users = readUsers();
-    return users.find(u => u.sessionToken === token);
-};
-
-// Helper: Check if User is King
-const isUserKing = (username) => {
-    const users = readJsonFile(USERS_FILE);
-    if (users.length === 0) return false;
-    // Sort by XP descending
-    const sorted = [...users].sort((a, b) => (b.xp || 0) - (a.xp || 0));
-    return sorted[0].username === username;
-};
+const readUsers = () => store.users();
+const writeUsers = users => store.saveUsers(users);
+const getUserBySession = req => auth.resolve(req);
+// Preserve the old UI property name while requiring an explicit administrative role.
+const isUserKing = username => store.users().some(u => u.username === username && u.role === 'admin');
 
 // --- AUTH APIs ---
 
@@ -426,7 +438,7 @@ app.post('/api/register', async (req, res) => {
             <h2>📊 Vos statistiques de départ :</h2>
             <ul>
                 <li>💰 Xubor: 0 pièces</li>
-                <li>⭐ XP: 0 (Niveau 1)</li>
+                <li>â­ XP: 0 (Niveau 1)</li>
                 <li>🔥 Série quotidienne: 0 jour(s)</li>
                 <li>📅 Date d'inscription: ${registrationTime}</li>
             </ul>
@@ -449,7 +461,7 @@ app.post('/api/register', async (req, res) => {
                 <li>Les décrets royaux importants</li>
             </ul>
 
-            <p style="color: #e11d48; font-weight: bold;">⚠️ Sécurité : Conservez vos identifiants en lieu sûr !</p>
+            <p style="color: #e11d48; font-weight: bold;">âš ï¸ SÃ©curitÃ© : Conservez vos identifiants en lieu sÃ»r !</p>
 
             <p>Préparez-vous à dominer le classement et amusez-vous bien ! 🚀</p>
 
@@ -523,7 +535,7 @@ app.post('/api/login', async (req, res) => {
             <p><strong>Détails de connexion :</strong></p>
             <ul>
                 <li>📅 Date/Heure: ${loginTime}</li>
-                <li>⭐ XP gagné: +50</li>
+                <li>â­ XP gagnÃ©: +50</li>
                 <li>📊 Niveau actuel: ${user.level}</li>
                 <li>🔥 Série quotidienne: ${user.dailyStreak} jour(s)${streakBonus}</li>
             </ul>
@@ -643,7 +655,7 @@ app.post('/api/profile/rename', (req, res) => {
 
     // Check cost
     const currentUser = users.find(u => u.username === user.username);
-    if (currentUser.xubor < 100) return res.status(400).json({ error: 'Pas assez de Xubor (100 requis)' });
+    if (!currentUser.founder && currentUser.xubor < 100) return res.status(400).json({ error: 'Pas assez de Xubor (100 requis)' });
 
     // Check uniqueness
     if (users.find(u => u.username === newUsername)) return res.status(409).json({ error: 'Pseudo déjà pris' });
@@ -651,15 +663,15 @@ app.post('/api/profile/rename', (req, res) => {
     // Update
     const oldName = currentUser.username;
     currentUser.username = newUsername;
-    currentUser.xubor -= 100;
+    if (!currentUser.founder) currentUser.xubor -= 100;
 
     // Update friends lists of OTHER users (expensive operation but necessary)
     users.forEach(u => {
-        const idx = u.friends.indexOf(oldName);
+        const idx = (u.friends || []).indexOf(oldName);
         if (idx !== -1) u.friends[idx] = newUsername;
 
         // Update requests if any
-        u.friendRequests.forEach(r => {
+        (u.friendRequests || []).forEach(r => {
             if (r.from === oldName) r.from = newUsername;
         });
     });
@@ -694,17 +706,17 @@ app.post('/api/profile/password', async (req, res) => {
     const users = readUsers();
     const currentUser = users.find(u => u.username === user.username);
 
-    if (currentUser.xubor < 100) return res.status(400).json({ error: 'Pas assez de Xubor (100 requis)' });
+    if (!currentUser.founder && currentUser.xubor < 100) return res.status(400).json({ error: 'Pas assez de Xubor (100 requis)' });
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     currentUser.password = hashedPassword;
-    currentUser.xubor -= 100;
+    if (!currentUser.founder) currentUser.xubor -= 100;
 
     writeUsers(users);
 
     // Send password change confirmation email
     if (currentUser.email) {
-        sendEmail(currentUser.email, "🔐 Mot de passe changé avec succès !", `
+        sendEmail(currentUser.email, "ðŸ” Mot de passe changÃ© avec succÃ¨s !", `
             <h2>Votre mot de passe a été modifié !</h2>
             <p>Votre mot de passe a été changé avec succès.</p>
             <p>Coût : <strong>100 X</strong></p>
@@ -928,13 +940,13 @@ app.post('/api/bounties/place', (req, res) => {
     if (currentUserIndex === -1) return res.status(404).json({ error: 'Utilisateur introuvable' });
     const currentUser = users[currentUserIndex];
 
-    if ((currentUser.xubor || 0) < parsedReward) return res.status(400).json({ error: 'Fonds insuffisants' });
+    if (!currentUser.founder && (currentUser.xubor || 0) < parsedReward) return res.status(400).json({ error: 'Fonds insuffisants' });
 
     const targetUser = users.find(u => u.username.toLowerCase() === target.toLowerCase());
     if (!targetUser) return res.status(404).json({ error: 'Cible introuvable' });
 
     // Deduct xubor correctly
-    currentUser.xubor -= parsedReward;
+    if (!currentUser.founder) currentUser.xubor -= parsedReward;
     writeUsers(users);
 
     const bounties = readJsonFile(BOUNTIES_FILE, []);
@@ -966,6 +978,7 @@ app.get('/api/tournaments', (req, res) => {
 
 // Calculate prizes based on rank
 const distributePrizes = (tournament) => {
+    return; // Phase 1: no rewards from legacy client-submitted scores.
     if (tournament.participants.length === 0) return;
 
     // Sort by score descending
@@ -1021,13 +1034,13 @@ setInterval(() => {
             t.status = 'active';
             changed = true;
             console.log(`[TOURNAMENT] Started: ${t.title}`);
-            io.emit('notification', { type: 'system', message: `🏆 Le tournoi ${t.title} vient de commencer !` });
+            io.emit('notification', { type: 'system', message: `ðŸ† Le tournoi ${t.title} vient de commencer !` });
         } else if (t.status === 'active' && now >= t.endTime) {
             t.status = 'completed';
             changed = true;
             console.log(`[TOURNAMENT] Ended: ${t.title}`);
             const winners = distributePrizes(t);
-            io.emit('notification', { type: 'system', message: `🏁 Le tournoi ${t.title} est terminé !` });
+            io.emit('notification', { type: 'system', message: `ðŸ Le tournoi ${t.title} est terminÃ© !` });
             if (winners && winners.length > 0) {
                 io.emit('notification', { type: 'system', message: `🥇 Vainqueur : ${winners[0].username} (+${winners[0].prize} X)` });
             }
@@ -1093,10 +1106,10 @@ app.post('/api/tournaments/join', (req, res) => {
     const isKing = isUserKing(currentUser.username);
 
     if (tournament.entryFee > 0 && !isKing) {
-        if (currentUser.xubor < tournament.entryFee) {
+        if (!currentUser.founder && currentUser.xubor < tournament.entryFee) {
             return res.status(400).json({ error: 'Fonds insuffisants' });
         }
-        currentUser.xubor -= tournament.entryFee;
+        if (!currentUser.founder) currentUser.xubor -= tournament.entryFee;
         writeUsers(users);
     }
 
@@ -1110,7 +1123,7 @@ app.post('/api/tournaments/join', (req, res) => {
 
     // Send tournament join confirmation email
     if (currentUser.email && tournament.entryFee > 0) {
-        sendEmail(currentUser.email, "🏆 Inscription tournoi confirmée !", `
+        sendEmail(currentUser.email, "ðŸ† Inscription tournoi confirmÃ©e !", `
             <h2>Vous êtes inscrit au tournoi !</h2>
             <p><strong>${tournament.title}</strong></p>
             <p>Frais d'entrée : <strong>${tournament.entryFee} X</strong></p>
@@ -1176,7 +1189,7 @@ app.post('/api/guilds/create', (req, res) => {
     }
 
     // Check creation cost (1000 Xubor)
-    if (currentUser.xubor < 1000) {
+    if (!currentUser.founder && currentUser.xubor < 1000) {
         return res.status(400).json({ error: 'Fonds insuffisants (1000 Xubor requis)' });
     }
 
@@ -1188,7 +1201,7 @@ app.post('/api/guilds/create', (req, res) => {
         members: [user.username],
         xp: 0,
         level: 1,
-        emblem: emblem || '🏰',
+        emblem: emblem || 'ðŸ°',
         createdAt: Date.now(),
         wins: 0,
         losses: 0
@@ -1198,7 +1211,7 @@ app.post('/api/guilds/create', (req, res) => {
     writeJsonFile(GUILDS_FILE, guilds);
 
     // Deduct cost and assign guild
-    currentUser.xubor -= 1000;
+    if (!currentUser.founder) currentUser.xubor -= 1000;
     currentUser.guild = newGuild.id;
     writeUsers(users);
 
@@ -1314,17 +1327,7 @@ app.get('/api/leaderboard', (req, res) => {
 
 // --- SKINS & SHOP APIs ---
 
-app.get('/api/skins', (req, res) => {
-    if (fs.existsSync(SKINS_FILE)) {
-        try {
-            const data = JSON.parse(fs.readFileSync(SKINS_FILE, 'utf8'));
-            return res.json(data);
-        } catch (e) {
-            return res.json([]);
-        }
-    }
-    res.json([]);
-});
+app.get('/api/skins', (_req,res) => res.json(store.read('skins')));
 
 app.get('/api/cosmetics', (req, res) => {
     const cosmetics = readJsonFile(COSMETICS_FILE, []);
@@ -1341,10 +1344,10 @@ app.post('/api/buy-cosmetic', (req, res) => {
     const isKing = isUserKing(currentUser.username);
 
     if (price > 0 && !isKing) {
-        if (currentUser.xubor < price) {
+        if (!currentUser.founder && currentUser.xubor < price) {
             return res.status(400).json({ error: 'Fonds insuffisants' });
         }
-        currentUser.xubor -= price;
+        if (!currentUser.founder) currentUser.xubor -= price;
     }
 
     if (!currentUser.equippedCosmetics) {
@@ -1407,10 +1410,10 @@ app.post('/api/buy-skin', (req, res) => {
     const currentUser = users.find(u => u.id === user.id);
     const isKing = isUserKing(currentUser.username);
 
-    if (!isKing && currentUser.xubor < price) return res.status(400).json({ error: 'Fonds insuffisants' });
+    if (!currentUser.founder && !isKing && currentUser.xubor < price) return res.status(400).json({ error: 'Fonds insuffisants' });
     if (currentUser.inventory.includes(numSkinId)) return res.json({ success: true }); // Already owned
 
-    if (!isKing) currentUser.xubor -= price;
+    if (!currentUser.founder && !isKing) currentUser.xubor -= price;
     currentUser.inventory.push(numSkinId);
     writeUsers(users);
 
@@ -1479,18 +1482,10 @@ app.post('/api/equip-skin', (req, res) => {
 
 const GAMES_FILE = path.join(DATA_DIR, 'games.json');
 
-const readGames = () => {
-    if (!fs.existsSync(GAMES_FILE)) return [];
-    try {
-        return JSON.parse(fs.readFileSync(GAMES_FILE, 'utf8'));
-    } catch (e) {
-        return [];
-    }
-};
-
-const writeGames = (games) => {
-    fs.writeFileSync(GAMES_FILE, JSON.stringify(games, null, 2));
-};
+const readGames = () => store.read('games');
+const writeGames = games => store.write('games',games);
+// Add the forest to existing installations without overwriting game statistics.
+{ const games=readGames(); if(!games.some(game=>game.id==='41')) { games.push({id:'41',title:'La Forêt des saisons',img:'/images/foret-des-saisons.jpg',url:'/games/foret-des-saisons/',visits:0,likes:[],iframe:true}); writeGames(games); } }
 
 app.get('/api/games', (req, res) => {
     try {
@@ -1599,18 +1594,8 @@ app.post('/api/games/:id/like', (req, res) => {
 
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 
-const readMessages = () => {
-    if (!fs.existsSync(MESSAGES_FILE)) return [];
-    try {
-        return JSON.parse(fs.readFileSync(MESSAGES_FILE, 'utf8'));
-    } catch (e) {
-        return [];
-    }
-};
-
-const writeMessages = (msgs) => {
-    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(msgs, null, 2));
-};
+const readMessages = () => store.read('messages');
+const writeMessages = msgs => store.write('messages',msgs);
 
 app.get('/api/chat/history', (req, res) => {
     const user = getUserBySession(req);
@@ -1649,6 +1634,113 @@ app.post('/api/chat/send', (req, res) => {
     writeMessages(messages);
 
     res.json({ success: true, message: newMessage });
+});
+
+// --- STRIPE PAYMENT SYSTEM ---
+const STRIPE_PACKS = {
+    "Starter": { amount: 100, unitAmount: 499, mode: "payment", label: "Starter - 100 Xubor" },
+    "Standard": { amount: 700, unitAmount: 1999, mode: "payment", label: "Standard - 600 + 100 Xubor" },
+    "Premium": { amount: 2300, unitAmount: 3999, mode: "payment", label: "Premium - 1800 + 500 Xubor" },
+    "Ultimate": { amount: 7000, unitAmount: 9999, mode: "payment", label: "Ultimate - 5000 + 2000 Xubor" },
+    "Xubor Infinity": { amount: 999999, unitAmount: 9999, mode: "subscription", label: "Xubor Infinity" }
+};
+
+function getRequestOrigin(req) {
+    const forwardedProto = req.get('x-forwarded-proto');
+    const protocol = forwardedProto ? forwardedProto.split(',')[0] : req.protocol;
+    return `${protocol}://${req.get('host')}`;
+}
+
+function getStripePack(amount, price, packName) {
+    const pack = STRIPE_PACKS[packName];
+    const requestedAmount = Number(amount);
+    const requestedCents = Math.round(Number(price) * 100);
+    if (!pack || pack.amount !== requestedAmount || pack.unitAmount !== requestedCents) {
+        return null;
+    }
+    return pack;
+}
+
+app.post('/api/create-stripe-checkout-session', async (req, res) => {
+    const user = getUserBySession(req);
+    if (!user) return res.status(401).json({ error: 'Non authentifie' });
+    if (!stripe) return res.status(500).json({ error: 'Stripe n est pas configure sur le serveur' });
+
+    const { amount, price, packName } = req.body;
+    const pack = getStripePack(amount, price, packName);
+    if (!pack) return res.status(400).json({ error: 'Pack Xubor invalide' });
+
+    try {
+        const origin = getRequestOrigin(req);
+        const priceData = {
+            currency: 'eur',
+            product_data: {
+                name: pack.label,
+                description: pack.mode === 'subscription'
+                    ? 'Abonnement mensuel Xubor Infinity'
+                    : `${pack.amount} Xubor`
+            },
+            unit_amount: pack.unitAmount
+        };
+
+        if (pack.mode === 'subscription') {
+            priceData.recurring = { interval: 'month' };
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            mode: pack.mode,
+            payment_method_types: ['card'],
+            line_items: [{ price_data: priceData, quantity: 1 }],
+            success_url: `${origin}/api/stripe-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/?payment=cancelled`,
+            client_reference_id: user.id || user.username,
+            metadata: {
+                username: user.username,
+                xuborAmount: String(pack.amount),
+                packName: packName
+            }
+        });
+
+        res.json({ checkoutUrl: session.url });
+    } catch (error) {
+        console.error("Stripe Checkout Error:", error.message || error);
+        res.status(500).json({ error: "Erreur Stripe: " + (error.message || "Erreur inconnue").substring(0, 160) });
+    }
+});
+
+app.get('/api/stripe-success', async (req, res) => {
+    if (!stripe) return res.redirect('/?payment=error');
+    const { session_id } = req.query;
+    if (!session_id) return res.redirect('/?payment=error');
+
+    try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        if (!session || session.payment_status !== 'paid') {
+            return res.redirect('/?payment=error');
+        }
+
+        const username = session.metadata && session.metadata.username;
+        const xuborAmount = parseInt(session.metadata && session.metadata.xuborAmount, 10);
+        if (!username || !xuborAmount) return res.redirect('/?payment=error');
+
+        const users = readUsers();
+        const user = users.find(u => u.username === username);
+        if (user) {
+            const paymentId = `stripe:${session.id}`;
+            if (!user.processedPayments) user.processedPayments = [];
+            if (!user.processedPayments.includes(paymentId)) {
+                user.xubor = Number(user.xubor || 0) + xuborAmount;
+                user.processedPayments.push(paymentId);
+                writeUsers(users);
+                console.log(`[PAYMENT] Granted ${xuborAmount} Xubor to ${username} via Stripe`);
+            }
+        }
+
+        res.redirect('/?payment=success');
+    } catch (error) {
+        console.error("Stripe Success Error:", error.message || error);
+        res.redirect('/?payment=error');
+    }
 });
 
 // --- PAYPAL PAYMENT SYSTEM ---
@@ -1780,15 +1872,8 @@ app.get('/api/paypal-success', async (req, res) => {
 
 
 // Fallback
-app.get('*', (req, res) => {
-    if (path.extname(req.path)) {
-        return res.status(404).type('text/plain').send('Not found');
-    }
-
-    const indexPath = path.join(__dirname, 'index.html');
-    if (fs.existsSync(indexPath)) res.sendFile(indexPath);
-    else res.status(404).send('Not found');
-});
+// Keep old URLs working without reopening the retired interface.
+app.get(['/classic','/index.html'], (_req,res) => res.redirect(302, '/'));
 
 // --- SOCKET.IO SIGNALING & PRESENCE ---
 
@@ -2015,35 +2100,9 @@ const scheduleNextGlitch = () => {
 };
 
 // Start the cycle
-scheduleNextGlitch();
+// Random legacy cash events are disabled in phase 1.
 
-
-try {
-    const startRpgServer = require('./rpg_server.js');
-    startRpgServer();
-} catch (e) {
-    console.error("Failed to start RPG Server:", e);
-}
-
-// Auto-start Instatock Server
-try {
-    const { spawn } = require('child_process');
-    const instatockPath = path.join(__dirname, 'Instatock', 'server', 'server.js');
-
-    // We use spawn to run the ES module server
-    const instatockProcess = spawn('node', [instatockPath], {
-        env: { ...process.env, PORT: 4005 },
-        stdio: 'inherit'
-    });
-
-    instatockProcess.on('error', (err) => {
-        console.error("Failed to start Instatock Server:", err);
-    });
-
-    console.log("🚀 Instatock Backend starting on port 4005...");
-} catch (e) {
-    console.error("Error launching Instatock Server:", e);
-}
+// Historical RPG and Instatock are retained as separate sources; deploy independently after their security review.
 
 server.on('upgrade', (req, socket, head) => {
     if (req.url && req.url.startsWith('/socket.io/instatock')) {
@@ -2051,10 +2110,31 @@ server.on('upgrade', (req, socket, head) => {
     }
 });
 
-server.listen(PORT, () => {
+app.use('/api', (_req,res) => res.status(404).json({error:'API introuvable'}));
+app.use((error,req,res,_next) => {
+    console.error('[API]', error.code || error.name);
+    res.status(error.status || 500).json({error:error.status === 409 ? error.message : error.status === 400 ? 'Requête JSON invalide' : 'Erreur serveur'});
+});
+app.use((_req,res) => res.sendStatus(404));
+server.listen(PORT, process.env.HOST || (ON_RENDER ? '0.0.0.0' : '127.0.0.1'), () => {
     console.log(`---------------------------------------------------`);
     console.log(`🚀 Xolbor Strong Server started!`);
     console.log(`📡 Domain: http://127.0.0.1:${PORT}`);
     console.log(`📱 App (Emulator): http://127.0.0.1:${PORT}`);
     console.log(`---------------------------------------------------`);
 });
+
+
+function shutdown(signal){
+    if(shuttingDown)return;
+    shuttingDown=true;realtime.beginShutdown();realtime.close();
+    console.log(`[SERVER] ${signal}: arrêt en cours`);
+    const deadline=setTimeout(()=>{console.error('[SERVER] arrêt forcé après délai');process.exit(1);},10000);
+    deadline.unref();
+    server.closeIdleConnections?.();
+    io.close(()=>{
+        try { store.close(); clearTimeout(deadline); console.log('[SERVER] arrêté proprement'); process.exit(0); }
+        catch(error){ console.error('[SERVER] fermeture de base impossible:',error.message);process.exit(1); }
+    });
+}
+process.on('SIGTERM',()=>shutdown('SIGTERM'));process.on('SIGINT',()=>shutdown('SIGINT'));

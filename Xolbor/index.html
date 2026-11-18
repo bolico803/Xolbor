@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <!-- AUTO-REFRESH LITE -->
 
@@ -172,7 +172,7 @@
         }
 
         .theme-easter::before {
-            content: "🐣";
+            content: "ðŸ£";
             position: fixed;
             top: 10px;
             right: 10px;
@@ -182,7 +182,7 @@
         }
 
         .theme-summer::before {
-            content: "☀️";
+            content: "â˜€ï¸";
             position: fixed;
             top: 10px;
             right: 10px;
@@ -2835,6 +2835,7 @@
 </head>
 
 <body>
+    <div style="position:relative;z-index:20;padding:12px 20px;background:#c6fb66;color:#14200a;font:600 13px Arial;text-align:center">XOLBOR ULTIMATE · PHASE 1 — <a href="/play" style="color:inherit;text-decoration:underline">Entrer dans le nouveau lobby 3D multijoueur</a> · Paiements et tournois rémunérés non activés.</div>
 
     <div id="toast" class="toast"><span id="toast-msg">Message</span></div>
 
@@ -2847,16 +2848,10 @@
                 <img src="/images/ui/xubor-coin.png" class="xubor-icon large" alt="">
                 <div>
                     <div id="payment-pack-name" style="font-family:'Orbitron'; color:#fff;">Pack Xubor</div>
-                    <div style="color:#cbd5e1; margin-top:4px;">Redirection PayPal securisee apres confirmation.</div>
+                    <div style="color:#cbd5e1; margin-top:4px;">Redirection Stripe securisee apres confirmation.</div>
                 </div>
             </div>
-            <form id="payment-form" style="margin-bottom: 20px; text-align: left;" onsubmit="event.preventDefault()">
-                <input type="text" placeholder="Numéro de carte (16 chiffres)" required>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" placeholder="MM/AA" maxlength="5" required>
-                    <input type="text" placeholder="CVV" maxlength="3" required>
-                </div>
-            </form>
+            <div id="payment-form" style="margin-bottom: 20px; text-align: left; color:#cbd5e1; line-height:1.45;">Tu seras redirige vers Stripe Checkout. Les informations bancaires sont saisies uniquement sur Stripe, pas sur Xolbor.</div>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button class="btn-secondary" onclick="closePaymentModal()">Annuler</button>
                 <button class="btn-primary shop-buy-btn" onclick="processPayment()"><span>Payer</span></button>
@@ -2880,7 +2875,7 @@
                 style="font-family: 'Orbitron'; font-weight: bold; color: white; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.5);">Inviter
                 !</span>
         </button>
-        <iframe id="game-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
+        <iframe sandbox="allow-scripts allow-forms allow-pointer-lock allow-presentation allow-popups" referrerpolicy="no-referrer" id="game-iframe" src="" style="width: 100%; height: 100%; border: none;"></iframe>
         <div id="mobile-controls" aria-hidden="true">
             <div class="touch-joystick" id="touch-joystick">
                 <div class="touch-stick" id="touch-stick"></div>
@@ -2998,7 +2993,7 @@
 
         <!-- Vue Tournois -->
         <section id="view-tournaments" class="main-content hidden">
-            <h2 class="section-title">🏆 Tournois & Événements</h2>
+            <h2 class="section-title">ðŸ† Tournois & Ã‰vÃ©nements</h2>
 
             <div id="active-event-container"></div>
 
@@ -3008,7 +3003,7 @@
 
         <!-- Vue Factions -->
         <section id="view-factions" class="main-content hidden">
-            <h2 class="section-title">⚔️ Guerre des Factions</h2>
+            <h2 class="section-title">âš”ï¸ Guerre des Factions</h2>
             <div id="faction-choice-container" class="glass-panel"
                 style="text-align:center; padding:20px; margin-bottom: 20px; display: none;">
                 <h3>Rejoignez la Guerre !</h3>
@@ -3080,7 +3075,7 @@
 
         <!-- Vue Guildes -->
         <section id="view-guilds" class="main-content hidden">
-            <h2 class="section-title">🏰 Guildes</h2>
+            <h2 class="section-title">ðŸ° Guildes</h2>
 
             <div id="my-guild-container"></div>
 
@@ -3092,7 +3087,7 @@
                     <h3>Créer une Guilde</h3>
                     <input type="text" id="guild-name" placeholder="Nom de la guilde" maxlength="20">
                     <textarea id="guild-description" placeholder="Description" maxlength="200"></textarea>
-                    <input type="text" id="guild-emblem" placeholder="Emblème (emoji)" maxlength="2" value="🏰">
+                    <input type="text" id="guild-emblem" placeholder="EmblÃ¨me (emoji)" maxlength="2" value="ðŸ°">
                     <button onclick="createGuild()">Créer (1000 Xubor)</button>
                     <button onclick="closeModal('create-guild-modal')">Annuler</button>
                 </div>
@@ -3121,7 +3116,7 @@
 
         <!-- Vue Succès -->
         <section id="view-achievements" class="main-content hidden">
-            <h2 class="section-title">🎖️ Succès & Trophées</h2>
+            <h2 class="section-title">ðŸŽ–ï¸ SuccÃ¨s & TrophÃ©es</h2>
             <div class="achievement-grid" id="achievements-grid">
                 <!-- Filled by JS -->
             </div>
@@ -3255,7 +3250,7 @@
                         <div class="pack-top">
                             <div>
                                 <div class="pack-name">Xubor Infinity</div>
-                                <div style="color:#cbd5e1; margin-top:6px;">Plus de 12 000 abonnes Infinity</div>
+                                <div style="color:#cbd5e1; margin-top:6px;">Abonnements non activés — phase 1</div>
                             </div>
                             <div class="pack-badges">
                                 <span class="pack-badge gold">VIP</span>
@@ -3276,7 +3271,7 @@
                     </div>
                     <div class="shop-info-panel">
                         <h3>Paiement 100 % securise</h3>
-                        <p style="color:#cbd5e1;">Transactions chiffrees, confirmation avant achat et redirection PayPal securisee.</p>
+                        <p style="color:#cbd5e1;">Transactions chiffrees, confirmation avant achat et redirection Stripe securisee.</p>
                         <div class="payment-logos">
                             <span class="payment-logo">VISA</span>
                             <span class="payment-logo">Mastercard</span>
@@ -3404,7 +3399,7 @@
                             <button class="btn-primary" onclick="changeUsername()">Renommer</button>
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <input type="password" id="new-password" placeholder="Nouveau mot de passe"
+                            <input type="password" id="current-password" placeholder="Mot de passe actuel" autocomplete="current-password"><input type="password" id="new-password" placeholder="Nouveau mot de passe"
                                 style="flex:1; background: #222; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px;">
                             <button class="btn-primary" onclick="changePassword()">Changer MDP</button>
                         </div>
@@ -3437,8 +3432,8 @@
                             <button class="btn-secondary" onclick="triggerSpecialTheme('ramadan')">🌙 Ramadan</button>
                             <button class="btn-secondary" onclick="triggerSpecialTheme('christmas')">🎄 Noël</button>
                             <button class="btn-secondary" onclick="triggerSpecialTheme('newyear')">🎆 Nouvel An</button>
-                            <button class="btn-secondary" onclick="triggerSpecialTheme('easter')">🐣 Pâques</button>
-                            <button class="btn-secondary" onclick="triggerSpecialTheme('summer')">☀️ Été</button>
+                            <button class="btn-secondary" onclick="triggerSpecialTheme('easter')">ðŸ£ PÃ¢ques</button>
+                            <button class="btn-secondary" onclick="triggerSpecialTheme('summer')">â˜€ï¸ Ã‰tÃ©</button>
                         </div>
                     </div>
                 </div>
@@ -3446,20 +3441,20 @@
         </section>
 
         <footer class="footer-credits">
-            Créé par Imrane Bouadass ❤️
+            CrÃ©Ã© par Imrane Bouadass â¤ï¸
         </footer>
 
         <!-- Navigation Top -->
         <nav class="navbar-shared navbar-top hidden" id="main-nav-top">
             <div class="logo" onclick="navTo('home')">XOLBOR<span>.GAMES</span></div>
             <div class="nav-row">
-                <div class="nav-item active" onclick="navTo('home')">🏠 Accueil</div>
-                <div class="nav-item" onclick="navTo('tournaments')">🏆 Tournois</div>
-                <div class="nav-item" onclick="navTo('factions')">⚔️ Factions</div>
+                <div class="nav-item active" onclick="navTo('home')">ðŸ  Accueil</div>
+                <div class="nav-item" onclick="navTo('tournaments')">ðŸ† Tournois</div>
+                <div class="nav-item" onclick="navTo('factions')">âš”ï¸ Factions</div>
                 <div class="nav-item" onclick="navTo('bounties')">🎯 Primes</div>
                 <div class="nav-item" onclick="navTo('nexus')" style="color: var(--primary); font-weight: bold;">🌌
                     Nexus</div>
-                <div class="nav-item" onclick="navTo('guilds')">🏰 Guildes</div>
+                <div class="nav-item" onclick="navTo('guilds')">ðŸ° Guildes</div>
             </div>
             <div class="user-info">
                 <div class="streak-container" title="Série de connexion quotidienne">
@@ -3574,173 +3569,7 @@
         let shopCountdownTimer = null;
 
         function startShopCountdown() {
-            if (shopCountdownTimer) return;
-            const end = Date.now() + (3 * 24 * 60 * 60 * 1000) + (6 * 60 * 60 * 1000) + (42 * 60 * 1000);
-            const update = () => {
-                const remaining = Math.max(0, end - Date.now());
-                const days = Math.floor(remaining / 86400000);
-                const hours = Math.floor((remaining % 86400000) / 3600000);
-                const minutes = Math.floor((remaining % 3600000) / 60000);
-                const seconds = Math.floor((remaining % 60000) / 1000);
-                const set = (id, value, suffix) => {
-                    const el = document.getElementById(id);
-                    if (el) el.textContent = `${String(value).padStart(2, '0')}${suffix}`;
-                };
-                set('promo-days', days, 'j');
-                set('promo-hours', hours, 'h');
-                set('promo-minutes', minutes, 'm');
-                set('promo-seconds', seconds, 's');
-            };
-            update();
-            shopCountdownTimer = setInterval(update, 1000);
-        }
-
-        // if ('serviceWorker' in navigator) {
-        //     navigator.serviceWorker.register('/Xolbor/sw.js', { scope: '/Xolbor/' });
-        // }
-        // Force unregister to clear buggy 404 state
-        if ('serviceWorker' in navigator) {
-            Promise.all([
-                navigator.serviceWorker.getRegistrations().then(function (registrations) {
-                    return Promise.all(registrations.map(function (registration) {
-                        return registration.unregister();
-                    }));
-                }),
-                ('caches' in window)
-                    ? caches.keys().then(function (cacheNames) {
-                        return Promise.all(cacheNames.map(function (cacheName) {
-                            return caches.delete(cacheName);
-                        }));
-                    })
-                    : Promise.resolve()
-            ]).then(function () {
-                if (navigator.serviceWorker.controller && !sessionStorage.getItem('xolbor_sw_cleanup_reload')) {
-                    sessionStorage.setItem('xolbor_sw_cleanup_reload', '1');
-                    window.location.reload();
-                }
-            }).catch(function (error) {
-                console.warn('Service worker cleanup failed:', error);
-            });
-        }
-
-        let games = [];
-
-        let skins = []; // Will be loaded from server or hardcoded fallback? Server sends hardcoded list.
-        const rarities = ['rare', 'epic', 'legendary'];
-        const rarityColors = { 'rare': '#3b82f6', 'epic': '#a855f7', 'legendary': '#f59e0b' };
-
-        window.onload = async function () {
-            await loadSkins();
-            await loadGames();
-
-            // Check for payment redirect feedback
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('payment')) {
-                const status = urlParams.get('payment');
-                if (status === 'success') {
-                    showToast("Paiement réussi ! Vos Xubors ont été ajoutés.", "success");
-                } else if (status === 'cancelled') {
-                    showToast("Paiement annulé.", "warning");
-                } else if (status === 'error') {
-                    showToast("Une erreur est survenue lors du paiement.", "error");
-                }
-
-                // Clean URL so refresh doesn't trigger it again
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-        };
-
-        async function loadSkins() {
-            try {
-                const res = await fetch(API_URL + '/api/skins');
-                skins = await res.json();
-                if (skins.length === 0) generateFallbackSkins(); // Fallback if server fails
-            } catch (e) {
-                generateFallbackSkins();
-            }
-        }
-
-        function generateFallbackSkins() {
-            // Keep original generation logic just in case
-            for (let i = 1; i <= 20; i++) {
-                const r = rarities[Math.floor(Math.random() * rarities.length)];
-                skins.push({
-                    id: i,
-                    name: `Skin ${r} #${i}`,
-                    price: r === 'rare' ? 100 : r === 'epic' ? 500 : 2000,
-                    rarity: r,
-                    color: rarityColors[r],
-                    img: `https://picsum.photos/seed/skin${i}/200/200`,
-                    threeColor: i * 0x123456 % 0xffffff
-                });
-            }
-        }
-
-        // --- AUTH ---
-
-        async function checkSession() {
-            const token = localStorage.getItem('xolbor_token');
-            if (!token) return showAuth();
-
-            // Show loading indicator
-            let loadingIndicator = document.getElementById('session-loading');
-            if (!loadingIndicator) {
-                loadingIndicator = document.createElement('div');
-                loadingIndicator.id = 'session-loading';
-                loadingIndicator.innerHTML = '<div style="text-align: center; padding: 50px;"><div class="spinner"></div><p>Vérification de la session...</p></div>';
-                loadingIndicator.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;';
-                document.body.appendChild(loadingIndicator);
-            }
-
-            let retries = 2;
-            while (retries >= 0) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-                    const res = await fetch(API_URL + '/api/me', {
-                        headers: { 'Authorization': `Bearer ${token}` },
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-
-                    if (res.ok) {
-                        currentUser = await res.json();
-                        if (loadingIndicator && loadingIndicator.parentNode) {
-                            loadingIndicator.parentNode.removeChild(loadingIndicator);
-                        }
-                        return showApp();
-                    } else if (res.status === 401) {
-                        // Invalid token, clear it and show auth
-                        localStorage.removeItem('xolbor_token');
-                        if (loadingIndicator && loadingIndicator.parentNode) {
-                            loadingIndicator.parentNode.removeChild(loadingIndicator);
-                        }
-                        return showAuth();
-                    } else {
-                        // Other server error, retry
-                        console.warn(`Session check failed with status ${res.status}, retrying... (${retries} retries left)`);
-                    }
-                } catch (e) {
-                    if (e.name === 'AbortError') {
-                        console.warn('Session check timed out, retrying...');
-                    } else {
-                        console.error('Session check error:', e);
-                    }
-                }
-
-                retries--;
-                if (retries >= 0) {
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
-                }
-            }
-
-            // All retries failed, but don't auto-logout - show auth but keep token for manual retry
-            console.error('Session check failed after all retries');
-            if (loadingIndicator && loadingIndicator.parentNode) {
-                loadingIndicator.parentNode.removeChild(loadingIndicator);
-            }
-            showAuth();
+            const timer = document.getElementById('shop-countdown'); if (timer) timer.textContent = 'Paiements non activés';
         }
 
         function showAuth() {
@@ -3841,7 +3670,9 @@
             }, 5000); // Poll for notifications and data
         }
 
-        function logout() {
+        async function logout() {
+            try { await fetch('/api/logout', {method:'POST', headers:{'Content-Type':'application/json'},body:'{}'}); } catch { showToast('Déconnexion réseau impossible. Réessaie.', 'error'); return; }
+            if (socket) socket.disconnect();
             localStorage.removeItem('xolbor_token');
             location.reload();
         }
@@ -3992,13 +3823,13 @@
                     const diff = t.endTime - now;
                     const hours = Math.floor(diff / 3600000);
                     const mins = Math.floor((diff % 3600000) / 60000);
-                    timeDisplay = `⏳ Fin dans ${hours}h ${mins}m`;
+                    timeDisplay = `â³ Fin dans ${hours}h ${mins}m`;
                 } else if (t.status === 'upcoming') {
                     const diff = t.startTime - now;
                     const hours = Math.floor(diff / 3600000);
                     timeDisplay = `📅 Début dans ${hours}h`;
                 } else {
-                    timeDisplay = `🏁 Terminé`;
+                    timeDisplay = `ðŸ TerminÃ©`;
                 }
 
                 // Leaderboard Logic
@@ -4008,7 +3839,7 @@
                     .map((p, i) => `<div>#${i + 1} <span style="font-weight:bold; cursor:pointer; color:white; text-decoration:underline;" onclick="showUserProfile('${p.username}')">${p.username}</span> (${p.score})</div>`)
                     .join('');
 
-                const leaderboardHtml = top3 ? `<div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.8rem;"><strong>🏆 Top 3 :</strong>${top3}</div>` : '';
+                const leaderboardHtml = top3 ? `<div style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; margin-bottom:10px; font-size:0.8rem;"><strong>ðŸ† Top 3 :</strong>${top3}</div>` : '';
 
                 // Action Button Logic
                 if (isActive) {
@@ -4026,7 +3857,7 @@
                 return `
                 <div class="tournament-card">
                     <div class="tournament-header">
-                        <div class="tournament-title">${t.title}</div>
+                        <div class="tournament-title">${escapeHtml(t.title)}</div>
                         <div class="status-badge ${statusClass}">${statusText}</div>
                     </div>
                     
@@ -4035,7 +3866,7 @@
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:0.9rem; color:#aaa;">
                         <div>
                             <div>Jeu</div>
-                            <div style="color:white; font-weight:bold;">${t.gameName}</div>
+                            <div style="color:white; font-weight:bold;">${escapeHtml(t.gameName)}</div>
                         </div>
                         <div style="text-align:right;">
                             <div>Prize Pool</div>
@@ -4045,46 +3876,14 @@
                     
                     ${leaderboardHtml}
 
-                    <p style="margin-bottom:15px; font-size:0.9rem;">${t.description}</p>
+                    <p style="margin-bottom:15px; font-size:0.9rem;">${escapeHtml(t.description)}</p>
                     <div style="margin-top:10px;">${actionBtn}</div>
                 </div>
             `;
             }).join('');
         }
 
-        async function playTournament(id) {
-            if (isGuestMode()) {
-                showGuestGameLocked();
-                return;
-            }
-
-            // In a real app, this would open the game and wait for a callback
-            showToast("🎮 Partie lancée... Bonne chance !", "info");
-
-            // Simulate Gameplay
-            setTimeout(async () => {
-                const score = Math.floor(Math.random() * 1000) + 100; // Random score
-
-                try {
-                    const res = await fetch(`/api/tournaments/${id}/score`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${localStorage.getItem('xolbor_token')}`
-                        },
-                        body: JSON.stringify({ score })
-                    });
-
-                    const data = await res.json();
-                    if (data.success) {
-                        showToast(`🎯 Partie terminée ! Score: ${score}`, "success");
-                        loadTournaments(); // Refresh UI
-                    } else {
-                        showToast(data.error, "error");
-                    }
-                } catch (e) { console.error(e); }
-            }, 3000); // 3 seconds "gameplay"
-        }
+        async function playTournament() { showToast("Tournois en attente de scores vérifiés par les serveurs de jeu.", "info"); }
 
         async function joinTournament(id) {
             if (isGuestMode()) {
@@ -4161,8 +3960,8 @@
                 const level = Math.floor(Math.sqrt(guild.xp / 100)) + 1;
                 container.innerHTML = `
                     <div class="glass-panel">
-                        <h3>${guild.emblem} ${guild.name}</h3>
-                        <p>${guild.description}</p>
+                        <h3>${guild.emblem} ${escapeHtml(guild.name)}</h3>
+                        <p>${escapeHtml(guild.description)}</p>
                         <div style="display:flex; justify-content:space-between; margin:10px 0;">
                             <div>Niveau: ${level}</div>
                             <div>XP: ${guild.xp}</div>
@@ -4193,10 +3992,10 @@
                 return `
                 <div class="guild-card">
                     <div class="guild-header">
-                        <div class="guild-title">${g.emblem} ${g.name}</div>
+                        <div class="guild-title">${g.emblem} ${escapeHtml(g.name)}</div>
                         <div class="guild-level">Niveau ${level}</div>
                     </div>
-                    <p>${g.description}</p>
+                    <p>${escapeHtml(g.description)}</p>
                     <div style="display:flex; justify-content:space-between; margin:10px 0;">
                         <div>Membres: ${g.members.length}/50</div>
                         <div>XP: ${g.xp}</div>
@@ -4410,7 +4209,7 @@
                     <div class="card-body" style="padding-top: 30px; text-align: center;">
                         <h4 style="font-size: 1.5rem; margin-bottom: 5px;">${b.target}</h4>
                         <div style="color: #f59e0b; font-size: 2rem; font-weight: bold; font-family: 'Orbitron'; margin: 10px 0;">${formatXuborAmount(b.reward)}</div>
-                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Condition : <strong>${b.condition}</strong></p>
+                        <p style="font-size: 0.9rem; margin-bottom: 15px;">Condition : <strong>${escapeHtml(b.condition)}</strong></p>
                         <div style="font-size: 0.7rem; color: #888; margin-bottom: 15px;">Placé par : ${b.creator}</div>
                         <button class="btn-primary" style="width: 100%; background: #dc2626;" onclick="claimBounty('${b.id}')">Tenter ma chance</button>
                     </div>
@@ -4521,29 +4320,14 @@
                 const headers = token ? { 'Authorization': `Bearer ${token} ` } : {};
                 const res = await fetch(API_URL + '/api/games', { headers });
                 games = await res.json();
-                ensureStudioGamePublished();
+
                 renderGames();
             } catch (e) {
                 console.error("Failed to load games", e);
                 games = [];
-                ensureStudioGamePublished();
+
                 renderGames();
             }
-        }
-
-        function ensureStudioGamePublished() {
-            const studioGame = {
-                id: 'xolbor-mon-projet-xolbor',
-                title: 'Mon projet Xolbor',
-                img: '/favicon-removebg-preview.png',
-                url: '/xolbor-published/mon-projet-xolbor/index.html',
-                visits: 0,
-                likesCount: 0,
-                iframe: true,
-                creator: 'Xolbor Studio'
-            };
-            games = games.filter(g => g.id !== studioGame.id);
-            games.unshift(studioGame);
         }
 
         function renderGames() {
@@ -4560,13 +4344,13 @@
                     <div class="card-body">
                         <div class="card-title">${escapeHtml(g.title)}</div>
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.8rem; color:#aaa;">
-                            <span>👁️ ${g.visits || 0}</span>
-                            <span>❤️ ${g.likesCount || 0}</span>
+                            <span>ðŸ‘ï¸ ${g.visits || 0}</span>
+                            <span>â¤ï¸ ${g.likesCount || 0}</span>
                         </div>
                         <div style="display:flex; gap:10px;">
                             <button class="${guestLocked ? 'btn-secondary' : 'btn-primary'}" style="flex:1; ${guestLocked ? 'opacity:.72; cursor:not-allowed;' : ''}" data-game-action="${guestLocked ? 'guest-lock' : 'play'}" data-game-id="${escapeHtmlAttr(g.id)}" data-game-url="${escapeHtmlAttr(g.url)}">${guestLocked ? 'Bloqu&eacute;' : 'Jouer'}</button>
                             <button class="${g.isLiked ? 'btn-primary' : 'btn-secondary'}" style="padding: 5px 10px; ${guestLocked ? 'opacity:.72; cursor:not-allowed;' : ''}" data-game-action="${guestLocked ? 'guest-lock' : 'like'}" data-game-id="${escapeHtmlAttr(g.id)}">
-                                ${g.isLiked ? '❤️' : '🤍'}
+                                ${g.isLiked ? 'â¤ï¸' : 'ðŸ¤'}
                             </button>
                         </div>
                     </div>
@@ -4599,6 +4383,9 @@
             showToast("Mode invite : connecte-toi ou cree un compte pour jouer aux jeux.", "error");
         }
 
+        async function showUserProfile(username) {
+            try { const r=await fetch('/api/user/'+encodeURIComponent(username));const u=await r.json();if(!r.ok)throw new Error(u.error);showToast(`${u.username} — Niveau ${u.level || 1} — ${u.bio || ''}`, 'info'); } catch(e) {showToast(e.message,'error');}
+        }
         function escapeHtml(value) {
             return String(value ?? '').replace(/[&<>"']/g, (char) => ({
                 '&': '&amp;',
@@ -5076,7 +4863,7 @@
                 const typeNames = {
                     'trail': '🔥 Trails (Tracer de particules)',
                     'border': '👑 Bordures de profil',
-                    'badge': '⭐ Badges d\'élite'
+                    'badge': 'â­ Badges d\'Ã©lite'
                 };
 
                 Object.entries(byType).forEach(([type, items]) => {
@@ -5186,19 +4973,19 @@
 
         async function processPayment() {
             try {
-                // Change the endpoint to our new PayPal Checkout session creator
-                const res = await fetch(API_URL + '/api/create-paypal-order', {
+                // Create a Stripe Checkout session
+                const res = await fetch(API_URL + '/api/create-stripe-checkout-session', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('xolbor_token')}`
                     },
-                    body: JSON.stringify({ amount: pendingPayment.amount, price: pendingPayment.price })
+                    body: JSON.stringify({ amount: pendingPayment.amount, price: pendingPayment.price, packName: pendingPayment.packName })
                 });
                 const data = await res.json();
 
                 if (data.checkoutUrl) {
-                    // Redirect the user to PayPal Checkout
+                    // Redirect the user to Stripe Checkout
                     window.location.href = data.checkoutUrl;
                 } else {
                     showToast(data.error || "Erreur lors de la création du paiement", "error");
@@ -5325,7 +5112,7 @@
 
             container.innerHTML = msgs.map(m => `
             <div class="chat-msg ${m.from === currentUser.username ? 'me' : 'them'}">
-            ${m.content}
+            ${escapeHtml(m.content)}
                 </div>
                 `).join('');
 
@@ -5622,7 +5409,7 @@
             const news = [
                 { type: 'studio', title: 'Xolbor Studio pour developpeurs', content: 'La plateforme a cree un Studio officiel pour creer, tester et publier vos jeux sur Xolbor.', time: 'Nouveau', icon: 'XS' },
                 { type: 'news', title: 'Nouvelle Saison !', content: 'Découvrez les skins Légendaires.', time: 'Aujourd\'hui', icon: '🎉' },
-                { type: 'news', title: 'Maintenance', content: 'Serveurs optimisés.', time: 'Hier', icon: '⚙️' }
+                { type: 'news', title: 'Maintenance', content: 'Serveurs optimisÃ©s.', time: 'Hier', icon: 'âš™ï¸' }
             ];
 
             // 3. System Messages (Mock logic)
@@ -5661,8 +5448,8 @@
                     <div class="notif-item ${item.type === 'request' ? 'new' : ''}">
                         <div class="notif-icon">${item.icon}</div>
                         <div class="notif-content">
-                            <div style="font-weight:bold; font-size:0.85rem">${item.title}</div>
-                            <div style="font-size:0.8rem; color:#ccc">${item.content}</div>
+                            <div style="font-weight:bold; font-size:0.85rem">${escapeHtml(item.title)}</div>
+                            <div style="font-size:0.8rem; color:#ccc">${escapeHtml(item.content)}</div>
                             <div class="notif-time">${item.time}</div>
                         </div>
                         ${item.type === 'request' ?
@@ -5697,7 +5484,10 @@
         };
 
         async function initSocket() {
+            if (socket) socket.disconnect();
+            if (!currentUser || currentUser.isGuest) return;
             socket = io(API_URL);
+            socket.on('chat-message', () => { if (typeof loadChatHistory === 'function') loadChatHistory(); });
 
             socket.on('connect', () => {
                 if (currentUser) socket.emit('join-user', currentUser.username);
@@ -5767,7 +5557,7 @@
 
             socket.on('game-invite-received', (data) => {
                 // data = { from, gameName, link, gameId }
-                showToast(`Invitation de ${data.from} à rejoindre ${data.gameName} !`, "success");
+                showToast(`Invitation de ${data.from} à rejoindre ${escapeHtml(data.gameName)} !`, "success");
 
                 const notif = document.createElement('div');
                 notif.style.position = 'fixed';
@@ -5780,12 +5570,14 @@
                 notif.style.zIndex = '9999';
                 notif.innerHTML = `
                     <h3 style="margin-bottom: 5px; color: var(--primary);">Invitation de Jeu !</h3>
-                    <p style="margin-bottom: 10px;"><b>${data.from}</b> vous invite à jouer à <b>${data.gameName}</b>.</p>
+                    <p style="margin-bottom: 10px;"><b>${data.from}</b> vous invite à jouer à <b>${escapeHtml(data.gameName)}</b>.</p>
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn-primary" onclick="openGame('${data.gameId || 'custom'}', '${data.link}'); this.parentElement.parentElement.remove();">Rejoindre</button>
+                        <button class="btn-primary invite-join">Rejoindre</button>
                         <button class="btn-secondary" onclick="this.parentElement.parentElement.remove()">Ignorer</button>
                     </div>
                 `;
+                const inviteJoin = notif.querySelector('.invite-join');
+                if (inviteJoin) inviteJoin.onclick = () => { try { const url = new URL(data.link); if (!['http:','https:'].includes(url.protocol)) return; openGame(String(data.gameId || 'custom'), url.href); notif.remove(); } catch {} };
                 document.body.appendChild(notif);
 
                 // Remove notification after 30 seconds
@@ -5798,7 +5590,7 @@
 
             socket.on('king-decree', data => {
                 // Show a grand modal or special notification
-                const msg = `👑 DÉCRET ROYAL de ${data.king} : "${data.content}"`;
+                const msg = `👑 DÉCRET ROYAL de ${data.king} : "${escapeHtml(data.content)}"`;
                 showToast(msg, "success"); // Simple toast for now, maybe add modal later
 
                 // Add to notification list
@@ -5810,7 +5602,7 @@
             <div class="notif-icon">👑</div>
             <div class="notif-content">
                 <div style="font-weight:bold; color:#f59e0b;">DÉCRET ROYAL</div>
-                <div style="font-size:0.9rem;">${data.content}</div>
+                <div style="font-size:0.9rem;">${escapeHtml(data.content)}</div>
                 <div class="notif-time">À l'instant</div>
             </div>
                     `;
@@ -6423,8 +6215,8 @@
             'ramadan': '🌙 Ramadan',
             'christmas': '🎄 Noël',
             'newyear': '🎆 Nouvel An',
-            'easter': '🐣 Pâques',
-            'summer': '☀️ Été'
+            'easter': 'ðŸ£ PÃ¢ques',
+            'summer': 'â˜€ï¸ Ã‰tÃ©'
         };
 
         let currentTheme = 'default';
@@ -6682,12 +6474,12 @@
 
         async function changePassword() {
             const newPassword = document.getElementById('new-password').value.trim();
-            if (!newPassword || newPassword.length < 6) {
-                showToast("Mot de passe trop court (min 6 caractères)", "error");
+            if (!newPassword || newPassword.length < 12) {
+                showToast("Mot de passe trop court (min 12 caractères)", "error");
                 return;
             }
 
-            if (!confirm(`Changer de mot de passe coute 100 Xubor. Continuer ?`)) return;
+            const currentPassword = document.getElementById('current-password').value;
 
             try {
                 const token = localStorage.getItem('xolbor_token');
@@ -6697,14 +6489,14 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ newPassword })
+                    body: JSON.stringify({ currentPassword, newPassword })
                 });
 
                 const data = await res.json();
                 if (res.ok) {
                     document.getElementById('profile-balance').innerHTML = formatXuborAmount(data.newBalance);
                     document.getElementById('new-password').value = '';
-                    showToast(`Mot de passe changé ! Nouveau solde: ${data.newBalance} Xubor`, "success");
+                    showToast("Mot de passe changé. Les autres sessions sont révoquées.", "success");
                 } else {
                     showToast(data.error || "Erreur", "error");
                 }
@@ -6849,3 +6641,4 @@
 </body>
 
 </html>
+

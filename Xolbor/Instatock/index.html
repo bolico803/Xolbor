@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instatock - Partagez vos moments</title>
+  <link rel="icon" type="image/png" href="./unnamed.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <header class="glass">
+      <div class="logo-container">
+        <div class="logo">Instatock</div>
+        <div id="connectivity-status" class="status-badge online" title="Connecté via WiFi">
+          <span class="status-icon">📶</span>
+          <span class="status-text">WiFi</span>
+        </div>
+      </div>
+      <nav>
+        <button id="home-btn" class="nav-icon">🏠</button>
+        <button id="notifications-btn" class="nav-icon" style="position: relative;">🔔<span id="notif-badge"
+            style="display: none; position: absolute; top:0; right:0; background: red; width: 8px; height: 8px; border-radius: 50%;"></span></button>
+        <button id="add-post-btn" class="nav-icon">➕</button>
+        <button id="channels-btn" class="nav-icon">📺</button>
+        <button id="chat-btn" class="nav-icon">💬</button>
+        <button id="profile-btn" class="nav-icon">👤</button>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <!-- Content will be injected here -->
+    </main>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>

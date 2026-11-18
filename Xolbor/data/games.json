@@ -1,112 +1,19 @@
 [
   {
-    "id": "6",
-    "title": "Superfight",
-    "img": "/images/superfight.png",
-    "url": "/games/superfight/",
-    "visits": 20,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "31",
-    "title": "Superplat",
-    "img": "/images/superplat.png",
-    "url": "/games/superplat/",
-    "visits": 14,
+    "id": "41",
+    "title": "La Forêt des saisons",
+    "img": "/images/foret-des-saisons.jpg",
+    "url": "/games/foret-des-saisons/",
+    "visits": 0,
     "likes": [],
     "iframe": true
   },
   {
-    "id": "32",
-    "title": "SuperSpace",
-    "img": "/images/superspace.png",
-    "url": "/games/superspace/",
-    "visits": 10,
-    "likes": [],
-    "iframe": true
-  },
-  {
-    "id": "33",
-    "title": "Site de défis impossibles",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/site-defis-impossibles/",
-    "visits": 10,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "34",
-    "title": "RPG grande",
-    "img": "/images/RPGplayer.jpg",
-    "url": "/games/rpg-grande/",
-    "visits": 41,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "35",
-    "title": "PaytoDelet",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/paytodelet/",
-    "visits": 12,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "36",
-    "title": "If you have an IQ",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/if-you-have-an-iq/",
-    "visits": 21,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "37",
-    "title": "Instatock",
-    "img": "/images/instatock.jpg",
-    "url": "/games/instatock/",
-    "visits": 30,
-    "likes": [
-      "XolborAdmin"
-    ],
-    "iframe": true
-  },
-  {
-    "id": "38",
-    "title": "3D Tennis",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/3d-tennis/",
-    "visits": 2,
-    "likes": [],
-    "iframe": true
-  },
-  {
-    "id": "39",
-    "title": "Tunnel Runner 3D",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/tunnel-runner-3d/",
-    "visits": 8,
-    "likes": [],
-    "iframe": true
-  },
-  {
-    "id": "40",
-    "title": "Felna's Journey FX",
-    "img": "/favicon-removebg-preview.png",
-    "url": "/games/felnas-journey-fx/",
-    "visits": 9,
+    "id": "43",
+    "title": "Capture une catastrophe",
+    "img": "/images/capture-catastrophe.svg",
+    "url": "/games/capture-catastrophe/",
+    "visits": 0,
     "likes": [],
     "iframe": true
   }

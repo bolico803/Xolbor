@@ -1,0 +1,30 @@
+[Unit]
+Description=Xolbor Node service
+After=network.target
+
+[Service]
+Type=simple
+User=xolbor
+Group=xolbor
+WorkingDirectory=/opt/xolbor
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=5897
+Environment=TRUST_PROXY=1
+Environment=PUBLIC_ORIGIN=https://xolbor.ma
+Environment=PUBLIC_WWW_ORIGIN=https://www.xolbor.ma
+Environment=DATABASE_PATH=/var/lib/xolbor/xolbor.sqlite
+Environment=BACKUP_DIR=/var/lib/xolbor/backups
+EnvironmentFile=/etc/xolbor/xolbor.env
+ExecStart=/usr/bin/node /opt/xolbor/server.js
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/xolbor
+
+[Install]
+WantedBy=multi-user.target

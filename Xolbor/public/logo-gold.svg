@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Xolbor — emblème Nexus</title>
+  <desc id="desc">Un X bleu électrique dessiné comme quatre ailes autour d'une étoile.</desc>
+  <defs>
+    <linearGradient id="a" x1="24" y1="24" x2="213" y2="229" gradientUnits="userSpaceOnUse"><stop stop-color="#fff4c5"/><stop offset=".36" stop-color="#f4d27d"/><stop offset="1" stop-color="#b47a27"/></linearGradient>
+    <linearGradient id="b" x1="210" y1="26" x2="43" y2="226" gradientUnits="userSpaceOnUse"><stop stop-color="#ffe7a0"/><stop offset=".5" stop-color="#dfa940"/><stop offset="1" stop-color="#80551a"/></linearGradient>
+  </defs>
+  <path d="M20 25h62l48 64-31 37L20 25Z" fill="url(#a)"/>
+  <path d="M236 25h-62l-48 64 31 37L236 25Z" fill="url(#b)"/>
+  <path d="M20 231h62l48-64-31-37-79 101Z" fill="url(#b)"/>
+  <path d="M236 231h-62l-48-64 31-37 79 101Z" fill="url(#a)"/>
+  <path d="m128 99 29 29-29 29-29-29 29-29Z" fill="#251a0d"/>
+  <path d="m128 105 23 23-23 23-23-23 23-23Z" fill="#fff0b7"/>
+  <path d="m128 113 15 15-15 15-15-15 15-15Z" fill="#d59f42"/>
+  <path d="M25 31h50l18 24H44L25 31Zm158 0h48l-19 24h-47l18-24Z" fill="#fff" opacity=".16"/>
+</svg>

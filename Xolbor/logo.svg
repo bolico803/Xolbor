@@ -1,33 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-    <!-- Fond noir -->
-    <rect width="512" height="512" fill="#000000" rx="120" ry="120"/> <!-- Added rounded corners for App Icon style -->
-    
-    <!-- Définition des dégradés -->
-    <defs>
-        <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-        </linearGradient>
-        <filter id="glow">
-            <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-            <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
-
-    <!-- Texte stylisé XOLBOR -->
-    <g transform="translate(256, 256) scale(1.2)" filter="url(#glow)">
-        <!-- Le X Stylisé -->
-        <path d="M-100 -120 L -20 -20 M 100 -120 L 20 -20 M -100 120 L -20 20 M 100 120 L 20 20" 
-              stroke="url(#neonGradient)" stroke-width="40" stroke-linecap="round" />
-        
-        <!-- Centre Robotique -->
-        <rect x="-30" y="-30" width="60" height="60" rx="10" fill="url(#neonGradient)" />
-        <circle cx="0" cy="0" r="15" fill="#000000" />
-    </g>
-    
-    <!-- Texte XOLBOR en bas -->
-    <text x="50%" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="80" fill="url(#neonGradient)" filter="url(#glow)">XOLBOR</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Xolbor — emblème Nexus</title>
+  <desc id="desc">Un X bleu électrique dessiné comme quatre ailes autour d'une étoile.</desc>
+  <defs>
+    <linearGradient id="a" x1="24" y1="24" x2="213" y2="229" gradientUnits="userSpaceOnUse"><stop stop-color="#99faff"/><stop offset=".36" stop-color="#14bfff"/><stop offset="1" stop-color="#0055ef"/></linearGradient>
+    <linearGradient id="b" x1="210" y1="26" x2="43" y2="226" gradientUnits="userSpaceOnUse"><stop stop-color="#19e7ff"/><stop offset=".5" stop-color="#0080ff"/><stop offset="1" stop-color="#1648ce"/></linearGradient>
+  </defs>
+  <path d="M20 25h62l48 64-31 37L20 25Z" fill="url(#a)"/>
+  <path d="M236 25h-62l-48 64 31 37L236 25Z" fill="url(#b)"/>
+  <path d="M20 231h62l48-64-31-37-79 101Z" fill="url(#b)"/>
+  <path d="M236 231h-62l-48-64 31-37 79 101Z" fill="url(#a)"/>
+  <path d="m128 99 29 29-29 29-29-29 29-29Z" fill="#07162d"/>
+  <path d="m128 105 23 23-23 23-23-23 23-23Z" fill="#a5fbff"/>
+  <path d="m128 113 15 15-15 15-15-15 15-15Z" fill="#178dff"/>
+  <path d="M25 31h50l18 24H44L25 31Zm158 0h48l-19 24h-47l18-24Z" fill="#fff" opacity=".16"/>
 </svg>

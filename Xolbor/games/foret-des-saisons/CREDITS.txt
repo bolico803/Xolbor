@@ -1,0 +1,14 @@
+3D tree, pine sapling, fern, forest HDR and ground textures by Poly Haven, CC0:
+https://polyhaven.com/a/tree_small_02
+https://polyhaven.com/a/pine_sapling_small
+https://polyhaven.com/a/fern_02
+https://polyhaven.com/a/dandelion_01
+https://polyhaven.com/a/lush_dirt_path
+https://polyhaven.com/a/forest_leaves_02
+https://polyhaven.com/a/forrest_ground_01
+Grass and steps by Delta12 Studio, CC0: https://opengameart.org/content/rpg-sound-effect-pack
+Forest Ambience by TinyWorlds, CC0: https://opengameart.org/node/23888
+Peaceful Forest by Samza, CC0: https://opengameart.org/content/peaceful-forest
+Butterfly (animated) by CDmir and TinyWorlds, CC0: https://opengameart.org/content/butterfly-animated
+Crystal by FacadeGaikan, CC0: https://opengameart.org/content/3d-crystals
+Water normal texture: three.js examples, MIT: https://github.com/mrdoob/three.js

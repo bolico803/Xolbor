@@ -1,0 +1,27 @@
+{
+  "source": "C:\\Users\\Imrane\\Documents\\GitHub\\Xolbor\\Xolbor",
+  "root_reference": "C:\\Users\\Imrane\\Documents\\GitHub\\Xolbor",
+  "source_commit": "c10074d",
+  "preserved_uncommitted_changes": "Stripe integration in nested source",
+  "backup": "C:\\Users\\Imrane\\Desktop\\Xolbor\\Xolbor-source-original-2026-11-04.zip",
+  "private_data_copied": false,
+  "credentials_copied": false,
+  "copied_original_hashes": {
+    "index.html": "d6ebb228065842bb57da99f7c74ff65aa2f7235b60f6e30f37fbf960858d6eb5",
+    "server.js": "4e5ed6833687de3cf9b8e1965d8817076ab0c9f79398717da9d53cca6eda25ab",
+    "rpg_server.js": "dd814cfbac49617f9b70369ccf2697b817bd17822a25fb22c384c37f88d727fb",
+    "package.json": "c9472a0d2e5ccaef2a16b0cc09f312a492069ca7e75d39f855d005f4dc8714fd",
+    "package-lock.json": "4383081ae86a6c569af520c1e567478e8e51816efb97a2d1fb0f44f4fecf7c61",
+    ".gitignore": "1fb1d90dc7362e17ed53a24abe00d48a1dedd066ce52ce989be21052e93c6d7c",
+    ".env.example": "71455a8e498e9e14eb5b59c9c640dc179a0faee7938051128a901710b09b603c",
+    "sw.js": "48cf87e44fdf7550e06a0c5d1c50f1c19e4d68adfe324f3670833191ebac1c66",
+    "manifest.json": "2c11dceacd540ca56c24ee952fb0e1746e7feabe182bb0bb5fa6352ac8931cd0",
+    "logo.svg": "80ce6a6ff18767e33ce5d657884a13c3e1a8eb33ed35b995870a3b22676ac232",
+    "favicon.png": "820c9f7f10c7a8aa5bcac2b8af5156244211fe08d784f64d8e6ec3eaed1d724c",
+    "favicon-removebg-preview.png": "820c9f7f10c7a8aa5bcac2b8af5156244211fe08d784f64d8e6ec3eaed1d724c",
+    "avatarxolbor.png": "ab0cc0e12beb3c61b6c1067e426f64d164568fcfce4416a4a3dab1991829fa20",
+    "README.md": "30d1fc5dbc89866ee2057b6b233f5105f8ab62bf7122837eafe6583e4262e09c",
+    "3D Tennis.html": "b970fe68b56e4aced50d8dfbf150a5a34eea1ead763f99c984fe4422e796463c",
+    "Tunnel Runner 3D.html": "3320671708cabdb3b64076ef24cfa6d03a69b6d8a7bce1390e5e9eb9c94fef8a"
+  }
+}

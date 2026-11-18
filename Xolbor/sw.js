@@ -1,7 +1,7 @@
-const CACHE_NAME = 'xolbor-v4';
+const CACHE_NAME = 'xolbor-ultimate-v5';
 const ASSETS = [
     '/',
-    '/index.html'
+    '/public/home.css'
     // removed specific assets to rely on dynamic caching or network
 ];
 

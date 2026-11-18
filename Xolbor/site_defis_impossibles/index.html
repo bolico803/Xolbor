@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧠🎮 Défis Impossibles - Testez vos nerfs</title>
+  <meta name="description"
+    content="Le jeu le plus frustrant du web. Aurez-vous assez de patience pour atteindre le niveau 50 ?">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;800&display=swap"
+    rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Splash/Pseudo overlay is critical, adding early to avoid flash */
+    #pseudo-overlay {
+      position: fixed;
+      inset: 0;
+      background: #050505;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      transition: opacity 0.5s ease;
+    }
+
+    #pseudo-overlay.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-DMFHeW7N.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B3hQlDYN.css">
+</head>
+
+<body>
+  <!-- Pseudo Entry Screen -->
+  <div id="pseudo-overlay">
+    <h1 style="font-family: 'Orbitron'; color: var(--accent-blue);">DÉFIS IMPOSSIBLES</h1>
+    <div class="modal-content" style="max-width: 320px;">
+      <p>Choisis ton pseudo de victime :</p>
+      <input type="text" id="pseudo-input" placeholder="Pseudo..." maxlength="15"
+        style="background: #1a1a1f; border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 10px; text-align: center; font-family: 'Orbitron';">
+      <button id="start-game-btn" class="btn-primary">ENTRER</button>
+    </div>
+  </div>
+
+  <div id="app">
+    <!-- Header / Stats -->
+    <header class="game-header">
+      <div class="user-info">
+        <span id="display-pseudo" class="pseudo-tag">Nouveau Joueur</span>
+        <div class="level-indicator">
+          <span class="label">NIVEAU</span>
+          <span id="level-number">1</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-item" title="Échecs">
+          <i data-lucide="skull" class="icon-red"></i>
+          <span id="fail-count">0</span>
+        </div>
+        <div class="stat-item" title="Temps total">
+          <i data-lucide="timer"></i>
+          <span id="total-time">00:00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Game Area -->
+    <main id="game-container">
+      <div id="challenge-screen" class="screen">
+        <div id="challenge-instruct" class="troll-text">Préparez-vous...</div>
+        <div id="canvas-wrapper">
+          <canvas id="game-canvas"></canvas>
+          <!-- Overlay for non-canvas challenges -->
+          <div id="dom-challenge-container"></div>
+        </div>
+      </div>
+
+      <!-- Overlay for Fail/Success -->
+      <div id="overlay" class="hidden">
+        <div class="overlay-content">
+          <h2 id="overlay-title">PERDU !</h2>
+          <p id="overlay-msg">“Presque 😏”</p>
+          <button id="retry-btn" class="btn-primary">RÉESSAYER</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer / Info -->
+    <footer class="game-footer">
+      <div class="badges-mini" id="badges-container">
+        <!-- Badges will be injected here -->
+      </div>
+      <div class="footer-btns">
+        <button id="social-btn" class="btn-secondary">
+          <i data-lucide="users"></i> Amis
+        </button>
+        <button id="premium-btn" class="btn-premium">
+          <i data-lucide="diamond"></i> PREMIUM
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Social Modal -->
+  <div id="social-modal" class="hidden overlay-full">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>AMIS & DÉFIS</h2>
+        <button id="close-social" class="btn-text">✕</button>
+      </div>
+
+      <div class="social-tabs">
+        <button class="tab-btn active" data-tab="share">Partager</button>
+        <button class="tab-btn" data-tab="friends">Défier un ami</button>
+      </div>
+
+      <div id="tab-share" class="tab-content">
+        <p>Montre à tes amis à quel point tu souffres.</p>
+        <button id="share-btn" class="btn-primary" style="width: 100%;">
+          <i data-lucide="share-2"></i> PARTAGER MON SCORE
+        </button>
+      </div>
+
+      <div id="tab-friends" class="tab-content hidden">
+        <p>Entre le pseudo d'un ami pour voir s'il est plus nul que toi :</p>
+        <input type="text" id="friend-pseudo" placeholder="Pseudo de l'ami..."
+          style="background: #1a1a1f; border: 1px solid var(--glass-border); color: white; padding: 12px; border-radius: 10px; width: 100%; text-align: center; margin: 10px 0;">
+        <button id="challenge-friend-btn" class="btn-secondary"
+          style="width: 100%; border-color: var(--accent-blue); color: var(--accent-blue);">
+          DÉFIER
+        </button>
+        <div id="friend-result" style="margin-top: 15px; font-style: italic; color: var(--accent-red);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase Modal (Troll) -->
+  <div id="premium-modal" class="hidden overlay-full">
+    <div class="modal-content">
+      <i data-lucide="gem" class="icon-big icon-blue"></i>
+      <h2>DÉBLOQUER LE PREMIUM</h2>
+      <p>✓ Supprimer les pubs inexistantes</p>
+      <p>✓ Badges de flex suprême</p>
+      <p>✓ Pouvoir de continuer sans reset (MDR NON)</p>
+      <div class="price">99.99€ <small>/ mois</small></div>
+      <button id="buy-btn" class="btn-primary">ACHETER (LOL)</button>
+      <button id="close-premium" class="btn-text">Peut-être plus tard...</button>
+    </div>
+  </div>
+
+  <!-- Audio Elements (hidden) -->
+  <audio id="sfx-fail" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+  <audio id="sfx-success" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+  <audio id="sfx-troll" src="https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"></audio>
+
+  <script>
+    // Initialize icons
+    setTimeout(() => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }, 100);
+  </script>
+</body>
+
+</html>

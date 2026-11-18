@@ -1,0 +1,14 @@
+.game-cover{position:relative;display:block;isolation:isolate;overflow:hidden;aspect-ratio:16/9;border-radius:.75rem;background:var(--panel,#0a101c)}
+.game-cover .game-cover-scene{position:absolute;display:block;margin:0;border:0;border-radius:0;transition:transform .25s ease}
+.game-cover .game-cover-scene{inset:0;width:100%;height:100%;object-fit:cover}
+.game-detail-hero{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(15rem,1fr);gap:1rem;margin:1rem 0}
+.game-detail-info{display:flex;flex-direction:column;justify-content:center;gap:.75rem}
+.game-detail-info h2{font-size:clamp(1.6rem,4vw,3rem);margin:0}
+.game-launch{text-align:center;display:block}
+.game-detail-actions,.game-detail-tabs{display:flex;flex-wrap:wrap;gap:.5rem}
+.game-detail-actions button,.game-detail-tabs button{flex:1 1 auto}
+.game-detail-actions button[aria-pressed=true],.game-detail-tabs button[aria-pressed=true]{color:var(--gold-bright,#f6d98f);border-color:var(--gold,#e7bf6c);box-shadow:inset 0 -2px var(--gold,#e7bf6c)}
+.game-detail-content{margin-top:.75rem}
+.game-recommendations{display:grid;grid-template-columns:repeat(auto-fit,minmax(9rem,1fr));gap:.75rem;margin:.75rem 0}
+.game-recommendations h3{font-size:.9rem}
+@media(max-width:720px){.game-detail-hero{grid-template-columns:1fr}}

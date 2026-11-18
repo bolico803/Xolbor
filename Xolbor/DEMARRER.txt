@@ -1,0 +1,10 @@
+Xolbor Ultimate pour Windows
+
+1. Extraire le ZIP dans un dossier.
+2. Installer Node.js 24 LTS (24.12 ou plus recent dans la serie 24).
+3. Double-cliquer sur LANCER_XOLBOR.bat.
+4. Ouvrir http://127.0.0.1:5897 dans le navigateur.
+
+Les dependances sont incluses. Garde la fenetre du serveur ouverte.
+La base locale est dans runtime\xolbor.sqlite. Reconnecte-toi avec
+ton pseudo et ton mot de passe habituels.

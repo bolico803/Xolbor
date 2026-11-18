@@ -1,0 +1,15 @@
+import * as THREE from 'three';
+
+export const lakeRegions=[{x:-18,z:-19,rx:9,rz:7},{x:34,z:-39,rx:12,rz:8},{x:-46,z:39,rx:13,rz:9}];
+export function insideLake(x,z,padding=0){return lakeRegions.some(l=>((x-l.x)/(l.rx+padding))**2+((z-l.z)/(l.rz+padding))**2<1)}
+export function resolveLake(x,z){let nx=x,nz=z;for(const l of lakeRegions){let dx=nx-l.x,dz=nz-l.z,rx=l.rx+1,rz=l.rz+1,r=Math.hypot(dx/rx,dz/rz);if(r<1&&r>0){nx=l.x+dx/r;nz=l.z+dz/r}}return{x:nx,z:nz}}
+export function createLakes(scene){
+ const normal=new THREE.TextureLoader().load('./real-forest/water-normals.jpg');normal.wrapS=normal.wrapT=THREE.RepeatWrapping;normal.repeat.set(2.5,2.5);
+ const waterMat=new THREE.MeshStandardMaterial({color:0x5fa8a7,metalness:.22,roughness:.23,normalMap:normal,normalScale:new THREE.Vector2(.35,.35)});
+ const shoreMat=new THREE.MeshStandardMaterial({color:0x8e8664,roughness:1});const rings=[];
+ function lakeGeometry(seed){const count=64,positions=[0,0,0],uv=[.5,.5],indices=[];for(let i=0;i<=count;i++){let a=i/count*Math.PI*2,r=1+.08*Math.sin(a*3+seed)+.045*Math.sin(a*5-seed);positions.push(Math.cos(a)*r,Math.sin(a)*r,0);uv.push(.5+Math.cos(a)*r*.5,.5+Math.sin(a)*r*.5);if(i>0)indices.push(0,i,i+1)}let g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();return g}
+ lakeRegions.forEach((l,i)=>{let g=lakeGeometry(i+.8),shore=new THREE.Mesh(g,shoreMat);shore.rotation.x=-Math.PI/2;shore.scale.set(l.rx+1.3,l.rz+1.3,1);shore.position.set(l.x,-.012,l.z);scene.add(shore);let surface=new THREE.Mesh(g,waterMat);surface.rotation.x=-Math.PI/2;surface.scale.set(l.rx,l.rz,1);surface.position.set(l.x,.025,l.z);scene.add(surface);for(let n=0;n<2;n++){let ring=new THREE.Mesh(new THREE.RingGeometry(.96,1,40),new THREE.MeshBasicMaterial({color:0xd3f1df,transparent:true,opacity:.15,side:THREE.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.set(l.x+(n-.5)*3,.035,l.z);scene.add(ring);rings.push({ring,phase:n*.48+i*.2})}});
+ return{update(t){normal.offset.set(t*.008,t*.005);for(const {ring,phase} of rings){const f=(t*.18+phase)%1;ring.scale.setScalar(.6+f*3.2);ring.material.opacity=.18*(1-f)}}};
+}
+export function createSun(scene){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;const c=canvas.getContext('2d'),g=c.createRadialGradient(128,128,5,128,128,128);g.addColorStop(0,'rgba(255,255,238,1)');g.addColorStop(.1,'rgba(255,250,211,.98)');g.addColorStop(.25,'rgba(255,228,151,.54)');g.addColorStop(1,'rgba(255,210,120,0)');c.fillStyle=g;c.fillRect(0,0,256,256);const sun=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),transparent:true,depthWrite:false,depthTest:false,fog:false,blending:THREE.AdditiveBlending}));sun.scale.set(45,45,1);scene.add(sun);const direction=new THREE.Vector3(.32,-.06,-1).normalize();return camera=>sun.position.copy(camera.position).addScaledVector(direction,160)}
+
